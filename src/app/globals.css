@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 60 30% 96%; /* #F5F5DC - Light desaturated beige */
+    --background: 210 40% 96%; /* Light Blue */
     --foreground: 20 14% 4%;
     
     --card: 60 30% 96%;
@@ -28,7 +28,7 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     
-    --border: 88 25% 80%;
+    --border: 88 35% 75%;
     --input: 88 25% 85%;
     --ring: 88 50% 53%;
     
