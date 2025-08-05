@@ -37,7 +37,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [view, setView] = useState<'capture' | 'matches'>('capture');
   const [possibleMatches, setPossibleMatches] = useState<Species[]>([]);
-  const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false);
   const [isCategorySelectorOpen, setIsCategorySelectorOpen] = useState(false);
 
 
@@ -166,7 +165,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
   const handleCategorySelect = (category: Category) => {
     setSelectedCategory(category);
-    setIsSourceSelectorOpen(true);
+    // No longer opens a dialog, user will click a button next.
   }
   
   const handleCameraButtonClick = () => {
@@ -265,8 +264,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
                 matches={possibleMatches} 
                 onSelect={handleMatchSelected} 
                 onBack={() => {
-                  handleReset(); 
-                  if(selectedCategory) setIsSourceSelectorOpen(true);
+                  handleReset();
                 }} 
               />
             </div>
@@ -346,44 +344,11 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
                         selectedCategory={selectedCategory}
                         onSelectCategory={(category) => {
                            setSelectedCategory(category);
-                           setIsCategorySelectorOpen(false); // Close this dialog
-                           setIsSourceSelectorOpen(true); // Open the next one
+                           setIsCategorySelectorOpen(false);
                         }}
                     />
                 </div>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
-
-
-        <AlertDialog open={isSourceSelectorOpen} onOpenChange={setIsSourceSelectorOpen}>
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>Now, provide an image or code</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        You can use your camera, upload from your gallery, or scan a barcode.
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 py-4'>
-                    <Button size="lg" onClick={() => { setIsCameraOpen(true); setIsSourceSelectorOpen(false); }}>
-                        <Camera className="mr-2"/>
-                        Camera
-                    </Button>
-                    <Button size="lg" onClick={() => { 
-                      setIsSourceSelectorOpen(false);
-                      handleScanButtonClick();
-                    }}>
-                        <QrCode className="mr-2"/>
-                        Scan Code
-                    </Button>
-                     <Button size="lg" onClick={() => { handleBrowseClick(); setIsSourceSelectorOpen(false); }}>
-                        <Upload className="mr-2" />
-                        Upload
-                    </Button>
-                </div>
-                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                 </AlertDialogFooter>
             </AlertDialogContent>
