@@ -177,11 +177,15 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   }
 
   const handleScanButtonClick = () => {
-     if (selectedCategory) {
-        setIsScannerOpen(true);
-    } else {
-        setIsCategorySelectorOpen(true);
-    }
+    toast({
+      title: "Coming Soon!",
+      description: "Barcode scanning is not yet implemented.",
+    });
+    //  if (selectedCategory) {
+    //     setIsScannerOpen(true);
+    // } else {
+    //     setIsCategorySelectorOpen(true);
+    // }
   }
 
   const handleScanSuccess = (scanResult: string) => {
