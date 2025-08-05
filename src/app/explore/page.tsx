@@ -22,7 +22,7 @@ const getAvailableFilters = (category: Category) => {
     
     const filters: Record<string, string[]> = {};
     uniqueKeys.forEach(key => {
-        const allValues = speciesInCategory.map(s => s.attributes[key]).filter(Boolean);
+        const allValues = speciesInCategory.map(s => s.attributes[key]).filter(Boolean) as string[];
         filters[key] = [...new Set(allValues)];
     });
     return filters;
