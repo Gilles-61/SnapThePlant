@@ -15,7 +15,7 @@ export default function CommunityPage() {
         icon: MessageSquare,
         title: t('pages.community.features.forums.title'),
         description: t('pages.community.features.forums.description'),
-        href: null
+        href: "/community"
     },
     {
         icon: UploadCloud,
