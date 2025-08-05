@@ -22,13 +22,15 @@ import { Separator } from './ui/separator';
 import { useCollection } from '@/hooks/use-collection';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from './ui/badge';
+import type { CollectionItem } from '@/hooks/use-collection';
 
 interface IdentificationResultProps {
   result: Species | null;
+  capturedImage: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: () => void; // Correct
-  onReject: () => void; // Incorrect
+  onConfirm: () => void;
+  onReject: () => void;
 }
 
 const iconMap: Record<CareTip['title'], React.ElementType> = {
@@ -42,6 +44,7 @@ const iconMap: Record<CareTip['title'], React.ElementType> = {
 
 export function IdentificationResult({
   result,
+  capturedImage,
   open,
   onOpenChange,
   onConfirm,
@@ -54,14 +57,24 @@ export function IdentificationResult({
 
   if (!result) return null;
 
-  const isInCollection = collection?.some(item => item.id === result.id);
+  const imageToDisplay = capturedImage || result.image;
+
+  const collectionItem: CollectionItem | undefined = collection?.find(item => 
+    item.id === result.id && item.savedImage === imageToDisplay
+  );
+  const isInCollection = !!collectionItem;
 
   const handleSaveToggle = () => {
-    if (isInCollection) {
-      removeItem(result.id);
+    if (!capturedImage) {
+        toast({ title: "Cannot save an item without an image.", variant: "destructive"});
+        return;
+    }
+
+    if (isInCollection && collectionItem) {
+      removeItem(collectionItem);
       toast({ title: "Removed from collection" });
     } else {
-      addItem(result);
+      addItem(result, capturedImage);
       toast({ title: "Saved to collection" });
     }
   };
@@ -98,7 +111,7 @@ export function IdentificationResult({
             <div className="space-y-6">
                 <div className="relative aspect-square w-full rounded-lg overflow-hidden border">
                     <Image 
-                        src={result.image}
+                        src={imageToDisplay}
                         alt={result.name}
                         fill
                         sizes="(max-width: 768px) 100vw, 50vw"

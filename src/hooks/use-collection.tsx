@@ -5,10 +5,15 @@ import { useCallback } from 'react';
 import useSWR, { mutate } from 'swr';
 import type { Species } from '@/lib/mock-database';
 
+// The collection item will now store the specific image URI
+export interface CollectionItem extends Species {
+    savedImage: string;
+}
+
 const COLLECTION_KEY = 'snaptheplant_collection';
 
 // The fetcher function for SWR. It retrieves data from localStorage.
-const getCollectionFromStorage = (): Species[] => {
+const getCollectionFromStorage = (): CollectionItem[] => {
     if (typeof window === 'undefined') {
         return [];
     }
@@ -22,7 +27,7 @@ const getCollectionFromStorage = (): Species[] => {
 };
 
 // The updater function for SWR. It writes data to localStorage.
-const setCollectionInStorage = (collection: Species[]): Species[] => {
+const setCollectionInStorage = (collection: CollectionItem[]): CollectionItem[] => {
     if (typeof window === 'undefined') {
         return [];
     }
@@ -35,23 +40,31 @@ const setCollectionInStorage = (collection: Species[]): Species[] => {
 };
 
 export function useCollection() {
-    const { data: collection, error } = useSWR<Species[]>(COLLECTION_KEY, getCollectionFromStorage, {
+    const { data: collection, error } = useSWR<CollectionItem[]>(COLLECTION_KEY, getCollectionFromStorage, {
         revalidateOnFocus: false, // Optional: prevents re-fetching on window focus
     });
 
-    const addItem = useCallback((item: Species) => {
+    const addItem = useCallback((item: Species, imageDataUri: string) => {
         const currentCollection = getCollectionFromStorage();
-        if (!currentCollection.some(c => c.id === item.id)) {
-            const updatedCollection = [...currentCollection, item];
+        // Use a composite key of id and original image to allow saving duplicates if they have different images
+        const uniqueKey = `${item.id}-${item.image}`; 
+        if (!currentCollection.some(c => c.id === item.id && c.savedImage === imageDataUri)) {
+            const collectionItem: CollectionItem = {
+                ...item,
+                savedImage: imageDataUri,
+            };
+            const updatedCollection = [...currentCollection, collectionItem];
             // Update localStorage and then revalidate SWR cache
             setCollectionInStorage(updatedCollection);
             mutate(COLLECTION_KEY, updatedCollection, false); // Update local cache without re-fetching
         }
     }, []);
 
-    const removeItem = useCallback((itemId: number) => {
+    const removeItem = useCallback((itemToRemove: CollectionItem) => {
         const currentCollection = getCollectionFromStorage();
-        const updatedCollection = currentCollection.filter(item => item.id !== itemId);
+        const updatedCollection = currentCollection.filter(item => 
+            !(item.id === itemToRemove.id && item.savedImage === itemToRemove.savedImage)
+        );
         // Update localStorage and then revalidate SWR cache
         setCollectionInStorage(updatedCollection);
         mutate(COLLECTION_KEY, updatedCollection, false); // Update local cache without re-fetching

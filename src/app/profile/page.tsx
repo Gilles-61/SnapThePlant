@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Loader, Edit2, Trash2, Heart } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from '@/hooks/use-language';
-import { useCollection } from '@/hooks/use-collection';
+import { useCollection, type CollectionItem } from '@/hooks/use-collection';
 import type { Species } from '@/lib/mock-database';
 import Image from 'next/image';
 import { IdentificationResult } from '@/components/identification-result';
@@ -21,7 +21,7 @@ export default function ProfilePage() {
   const buyMeACoffeeLink = "https://buymeacoffee.com/snaptheplant";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [selectedSpecies, setSelectedSpecies] = useState<Species | null>(null);
+  const [selectedItem, setSelectedItem] = useState<CollectionItem | null>(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
 
   if (loading) {
@@ -64,14 +64,14 @@ export default function ProfilePage() {
     }
   };
 
-  const handleSpeciesSelect = (species: Species) => {
-    setSelectedSpecies(species);
+  const handleSpeciesSelect = (item: CollectionItem) => {
+    setSelectedItem(item);
     setIsResultOpen(true);
   };
   
   const handleResultClose = () => {
       setIsResultOpen(false);
-      setTimeout(() => setSelectedSpecies(null), 300);
+      setTimeout(() => setSelectedItem(null), 300);
   }
 
   const effectiveAvatarSrc = avatarPreview || user.photoURL || `https://placehold.co/100x100.png`;
@@ -132,11 +132,11 @@ export default function ProfilePage() {
                 <CardContent>
                     {collection && collection.length > 0 ? (
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                            {collection.map(item => (
-                                <div key={item.id} className="relative group">
+                            {collection.map((item, index) => (
+                                <div key={`${item.id}-${index}`} className="relative group">
                                     <Card className="overflow-hidden cursor-pointer" onClick={() => handleSpeciesSelect(item)}>
                                         <div className="relative aspect-square">
-                                            <Image src={item.image} alt={item.name} fill sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw" className="object-cover" />
+                                            <Image src={item.savedImage} alt={item.name} fill sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw" className="object-cover" />
                                         </div>
                                         <div className="p-2">
                                             <h4 className="font-semibold text-sm truncate">{item.name}</h4>
@@ -148,7 +148,7 @@ export default function ProfilePage() {
                                         className="absolute top-1 right-1 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            removeItem(item.id);
+                                            removeItem(item);
                                         }}
                                     >
                                         <Trash2 className="h-4 w-4" />
@@ -169,7 +169,8 @@ export default function ProfilePage() {
             onOpenChange={(open) => {
                 if (!open) handleResultClose();
             }}
-            result={selectedSpecies}
+            result={selectedItem}
+            capturedImage={selectedItem?.savedImage}
             onConfirm={handleResultClose}
             onReject={handleResultClose}
         />

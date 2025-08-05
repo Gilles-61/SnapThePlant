@@ -56,7 +56,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setAction(null);
   }, []);
 
-  const proceedWithAnalysis = async (analysis: IdentifySpeciesOutput) => {
+  const proceedWithAnalysis = async (analysis: IdentifySpeciesOutput, imageUri: string) => {
     if (!analysis || !analysis.name) {
         toast({
           title: "Analysis Failed",
@@ -68,6 +68,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     }
 
     let topMatch = findSpeciesByName(analysis.name);
+    setCapturedImage(imageUri);
 
     if (topMatch) {
       topMatch = { ...topMatch, isPoisonous: analysis.isPoisonous };
@@ -80,18 +81,15 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         variant: "default",
       });
       try {
-        const { imageDataUri } = await generateImage({
-            name: analysis.name,
-            category: selectedCategory!,
-        });
-        
+        // Since we already have the user's image, we can use that directly
+        // for new species instead of generating one.
         const newSpecies: Species = {
           id: -1, // Temporary ID for new species
           name: analysis.name,
           scientificName: analysis.scientificName,
           isPoisonous: analysis.isPoisonous,
           category: selectedCategory!,
-          image: imageDataUri,
+          image: imageUri, // Use the captured/uploaded image
           keyInformation: `This is an AI-generated entry for ${analysis.name}. Details are based on general knowledge.`,
           furtherReading: `https://www.google.com/search?q=${encodeURIComponent(analysis.scientificName)}`,
           attributes: {},
@@ -100,10 +98,10 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         setIsResultOpen(true);
 
       } catch (genError) {
-        console.error("Error generating image for new species", genError);
+        console.error("Error handling new species", genError);
         toast({
             title: "Could Not Display New Species",
-            description: "An error occurred while generating details for the new species.",
+            description: "An error occurred while preparing details for the new species.",
             variant: "destructive"
         })
         handleReset();
@@ -112,16 +110,16 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   }
 
   const findMatches = useCallback(async (imageDataUri: string, category: Category) => {
-    setCapturedImage(imageDataUri);
     setIsLoading(true);
-
+    // Don't set captured image here yet, wait for analysis
+    
     try {
       const analysis = await identifySpecies({
           photoDataUri: imageDataUri,
           category: category,
       });
       
-      await proceedWithAnalysis(analysis);
+      await proceedWithAnalysis(analysis, imageDataUri);
 
     } catch (error) {
       console.error("Error analyzing image:", error);
@@ -132,12 +130,8 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
       });
     } finally {
         setIsLoading(false);
-        // Only reset if no result was set
-        if (!result) {
-            handleReset();
-        }
     }
-  }, [toast, handleReset, selectedCategory, result]);
+  }, [toast, handleReset, selectedCategory]);
 
 
   const handleSearch = useCallback((query: string) => {
@@ -147,6 +141,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     
     if (matches.length > 0) {
         setResult(matches[0]);
+        setCapturedImage(matches[0].image); // Use placeholder from DB for search
         setIsResultOpen(true);
     } else {
       toast({
@@ -400,6 +395,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
             else setIsResultOpen(true);
           }}
           result={result}
+          capturedImage={capturedImage}
           onConfirm={() => handleFeedback(true)}
           onReject={() => handleFeedback(false)}
         />
