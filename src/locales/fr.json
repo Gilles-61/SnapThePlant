@@ -38,7 +38,9 @@
         "insect": "Insecte",
         "insectHint": "Identifier un insecte",
         "cactus": "Cactus",
-        "cactusHint": "Identifier un cactus"
+        "cactusHint": "Identifier un cactus",
+        "succulent": "Succulente",
+        "succulentHint": "Identifier une succulente"
     },
     "result": {
         "confidenceScore": "Score de confiance",

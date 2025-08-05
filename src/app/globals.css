@@ -108,3 +108,11 @@
 .category-tile-cactus:hover {
     background-color: #1B5E20;
 }
+
+.category-tile-succulent {
+    background-color: #607D8B; /* Blue grey */
+    color: white;
+}
+.category-tile-succulent:hover {
+    background-color: #546E7A;
+}

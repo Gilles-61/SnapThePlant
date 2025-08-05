@@ -218,6 +218,47 @@ export const database: Species[] = [
         furtherReading: 'https://en.wikipedia.org/wiki/Echinocactus_grusonii',
         image: 'https://placehold.co/600x400.png',
         attributes: { shape: 'globular', flowers: 'yes', color: 'green' }
+    },
+
+    // --- SUCCULENTS ---
+    {
+        id: 23, category: 'Succulent', name: 'Echeveria', scientificName: 'Echeveria',
+        keyInformation: 'A large genus of rosette-forming succulents, popular in arrangements and rock gardens. They come in a wide variety of colors and shapes.',
+        furtherReading: 'https://en.wikipedia.org/wiki/Echeveria',
+        image: 'https://placehold.co/600x400.png',
+        attributes: { color: 'blue', shape: 'rosette', texture: 'fleshy' },
+        careTips: [
+            { title: 'Watering', description: 'Water thoroughly when soil is completely dry to the touch. Avoid letting water sit in the rosette.' },
+            { title: 'Sunlight', description: 'Prefers full sun to light shade. Brighter light brings out more vibrant colors in the leaves.' },
+            { title: 'Soil', description: 'Use a well-draining succulent or cactus mix. Good drainage is critical to prevent root rot.' },
+            { title: 'Environment', description: 'Protect from frost. Most Echeverias are not cold-hardy.' }
+        ]
+    },
+    {
+        id: 24, category: 'Succulent', name: 'Jade Plant', scientificName: 'Crassula ovata',
+        keyInformation: 'A very common houseplant with thick, woody stems and glossy, green, fleshy leaves. Often considered a symbol of good luck.',
+        furtherReading: 'https://en.wikipedia.org/wiki/Crassula_ovata',
+        image: 'https://placehold.co/600x400.png',
+        attributes: { color: 'green', shape: 'oval', texture: 'fleshy' },
+        careTips: [
+            { title: 'Watering', description: 'Water when the soil is dry to the touch. Be careful not to overwater, especially in winter.' },
+            { title: 'Sunlight', description: 'Needs plenty of light. At least 4 hours of direct sun per day is ideal.' },
+            { title: 'Soil', description: 'Use a standard succulent potting mix with excellent drainage.' },
+            { title: 'Extra Tips', description: 'Easy to propagate from a single leaf or stem cutting.' }
+        ]
+    },
+    {
+        id: 25, category: 'Succulent', name: 'Hens and Chicks', scientificName: 'Sempervivum',
+        keyInformation: 'Hardy, rosette-forming succulents that produce numerous offspring (chicks) around the main plant (hen). Extremely drought-tolerant.',
+        furtherReading: 'https://en.wikipedia.org/wiki/Sempervivum',
+        image: 'https://placehold.co/600x400.png',
+        attributes: { color: 'green', shape: 'rosette', texture: 'fleshy' },
+        careTips: [
+            { title: 'Watering', description: 'Very drought-tolerant. Water only when the soil is completely dry.' },
+            { title: 'Sunlight', description: 'Thrives in full sun and well-drained, gritty soil.' },
+            { title: 'Soil', description: 'Requires sandy, well-draining soil. Does not tolerate wet conditions.' },
+            { title: 'Extra Tips', description: 'The "hen" plant dies after flowering, but the "chicks" will live on and take its place.' }
+        ]
     }
 ];
 

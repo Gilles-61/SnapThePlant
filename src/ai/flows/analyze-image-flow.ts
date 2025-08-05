@@ -54,6 +54,7 @@ const promptText = `
     - Weed: "flower_color", "location", "leaf_type"
     - Insect: "color", "wings", "legs"
     - Cactus: "shape", "flowers", "color"
+    - Succulent: "color", "shape", "texture"
     
     Do not guess. Only return attributes you can confidently identify from the image.
     Your output MUST be a JSON object containing the "attributes" key, which holds an array of key-value objects. For example: [{ "key": "color", "value": "green" }]

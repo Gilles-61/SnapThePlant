@@ -38,7 +38,9 @@
         "insect": "昆虫",
         "insectHint": "识别昆虫",
         "cactus": "仙人掌",
-        "cactusHint": "识别仙人掌"
+        "cactusHint": "识别仙人掌",
+        "succulent": "多肉植物",
+        "succulentHint": "识别多肉植物"
     },
     "result": {
         "confidenceScore": "置信度分数",
