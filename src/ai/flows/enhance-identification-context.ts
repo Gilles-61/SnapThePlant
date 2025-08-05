@@ -11,8 +11,10 @@
  * - EnhanceIdentificationContextOutput - The return type for the enhanceIdentificationContext function.
  */
 
-import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+
+// Note: The AI flow is no longer used in the main application,
+// but the types are kept to avoid breaking component props.
 
 const EnhanceIdentificationContextInputSchema = z.object({
   photoDataUri: z
@@ -31,34 +33,3 @@ const EnhanceIdentificationContextOutputSchema = z.object({
   furtherReading: z.string().describe('Links for further reading about the identified species.'),
 });
 export type EnhanceIdentificationContextOutput = z.infer<typeof EnhanceIdentificationContextOutputSchema>;
-
-export async function enhanceIdentificationContext(
-  input: EnhanceIdentificationContextInput
-): Promise<EnhanceIdentificationContextOutput> {
-  return enhanceIdentificationContextFlow(input);
-}
-
-const enhanceIdentificationContextPrompt = ai.definePrompt({
-  name: 'enhanceIdentificationContextPrompt',
-  input: {schema: EnhanceIdentificationContextInputSchema},
-  output: {schema: EnhanceIdentificationContextOutputSchema},
-  prompt: `You are an expert botanist. You will identify the species of a plant based on a photo and a user-provided description.
-
-  Description: {{{description}}}
-  Photo: {{media url=photoDataUri}}
-
-  Return the species name, confidence score, key information, and links for further reading.
-  `,
-});
-
-const enhanceIdentificationContextFlow = ai.defineFlow(
-  {
-    name: 'enhanceIdentificationContextFlow',
-    inputSchema: EnhanceIdentificationContextInputSchema,
-    outputSchema: EnhanceIdentificationContextOutputSchema,
-  },
-  async input => {
-    const {output} = await enhanceIdentificationContextPrompt(input);
-    return output!;
-  }
-);

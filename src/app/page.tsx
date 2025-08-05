@@ -5,7 +5,7 @@ import { useState, useRef, useCallback, Suspense } from 'react';
 import Image from 'next/image';
 import { Loader, Camera, RotateCcw, Image as ImageIcon } from 'lucide-react';
 
-import { enhanceIdentificationContext, type EnhanceIdentificationContextOutput } from '@/ai/flows/enhance-identification-context';
+import type { EnhanceIdentificationContextOutput } from '@/ai/flows/enhance-identification-context';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { SiteHeader } from '@/components/site-header';
@@ -13,6 +13,46 @@ import { CategorySelector, categories, type Category } from '@/components/catego
 import { IdentificationResult } from '@/components/identification-result';
 import CameraFeed, { type CameraFeedHandle } from '@/components/camera-feed';
 import { useTranslation } from '@/hooks/use-language';
+
+// Mock function to simulate local database lookup
+const identifyFromLocalDatabase = (
+  category: Category
+): EnhanceIdentificationContextOutput => {
+  // In a real implementation, this would search a local database.
+  // For now, it returns a hardcoded result based on the category.
+  const mockResults: Record<Category, EnhanceIdentificationContextOutput> = {
+    Plant: {
+      speciesName: 'Monstera Deliciosa',
+      confidenceScore: 0.95,
+      keyInformation:
+        'A species of flowering plant native to tropical forests of southern Mexico, south to Panama. It is known for its large, glossy, and uniquely perforated leaves.',
+      furtherReading: 'https://en.wikipedia.org/wiki/Monstera_deliciosa',
+    },
+    Tree: {
+      speciesName: 'Oak Tree (Quercus)',
+      confidenceScore: 0.92,
+      keyInformation:
+        'A common tree in the Northern Hemisphere known for its strength, longevity, and acorns. There are approximately 500 extant species of oaks.',
+      furtherReading: 'https://en.wikipedia.org/wiki/Oak',
+    },
+    Weed: {
+      speciesName: 'Dandelion (Taraxacum)',
+      confidenceScore: 0.98,
+      keyInformation:
+        'A large genus of flowering plants in the family Asteraceae. They are well-known for their yellow flower heads that turn into round balls of silver-tufted fruits that disperse in the wind.',
+      furtherReading: 'https://en.wikipedia.org/wiki/Taraxacum',
+    },
+    Insect: {
+      speciesName: 'European Honey Bee (Apis mellifera)',
+      confidenceScore: 0.96,
+      keyInformation:
+        'The most common of the 7–12 species of honey bees worldwide. They are social insects that live in colonies and are essential for pollination.',
+      furtherReading: 'https://en.wikipedia.org/wiki/Western_honey_bee',
+    },
+  };
+  return mockResults[category];
+};
+
 
 export default function HomePage() {
   const { t } = useTranslation();
@@ -27,18 +67,28 @@ export default function HomePage() {
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
+  const handleReset = useCallback(() => {
+    setCapturedImage(null);
+    setResult(null);
+    setIsResultOpen(false);
+    setIsLoading(false);
+    setIsCameraOpen(false);
+  }, []);
+
   const processImage = useCallback(async (imageDataUri: string) => {
     setCapturedImage(imageDataUri);
     setIsLoading(true);
+
+    // Simulate a delay for the database lookup
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     try {
-      const aiResult = await enhanceIdentificationContext({
-        photoDataUri: imageDataUri,
-        description: t('aiDescription', { category: selectedCategory.toLowerCase() }),
-      });
-      setResult(aiResult);
+      // Replace AI call with a local, mock database lookup
+      const localResult = identifyFromLocalDatabase(selectedCategory);
+      setResult(localResult);
       setIsResultOpen(true);
     } catch (error) {
-      console.error("AI identification failed:", error);
+      console.error("Local identification failed:", error);
       toast({
         title: t('toast.identificationFailed.title'),
         description: t('toast.identificationFailed.description'),
@@ -48,7 +98,7 @@ export default function HomePage() {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedCategory, toast, t]);
+  }, [selectedCategory, toast, t, handleReset]);
 
 
   const handleCapture = useCallback(async () => {
@@ -89,14 +139,6 @@ export default function HomePage() {
         event.target.value = "";
     }
   };
-
-  const handleReset = useCallback(() => {
-    setCapturedImage(null);
-    setResult(null);
-    setIsResultOpen(false);
-    setIsLoading(false);
-    setIsCameraOpen(false);
-  }, []);
 
   const handleFeedback = useCallback(() => {
     // In a real app, this would send feedback to a backend
