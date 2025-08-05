@@ -105,7 +105,7 @@ export default function ExplorePage() {
                                     <Select onValueChange={(value) => handleFilterChange(filterKey, value)} value={activeFilters[filterKey] ?? ''}>
                                         <SelectTrigger>
                                             <SelectValue placeholder={`All ${filterKey.replace(/_/g, ' ')}s`} />
-                                        </SelectTrigger>
+                                        </Trigger>
                                         <SelectContent>
                                             <SelectItem value="all">All</SelectItem>
                                             {availableFilters[filterKey].map(option => (
@@ -132,7 +132,7 @@ export default function ExplorePage() {
                                                 fill
                                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                 className="object-cover"
-                                                data-ai-hint={species.name}
+                                                data-ai-hint={species['data-ai-hint'] || 'succulent plant'}
                                             />
                                         </div>
                                     </CardHeader>
