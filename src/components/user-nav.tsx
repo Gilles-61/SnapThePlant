@@ -82,7 +82,8 @@ import { Globe, Heart, LogIn } from "lucide-react"
           <DropdownMenuSeparator />
            <DropdownMenuSub>
             <DropdownMenuSubTrigger>
-                <Globe />
+              <Globe className="mr-2 h-4 w-4" />
+              <span>{t('userNav.language')}</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
               <DropdownMenuRadioGroup value={language} onValueChange={(value) => setLanguage(value as any)}>
@@ -108,5 +109,3 @@ import { Globe, Heart, LogIn } from "lucide-react"
       </DropdownMenu>
     )
   }
-
-
