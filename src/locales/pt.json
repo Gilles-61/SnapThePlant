@@ -19,8 +19,8 @@
             "description": "Não foi possível capturar uma imagem da câmera."
         },
         "feedback": {
-            "title": "Notas salvas!",
-            "description": "Suas notas pessoais foram salvas."
+            "title": "Feedback Recebido",
+            "description": "Obrigado por nos ajudar a melhorar nossa precisão!"
         }
     },
     "camera": {
@@ -141,6 +141,28 @@
             "p1": "As identificações fornecidas pelo SnapThePlant são geradas por um modelo de inteligência artificial e destinam-se apenas a fins informativos e educacionais. Embora nos esforcemos por uma elevada precisão, os resultados podem nem sempre estar corretos.",
             "p2": "Nunca utilize esta aplicação para identificar plantas ou fungos para consumo ou para fins medicinais. A identificação incorreta pode levar a graves riscos de saúde, incluindo envenenamento. Consulte sempre um especialista humano qualificado antes de comer qualquer planta selvagem.",
             "p3": "Os criadores do SnapThePlant não se responsabilizam por quaisquer danos ou prejuízos resultantes do uso ou do uso indevido da informação fornecida por esta aplicação. Ao utilizar esta aplicação, concorda com estes termos."
+        },
+        "community": {
+            "title": "Bem-vindo à Comunidade!",
+            "description": "Um lugar para conectar, compartilhar e aprender juntos.",
+            "features": {
+                "forums": {
+                    "title": "Fóruns",
+                    "description": "Compartilhe suas descobertas, faça perguntas e discuta com outros entusiastas da natureza."
+                },
+                "submissions": {
+                    "title": "Envios de usuários",
+                    "description": "Envie novas descobertas e ajude a expandir nosso banco de dados para que todos possam usar."
+                },
+                "collaboration": {
+                    "title": "Colaboração",
+                    "description": "Trabalhe com outros para verificar identificações e construir uma base de conhecimento confiável."
+                }
+            },
+            "comingSoon": {
+                "title": "Em breve!",
+                "description": "Estamos trabalhando duro para construir esses recursos. Fique atento para atualizações!"
+            }
         }
     }
 }

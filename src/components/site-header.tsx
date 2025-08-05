@@ -16,6 +16,9 @@ export function SiteHeader() {
             <Button variant="link" asChild>
                 <Link href="/explore" className="text-slate-600 hover:text-primary">Explore</Link>
             </Button>
+             <Button variant="link" asChild>
+                <Link href="/community" className="text-slate-600 hover:text-primary">Community</Link>
+            </Button>
             <Button variant="link" asChild>
                 <Link href="/pricing" className="text-slate-600 hover:text-primary">Pricing</Link>
             </Button>

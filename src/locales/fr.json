@@ -19,8 +19,8 @@
             "description": "Impossible de capturer une image depuis l'appareil photo."
         },
         "feedback": {
-            "title": "Notes enregistrées !",
-            "description": "Vos notes personnelles ont été enregistrées."
+            "title": "Commentaires reçus !",
+            "description": "Merci de nous aider à améliorer notre précision !"
         }
     },
     "camera": {
@@ -141,6 +141,28 @@
             "p1": "Les identifications fournies par SnapThePlant sont générées par un modèle d'intelligence artificielle et sont destinées à des fins d'information et d'éducation uniquement. Bien que nous nous efforçons d'atteindre une grande précision, les résultats peuvent ne pas toujours être corrects.",
             "p2": "N'utilisez jamais cette application pour identifier des plantes ou des champignons à des fins de consommation ou médicales. Une mauvaise identification pourrait entraîner de graves risques pour la santé, y compris l'empoisonnement. Consultez toujours un expert humain qualifié avant de consommer une plante sauvage.",
             "p3": "Les créateurs de SnapThePlant ne sont pas responsables des dommages ou préjudices résultant de l'utilisation ou de la mauvaise utilisation des informations fournies par cette application. En utilisant cette application, vous acceptez ces conditions."
+        },
+        "community": {
+            "title": "Bienvenue dans la Communauté !",
+            "description": "Un lieu pour se connecter, partager et apprendre ensemble.",
+            "features": {
+                "forums": {
+                    "title": "Forums",
+                    "description": "Partagez vos découvertes, posez des questions et discutez avec d'autres passionnés de la nature."
+                },
+                "submissions": {
+                    "title": "Soumissions des utilisateurs",
+                    "description": "Soumettez de nouvelles découvertes et aidez à développer notre base de données pour que tout le monde puisse l'utiliser."
+                },
+                "collaboration": {
+                    "title": "Collaboration",
+                    "description": "Travaillez avec d'autres pour vérifier les identifications et construire une base de connaissances de confiance."
+                }
+            },
+            "comingSoon": {
+                "title": "Bientôt disponible !",
+                "description": "Nous travaillons d'arrache-pied pour développer ces fonctionnalités. Restez à l'écoute pour les mises à jour !"
+            }
         }
     }
 }

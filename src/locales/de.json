@@ -19,8 +19,8 @@
             "description": "Konnte kein Bild von der Kamera aufnehmen."
         },
         "feedback": {
-            "title": "Notizen gespeichert!",
-            "description": "Deine persönlichen Notizen wurden gespeichert."
+            "title": "Feedback erhalten",
+            "description": "Danke, dass du uns hilfst, unsere Genauigkeit zu verbessern!"
         }
     },
     "camera": {
@@ -141,6 +141,28 @@
             "p1": "Die von SnapThePlant bereitgestellten Identifikationen werden von einem künstlichen Intelligenzmodell generiert und dienen nur zu Informations- und Bildungszwecken. Obwohl wir uns um hohe Genauigkeit bemühen, sind die Ergebnisse möglicherweise nicht immer korrekt.",
             "p2": "Verwenden Sie diese Anwendung niemals zur Identifizierung von Pflanzen oder Pilzen zum Verzehr oder für medizinische Zwecke. Eine falsche Identifizierung könnte zu ernsthaften Gesundheitsrisiken, einschließlich Vergiftungen, führen. Konsultieren Sie immer einen qualifizierten menschlichen Experten, bevor Sie eine Wildpflanze essen.",
             "p3": "Die Entwickler von SnapThePlant haften nicht für Schäden, die aus der Nutzung oder dem Missbrauch der von dieser Anwendung bereitgestellten Informationen resultieren. Durch die Nutzung dieser App stimmen Sie diesen Bedingungen zu."
+        },
+        "community": {
+            "title": "Willkommen in der Community!",
+            "description": "Ein Ort zum Verbinden, Teilen und gemeinsamen Lernen.",
+            "features": {
+                "forums": {
+                    "title": "Foren",
+                    "description": "Teilen Sie Ihre Erkenntnisse, stellen Sie Fragen und diskutieren Sie mit anderen Naturbegeisterten."
+                },
+                "submissions": {
+                    "title": "Benutzereinreichungen",
+                    "description": "Reichen Sie neue Erkenntnisse ein und helfen Sie, unsere Datenbank für alle zu erweitern."
+                },
+                "collaboration": {
+                    "title": "Zusammenarbeit",
+                    "description": "Arbeiten Sie mit anderen zusammen, um Identifikationen zu überprüfen und eine vertrauenswürdige Wissensdatenbank aufzubauen."
+                }
+            },
+            "comingSoon": {
+                "title": "Demnächst verfügbar!",
+                "description": "Wir arbeiten hart an der Entwicklung dieser Funktionen. Bleiben Sie dran für Updates!"
+            }
         }
     }
 }
