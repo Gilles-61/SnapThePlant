@@ -20,7 +20,7 @@ export function AuthGate() {
                     alt="A beautiful collection of flowers"
                     fill
                     className="object-cover"
-                    data-ai-hint="flowers exterior"
+                    data-ai-hint="flowers"
                 />
                 <div className="absolute inset-0 bg-zinc-900/60" />
                 <div className="relative z-20 flex items-center text-lg font-medium">
