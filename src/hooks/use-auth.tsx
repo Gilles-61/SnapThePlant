@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth, signInWithGoogle as signInWithGoogleFirebase, signOutFromGoogle, signUpWithEmailPassword, signInWithEmailPassword } from '@/lib/firebase';
 import { useToast } from './use-toast';
