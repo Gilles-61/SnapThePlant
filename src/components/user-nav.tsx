@@ -69,8 +69,8 @@ import { Heart, LogIn } from "lucide-react"
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              {t('userNav.profile')}
+            <DropdownMenuItem asChild>
+              <Link href="/profile">{t('userNav.profile')}</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               {t('userNav.billing')}
@@ -106,5 +106,3 @@ import { Heart, LogIn } from "lucide-react"
       </DropdownMenu>
     )
   }
-
-
