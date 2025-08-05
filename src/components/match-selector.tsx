@@ -99,7 +99,10 @@ export function MatchSelector({ image, matches, onSelect, onBack }: MatchSelecto
                 setGeneratedImages([{ id: species.id, imageDataUri: result.imageDataUri }]);
             } catch (error) {
                 console.error(`Failed to generate image for ${matches[0].species.name}:`, error);
-                setGeneratedImages([{ id: matches[0].species.id, imageDataUri: 'https://placehold.co/600x400.png' }]); // Fallback
+                // Fallback to a generic placeholder if image generation fails
+                if (typeof document !== 'undefined') {
+                    setGeneratedImages([{ id: matches[0].species.id, imageDataUri: 'https://placehold.co/600x400.png' }]);
+                }
             } finally {
                 setIsLoading(false);
             }

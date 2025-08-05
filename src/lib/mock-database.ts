@@ -231,6 +231,15 @@ export const database: Species[] = [
         attributes: { color: 'orange', wings: 'yes', legs: '6' },
         isPoisonous: false,
     },
+    {
+        id: 27, category: 'Insect', name: 'Praying Mantis', scientificName: 'Mantodea',
+        keyInformation: 'A large, carnivorous insect known for its distinctive prayer-like posture. They are formidable predators in the garden, feeding on other insects.',
+        furtherReading: 'https://en.wikipedia.org/wiki/Mantis',
+        image: 'https://placehold.co/600x400.png',
+        attributes: { color: 'green', wings: 'yes', legs: '6' },
+        isPoisonous: false,
+    },
+
 
     // --- CACTI ---
     {
