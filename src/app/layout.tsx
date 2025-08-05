@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
@@ -5,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { LanguageProvider } from '@/hooks/use-language';
 import { AuthProvider } from '@/hooks/use-auth';
 import { Poppins, Open_Sans } from 'next/font/google';
+import { SiteFooter } from '@/components/site-footer';
 
 export const metadata: Metadata = {
   title: 'SnapThePlant',
@@ -34,10 +36,13 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={cn("font-body antialiased", poppins.variable, openSans.variable)}>
+      <body className={cn("font-body antialiased flex flex-col min-h-screen", poppins.variable, openSans.variable)}>
         <AuthProvider>
           <LanguageProvider>
-            {children}
+            <div className="flex-1 flex flex-col">
+              {children}
+            </div>
+            <SiteFooter />
           </LanguageProvider>
         </AuthProvider>
         <Toaster />

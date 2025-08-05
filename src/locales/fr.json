@@ -120,5 +120,25 @@
             "wings": { "yes": "Oui", "no": "Non" },
             "legs": { "6": "6 pattes", "8": "8 pattes", "more": "Plus de 8" }
         }
+    },
+    "footer": {
+        "about": "À propos",
+        "disclaimer": "Avis de non-responsabilité",
+        "support": "Support",
+        "donate": "Faire un don"
+    },
+    "pages": {
+        "about": {
+            "title": "À propos de SnapThePlant",
+            "p1": "SnapThePlant est votre compagnon numérique pour explorer le monde naturel. Notre mission est de rendre l'identification des plantes, insectes, arbres et mauvaises herbes aussi simple que de prendre une photo.",
+            "p2": "Que vous soyez un jardinier curieux, un passionné de randonnée ou un étudiant en biologie, notre application fournit des résultats rapides et informatifs pour vous aider à en savoir plus sur la vie qui vous entoure.",
+            "p3": "Ce projet est mû par une passion pour la nature et la technologie. Nous travaillons constamment à améliorer la précision de notre identification et à élargir notre base de données. Merci de faire partie de notre communauté !"
+        },
+        "disclaimer": {
+            "title": "Avis de non-responsabilité",
+            "p1": "Les identifications fournies par SnapThePlant sont générées par un modèle d'intelligence artificielle et sont destinées à des fins d'information et d'éducation uniquement. Bien que nous nous efforcions d'atteindre une grande précision, les résultats peuvent ne pas toujours être corrects.",
+            "p2": "N'utilisez jamais cette application pour identifier des plantes ou des champignons à des fins de consommation ou médicales. Une mauvaise identification pourrait entraîner de graves risques pour la santé, y compris l'empoisonnement. Consultez toujours un expert humain qualifié avant de consommer une plante sauvage.",
+            "p3": "Les créateurs de SnapThePlant ne sont pas responsables des dommages ou préjudices résultant de l'utilisation ou de la mauvaise utilisation des informations fournies par cette application. En utilisant cette application, vous acceptez ces conditions."
+        }
     }
 }

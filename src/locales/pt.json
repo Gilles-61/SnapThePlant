@@ -120,5 +120,25 @@
             "wings": { "yes": "Sim", "no": "Não" },
             "legs": { "6": "6 pernas", "8": "8 pernas", "more": "Mais de 8" }
         }
+    },
+    "footer": {
+        "about": "Sobre",
+        "disclaimer": "Aviso Legal",
+        "support": "Suporte",
+        "donate": "Doar"
+    },
+    "pages": {
+        "about": {
+            "title": "Sobre o SnapThePlant",
+            "p1": "O SnapThePlant é o seu companheiro digital para explorar o mundo natural. A nossa missão é tornar a identificação de plantas, insetos, árvores e ervas daninhas tão simples como tirar uma fotografia.",
+            "p2": "Quer seja um jardineiro curioso, um entusiasta de caminhadas ou um estudante de biologia, a nossa aplicação fornece resultados rápidos e informativos para o ajudar a aprender mais sobre a vida que o rodeia.",
+            "p3": "Este projeto é impulsionado pela paixão pela natureza e pela tecnologia. Estamos constantemente a trabalhar para melhorar a precisão da nossa identificação e expandir a nossa base de dados. Obrigado por fazer parte da nossa comunidade!"
+        },
+        "disclaimer": {
+            "title": "Aviso Legal",
+            "p1": "As identificações fornecidas pelo SnapThePlant são geradas por um modelo de inteligência artificial e destinam-se apenas a fins informativos e educacionais. Embora nos esforcemos por uma elevada precisão, os resultados podem nem sempre estar corretos.",
+            "p2": "Nunca utilize esta aplicação para identificar plantas ou fungos para consumo ou para fins medicinais. A identificação incorreta pode levar a graves riscos de saúde, incluindo envenenamento. Consulte sempre um especialista humano qualificado antes de comer qualquer planta selvagem.",
+            "p3": "Os criadores do SnapThePlant não se responsabilizam por quaisquer danos ou prejuízos resultantes do uso ou do uso indevido da informação fornecida por esta aplicação. Ao utilizar esta aplicação, concorda com estes termos."
+        }
     }
 }

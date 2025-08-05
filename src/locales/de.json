@@ -120,5 +120,25 @@
             "wings": { "yes": "Ja", "no": "Nein" },
             "legs": { "6": "6 Beine", "8": "8 Beine", "more": "Mehr als 8" }
         }
+    },
+    "footer": {
+        "about": "Über uns",
+        "disclaimer": "Haftungsausschluss",
+        "support": "Support",
+        "donate": "Spenden"
+    },
+    "pages": {
+        "about": {
+            "title": "Über SnapThePlant",
+            "p1": "SnapThePlant ist Ihr digitaler Begleiter zur Erkundung der Natur. Unsere Mission ist es, die Identifizierung von Pflanzen, Insekten, Bäumen und Unkräutern so einfach wie das Aufnehmen eines Fotos zu machen.",
+            "p2": "Egal, ob Sie ein neugieriger Gärtner, ein Wanderfreund oder ein Biologiestudent sind, unsere App liefert schnelle und informative Ergebnisse, damit Sie mehr über das Leben um Sie herum erfahren können.",
+            "p3": "Dieses Projekt wird von einer Leidenschaft für Natur und Technologie angetrieben. Wir arbeiten ständig daran, unsere Identifikationsgenauigkeit zu verbessern und unsere Datenbank zu erweitern. Vielen Dank, dass Sie Teil unserer Gemeinschaft sind!"
+        },
+        "disclaimer": {
+            "title": "Haftungsausschluss",
+            "p1": "Die von SnapThePlant bereitgestellten Identifikationen werden von einem künstlichen Intelligenzmodell generiert und dienen nur zu Informations- und Bildungszwecken. Obwohl wir uns um hohe Genauigkeit bemühen, sind die Ergebnisse möglicherweise nicht immer korrekt.",
+            "p2": "Verwenden Sie diese Anwendung niemals zur Identifizierung von Pflanzen oder Pilzen zum Verzehr oder für medizinische Zwecke. Eine falsche Identifizierung könnte zu ernsthaften Gesundheitsrisiken, einschließlich Vergiftungen, führen. Konsultieren Sie immer einen qualifizierten menschlichen Experten, bevor Sie eine Wildpflanze essen.",
+            "p3": "Die Entwickler von SnapThePlant haften nicht für Schäden, die aus der Nutzung oder dem Missbrauch der von dieser Anwendung bereitgestellten Informationen resultieren. Durch die Nutzung dieser App stimmen Sie diesen Bedingungen zu."
+        }
     }
 }

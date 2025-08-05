@@ -120,5 +120,25 @@
             "wings": { "yes": "Sí", "no": "No" },
             "legs": { "6": "6 patas", "8": "8 patas", "more": "Más de 8" }
         }
+    },
+    "footer": {
+        "about": "Sobre nosotros",
+        "disclaimer": "Descargo de responsabilidad",
+        "support": "Soporte",
+        "donate": "Donar"
+    },
+    "pages": {
+        "about": {
+            "title": "Acerca de SnapThePlant",
+            "p1": "SnapThePlant es tu compañero digital para explorar el mundo natural. Nuestra misión es hacer que la identificación de plantas, insectos, árboles y malezas sea tan simple como tomar una fotografía.",
+            "p2": "Ya seas un jardinero curioso, un entusiasta del senderismo o un estudiante de biología, nuestra aplicación proporciona resultados rápidos e informativos para ayudarte a aprender más sobre la vida que te rodea.",
+            "p3": "Este proyecto está impulsado por la pasión por la naturaleza y la tecnología. Trabajamos constantemente para mejorar la precisión de nuestra identificación y ampliar nuestra base de datos. ¡Gracias por ser parte de nuestra comunidad!"
+        },
+        "disclaimer": {
+            "title": "Descargo de responsabilidad",
+            "p1": "Las identificaciones proporcionadas por SnapThePlant son generadas por un modelo de inteligencia artificial y están destinadas únicamente a fines informativos y educativos. Aunque nos esforzamos por una alta precisión, los resultados pueden no ser siempre correctos.",
+            "p2": "Nunca uses esta aplicación para identificar plantas u hongos para consumo o con fines médicos. Una identificación errónea podría acarrear graves riesgos para la salud, incluyendo envenenamiento. Siempre consulta a un experto humano calificado antes de comer cualquier planta silvestre.",
+            "p3": "Los creadores de SnapThePlant no se hacen responsables de los daños o perjuicios que resulten del uso o mal uso de la información proporcionada por esta aplicación. Al usar esta aplicación, aceptas estos términos."
+        }
     }
 }
