@@ -25,18 +25,18 @@ export type AnalyzeImageInput = z.infer<typeof AnalyzeImageInputSchema>;
 const AnalyzeImageOutputSchema = z.object({
   attributes: z
     .object({
-      color: z.string().optional(),
-      shape: z.string().optional(),
-      size: z.string().optional(),
-      bark: z.string().optional(),
-      leaf_shape: z.string().optional(),
-      has_fruit: z.string().optional(),
-      flower_color: z.string().optional(),
-      location: z.string().optional(),
-      leaf_type: z.string().optional(),
-      wings: z.string().optional(),
-      legs: z.string().optional(),
-      flowers: z.string().optional(),
+      color: z.string().optional().describe("Primary color of the plant, flower, or insect."),
+      shape: z.string().optional().describe("Overall shape of the plant or cactus."),
+      size: z.string().optional().describe("Approximate size of the plant."),
+      bark: z.string().optional().describe("Texture of the tree bark."),
+      leaf_shape: z.string().optional().describe("Shape of the tree's leaves."),
+      has_fruit: z.string().optional().describe("Whether the tree has fruit or flowers."),
+      flower_color: z.string().optional().describe("Color of the weed's flowers."),
+      location: z.string().optional().describe("Where the weed is growing."),
+      leaf_type: z.string().optional().describe("The type of leaves on the weed."),
+      wings: z.string().optional().describe("Whether the insect has wings."),
+      legs: z.string().optional().describe("The number of legs the insect has."),
+      flowers: z.string().optional().describe("Whether the cactus has flowers visible."),
     })
     .describe(
       'The extracted visual attributes of the item in the photo, matching the quiz options.'

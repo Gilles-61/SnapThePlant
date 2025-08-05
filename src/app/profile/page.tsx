@@ -136,7 +136,7 @@ export default function ProfilePage() {
                                 <div key={item.id} className="relative group">
                                     <Card className="overflow-hidden cursor-pointer" onClick={() => handleSpeciesSelect(item)}>
                                         <div className="relative aspect-square">
-                                            <Image src={item.image} alt={item.name} fill className="object-cover" />
+                                            <Image src={item.image} alt={item.name} fill sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw" className="object-cover" />
                                         </div>
                                         <div className="p-2">
                                             <h4 className="font-semibold text-sm truncate">{item.name}</h4>

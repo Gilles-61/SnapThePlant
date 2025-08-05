@@ -51,6 +51,7 @@ export function LoginForm() {
                     src="https://placehold.co/1080x1920.png"
                     alt="A beautiful collection of flowers"
                     fill
+                    sizes="50vw"
                     className="object-cover"
                     data-ai-hint="flowers"
                 />

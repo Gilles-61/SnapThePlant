@@ -92,6 +92,7 @@ export function IdentificationResult({
                         src={result.image}
                         alt={result.name}
                         fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         className="object-cover"
                         data-ai-hint="nature"
                     />
