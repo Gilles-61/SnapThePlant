@@ -7,6 +7,7 @@ import { LanguageProvider } from '@/hooks/use-language';
 import { AuthProvider } from '@/hooks/use-auth';
 import { PT_Sans } from 'next/font/google';
 import { SiteFooter } from '@/components/site-footer';
+import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
   title: 'SnapThePlant',
@@ -32,15 +33,21 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={cn("font-body antialiased flex flex-col min-h-screen", ptSans.variable)}>
-        <AuthProvider>
-          <LanguageProvider>
-            <div className="flex-1 flex flex-col bg-background text-foreground">
-              {children}
-            </div>
-            <SiteFooter />
-          </LanguageProvider>
-        </AuthProvider>
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+        >
+          <AuthProvider>
+            <LanguageProvider>
+              <div className="flex-1 flex flex-col bg-background text-foreground">
+                {children}
+              </div>
+              <SiteFooter />
+            </LanguageProvider>
+          </AuthProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
