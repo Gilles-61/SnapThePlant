@@ -22,11 +22,16 @@ const AnalyzeImageInputSchema = z.object({
 });
 export type AnalyzeImageInput = z.infer<typeof AnalyzeImageInputSchema>;
 
+const AttributeSchema = z.object({
+  key: z.string().describe('The name of the visual attribute (e.g., "color", "leaf_shape").'),
+  value: z.string().describe('The value of the visual attribute (e.g., "green", "lobed").'),
+});
+
 const AnalyzeImageOutputSchema = z.object({
   attributes: z
-    .record(z.string())
+    .array(AttributeSchema)
     .describe(
-      'A flexible list of key-value pairs describing the visual attributes of the item in the photo.'
+      'A list of key-value pairs describing the most distinct visual attributes of the item in the photo.'
     ),
 });
 export type AnalyzeImageOutput = z.infer<typeof AnalyzeImageOutputSchema>;
@@ -36,7 +41,7 @@ export async function analyzeImage(input: AnalyzeImageInput): Promise<AnalyzeIma
 }
 
 const promptText = `
-    You are an expert biologist and botanist. Your main goal is to analyze the provided image and extract its most distinct visual attributes as key-value pairs.
+    You are an expert biologist and botanist. Your main goal is to analyze the provided image and extract its most distinct visual attributes as an array of key-value pairs.
 
     Analyze the image of a {{category}} and describe its visual characteristics. 
     Focus on objective, observable features.
@@ -51,7 +56,7 @@ const promptText = `
     - Cactus: "shape", "flowers", "color"
     
     Do not guess. Only return attributes you can confidently identify from the image.
-    Your output MUST be a JSON object containing the "attributes" key, which holds the key-value pairs.
+    Your output MUST be a JSON object containing the "attributes" key, which holds an array of key-value objects. For example: [{ "key": "color", "value": "green" }]
 
     Photo: {{media url=photoDataUri}}
 `;

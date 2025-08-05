@@ -55,8 +55,8 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setAction(null);
   }, []);
 
-  const proceedWithAnalysis = (analysis: AnalyzeImageOutput) => {
-    if (!analysis.attributes) {
+  const proceedWithAnalysis = (analysis: AnalyzeImageOutput['attributes']) => {
+    if (!analysis) {
         toast({
           title: "Analysis Failed",
           description: "The AI model failed to return valid attributes.",
@@ -66,7 +66,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         return;
     }
 
-    const allMatches = filterDatabase(selectedCategory!, analysis.attributes);
+    const allMatches = filterDatabase(selectedCategory!, analysis);
     const topMatches = allMatches.slice(0, 3);
     
     if (topMatches.length > 0) {
@@ -92,7 +92,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         category: category,
       });
       
-      proceedWithAnalysis(analysis);
+      proceedWithAnalysis(analysis.attributes);
 
     } catch (error) {
       console.error("Error analyzing image:", error);
@@ -105,7 +105,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     } finally {
       setIsLoading(false);
     }
-  }, [toast, handleReset]);
+  }, [toast, handleReset, selectedCategory]);
 
 
   const handleMatchSelected = useCallback((species: Species) => {
@@ -118,7 +118,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
     let matches: Species[];
     if (selectedCategory) {
-      matches = filterDatabase(selectedCategory, {}).map(s => s.species).filter(s => 
+      matches = filterDatabase(selectedCategory, []).map(s => s.species).filter(s => 
           s.name.toLowerCase().includes(query.toLowerCase()) || 
           s.id.toString() === query
       );

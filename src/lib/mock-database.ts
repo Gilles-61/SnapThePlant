@@ -1,5 +1,6 @@
 
 import type { Category } from "@/lib/categories";
+import type { AnalyzeImageOutput } from "@/ai/flows/analyze-image-flow";
 
 // This is now just a type alias, the logic is in the component.
 export type Answers = Record<string, string>;
@@ -220,31 +221,29 @@ export const database: Species[] = [
     }
 ];
 
-export function filterDatabase(category: Category, attributes: Record<string, string>): ScoredSpecies[] {
+export function filterDatabase(category: Category, attributes: AnalyzeImageOutput['attributes']): ScoredSpecies[] {
     const categorySpecies = database.filter(s => s.category === category);
     
-    if (Object.keys(attributes).length === 0) {
+    if (attributes.length === 0) {
         // If no attributes, return all species in the category with a neutral score
         return categorySpecies.map(s => ({ species: s, score: 0, confidence: 0 }));
     }
 
-    const aiAttributeCount = Object.keys(attributes).length;
+    const aiAttributeCount = attributes.length;
     if (aiAttributeCount === 0) return [];
 
     const scoredSpecies = categorySpecies.map(species => {
         let score = 0;
-        let maxScore = 0;
         
         // Iterate over the attributes the AI provided
-        for (const key in attributes) {
-             // Check if the database species has this attribute at all
-            if (species.attributes.hasOwnProperty(key)) {
-                maxScore++; // Potential for a match
-                if (attributes[key].toLowerCase() === species.attributes[key].toLowerCase()) {
+        attributes.forEach(aiAttr => {
+             // Check if the database species has this attribute key
+            if (species.attributes.hasOwnProperty(aiAttr.key)) {
+                if (aiAttr.value.toLowerCase() === species.attributes[aiAttr.key].toLowerCase()) {
                     score++; // Direct match
                 }
             }
-        }
+        });
         
         // A simple confidence score: ratio of matched attributes to the number of attributes the AI provided.
         // This measures how well the database entry aligns with the AI's description.
