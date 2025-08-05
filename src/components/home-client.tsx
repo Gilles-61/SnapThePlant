@@ -302,7 +302,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
                                 <Upload className="mr-2" />
                                 Upload
                             </Button>
-                            <CardDescription className="text-xs px-4">Choose an image from your device.</CardDescription>
+                             <CardDescription className="text-xs px-4">Choose an image from your device.</CardDescription>
                         </div>
                     </div>
                      <div className="relative my-4">
