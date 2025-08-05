@@ -54,7 +54,10 @@ export function AuthGate() {
                     </Button>
 
                     <p className="px-8 text-center text-sm text-muted-foreground">
-                        By signing up, you agree to our Terms of Service and Privacy Policy.
+                        By signing up, you agree to our{" "}
+                        <Link href="/disclaimer" className="underline hover:text-primary">Terms of Service</Link>
+                        {" "}and{" "}
+                        <Link href="/privacy" className="underline hover:text-primary">Privacy Policy</Link>.
                     </p>
 
                 </div>

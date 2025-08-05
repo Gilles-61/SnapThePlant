@@ -129,6 +129,7 @@
     "footer": {
         "about": "À propos",
         "disclaimer": "Avis de non-responsabilité",
+        "privacy": "Confidentialité",
         "support": "Support",
         "donate": "Faire un don"
     },
@@ -166,6 +167,13 @@
                 "title": "Bientôt disponible !",
                 "description": "Nous travaillons d'arrache-pied pour développer ces fonctionnalités. Restez à l'écoute pour les mises à jour !"
             }
+        },
+        "privacy": {
+            "title": "Politique de Confidentialité",
+            "p1": "Votre vie privée est importante pour nous. La politique de SnapThePlant est de respecter votre vie privée concernant toute information que nous pourrions collecter auprès de vous via notre application.",
+            "p2": "Nous ne demandons des informations personnelles que lorsque nous en avons vraiment besoin pour vous fournir un service. Nous les collectons par des moyens justes et légaux, avec votre connaissance et votre consentement. Nous vous informons également de la raison de cette collecte et de la manière dont elles seront utilisées. Cela inclut votre e-mail et votre nom d'affichage à des fins de compte, ainsi que toutes les images que vous téléchargez pour identification.",
+            "p3": "Nous ne conservons les informations collectées que le temps nécessaire pour vous fournir le service demandé. Les données que nous stockons, nous les protégerons par des moyens commercialement acceptables pour prévenir la perte et le vol, ainsi que l'accès, la divulgation, la copie, l'utilisation ou la modification non autorisés. Les images que vous téléchargez sont traitées par notre IA et peuvent être stockées temporairement pour analyse et pour améliorer notre service.",
+            "p4": "Nous ne partageons aucune information d'identification personnelle publiquement ou avec des tiers, sauf lorsque la loi l'exige. Notre application peut contenir des liens vers des sites externes qui ne sont pas exploités par nous. Soyez conscient que nous n'avons aucun contrôle sur le contenu et les pratiques de ces sites, et ne pouvons accepter aucune responsabilité pour leurs politiques de confidentialité respectives. Vous êtes libre de refuser notre demande d'informations personnelles, étant entendu que nous pourrions être incapables de vous fournir certains des services souhaités."
         }
     }
 }

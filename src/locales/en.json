@@ -129,6 +129,7 @@
     "footer": {
         "about": "About",
         "disclaimer": "Disclaimer",
+        "privacy": "Privacy",
         "support": "Support",
         "donate": "Donate"
     },
@@ -166,6 +167,13 @@
                 "title": "Coming Soon!",
                 "description": "We are hard at work building these features. Stay tuned for updates!"
             }
+        },
+        "privacy": {
+            "title": "Privacy Policy",
+            "p1": "Your privacy is important to us. It is SnapThePlant's policy to respect your privacy regarding any information we may collect from you across our application.",
+            "p2": "We only ask for personal information when we truly need it to provide a service to you. We collect it by fair and lawful means, with your knowledge and consent. We also let you know why we’re collecting it and how it will be used. This includes your email and display name for account purposes, and any images you upload for identification.",
+            "p3": "We only retain collected information for as long as necessary to provide you with your requested service. What data we store, we’ll protect within commercially acceptable means to prevent loss and theft, as well as unauthorized access, disclosure, copying, use or modification. The images you upload are processed by our AI and may be stored temporarily for analysis and to improve our service.",
+            "p4": "We don’t share any personally identifying information publicly or with third-parties, except when required to by law. Our app may link to external sites that are not operated by us. Please be aware that we have no control over the content and practices of these sites, and cannot accept responsibility or liability for their respective privacy policies. You are free to refuse our request for your personal information, with the understanding that we may be unable to provide you with some of your desired services."
         }
     }
 }

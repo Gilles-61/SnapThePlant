@@ -129,6 +129,7 @@
     "footer": {
         "about": "Sobre nosotros",
         "disclaimer": "Descargo de responsabilidad",
+        "privacy": "Privacidad",
         "support": "Soporte",
         "donate": "Donar"
     },
@@ -166,6 +167,13 @@
                 "title": "¡Próximamente!",
                 "description": "Estamos trabajando arduamente para construir estas características. ¡Mantente atento a las actualizaciones!"
             }
+        },
+        "privacy": {
+            "title": "Política de Privacidad",
+            "p1": "Tu privacidad es importante para nosotros. Es política de SnapThePlant respetar tu privacidad con respecto a cualquier información que podamos recopilar de ti a través de nuestra aplicación.",
+            "p2": "Solo pedimos información personal cuando realmente la necesitamos para brindarte un servicio. La recopilamos por medios justos y legales, con tu conocimiento y consentimiento. También te informamos por qué la estamos recopilando y cómo se utilizará. Esto incluye tu correo electrónico y nombre de usuario para fines de cuenta, y cualquier imagen que subas para su identificación.",
+            "p3": "Solo retenemos la información recopilada durante el tiempo necesario para brindarte el servicio solicitado. Los datos que almacenamos, los protegeremos dentro de los medios comercialmente aceptables para evitar pérdidas y robos, así como el acceso, divulgación, copia, uso o modificación no autorizados. Las imágenes que subes son procesadas por nuestra IA y pueden almacenarse temporalmente para análisis y para mejorar nuestro servicio.",
+            "p4": "No compartimos ninguna información de identificación personal públicamente ni con terceros, excepto cuando lo exija la ley. Nuestra aplicación puede enlazar a sitios externos que no son operados por nosotros. Ten en cuenta que no tenemos control sobre el contenido y las prácticas de estos sitios, y no podemos aceptar responsabilidad por sus respectivas políticas de privacidad. Eres libre de rechazar nuestra solicitud de tu información personal, con el entendimiento de que es posible que no podamos brindarte algunos de los servicios deseados."
         }
     }
 }

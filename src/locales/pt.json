@@ -129,6 +129,7 @@
     "footer": {
         "about": "Sobre",
         "disclaimer": "Aviso Legal",
+        "privacy": "Privacidade",
         "support": "Suporte",
         "donate": "Doar"
     },
@@ -166,6 +167,13 @@
                 "title": "Em breve!",
                 "description": "Estamos trabalhando duro para construir esses recursos. Fique atento para atualizações!"
             }
+        },
+        "privacy": {
+            "title": "Política de Privacidade",
+            "p1": "A sua privacidade é importante para nós. É política do SnapThePlant respeitar a sua privacidade em relação a qualquer informação que possamos recolher de si através da nossa aplicação.",
+            "p2": "Apenas solicitamos informações pessoais quando realmente precisamos delas para lhe fornecer um serviço. Recolhemo-las por meios justos e legais, com o seu conhecimento e consentimento. Também o informamos do motivo da recolha e de como serão utilizadas. Isto inclui o seu e-mail e nome de exibição para fins de conta, e quaisquer imagens que carregue para identificação.",
+            "p3": "Apenas retemos as informações recolhidas pelo tempo necessário para lhe fornecer o serviço solicitado. Os dados que armazenamos, protegemo-los dentro de meios comercialmente aceitáveis para evitar perdas e roubos, bem como acesso, divulgação, cópia, uso ou modificação não autorizados. As imagens que carrega são processadas pela nossa IA e podem ser armazenadas temporariamente para análise e para melhorar o nosso serviço.",
+            "p4": "Não partilhamos publicamente nenhuma informação de identificação pessoal ou com terceiros, exceto quando exigido por lei. A nossa aplicação pode ter links para sites externos que não são operados por nós. Esteja ciente de que não temos controlo sobre o conteúdo e práticas desses sites e não podemos aceitar responsabilidade pelas suas respetivas políticas de privacidade. É livre de recusar o nosso pedido de informações pessoais, com o entendimento de que poderemos não conseguir fornecer-lhe alguns dos serviços desejados."
         }
     }
 }
