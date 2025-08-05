@@ -20,7 +20,18 @@ import { AuthGate } from '@/components/auth-gate';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 
-export default function HomePage() {
+// This is the new parent component that handles server-side logic
+export default function HomePageWrapper({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const initialCategory = searchParams?.category as Category | undefined;
+  return <HomePage initialCategory={initialCategory} />;
+}
+
+
+function HomePage({ initialCategory }: { initialCategory?: Category }) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user, loading } = useAuth();
@@ -29,7 +40,7 @@ export default function HomePage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(initialCategory || null);
   const [result, setResult] = useState<Species | null>(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
