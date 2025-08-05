@@ -20,6 +20,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { SearchInput } from './search-input';
 import { analyzeImage, type AnalyzeImageOutput } from '@/ai/flows/analyze-image-flow';
 import type { Category } from '@/lib/categories';
+import { BarcodeScanner } from './barcode-scanner';
 
 
 export function HomeClient({ initialCategory }: { initialCategory?: Category }) {
@@ -35,6 +36,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   const [result, setResult] = useState<Species | null>(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [view, setView] = useState<'capture' | 'matches'>('capture');
   const [possibleMatches, setPossibleMatches] = useState<Species[]>([]);
   const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false);
@@ -47,6 +49,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setIsResultOpen(false);
     setIsLoading(false);
     setIsCameraOpen(false);
+    setIsScannerOpen(false);
     setView('capture');
     setPossibleMatches([]);
     setSelectedCategory(null);
@@ -84,8 +87,9 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setIsResultOpen(true);
   }, []);
 
-  const handleSearch = useCallback((query: string) => {
-    if (!selectedCategory) {
+  const handleSearch = useCallback((query: string, category?: Category) => {
+    const searchCategory = category || selectedCategory;
+    if (!searchCategory) {
       toast({
         title: "Please select a category first",
         variant: "destructive",
@@ -94,7 +98,10 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     }
     setIsLoading(true);
     // This is a simplified search. In a real app, you'd likely use a more sophisticated search algorithm or an API endpoint.
-    const matches = filterDatabase(selectedCategory, {}).filter(s => s.name.toLowerCase().includes(query.toLowerCase()));
+    const matches = filterDatabase(searchCategory, {}).filter(s => 
+        s.name.toLowerCase().includes(query.toLowerCase()) || 
+        s.id.toString() === query
+    );
     setPossibleMatches(matches);
     setView('matches');
     setCapturedImage('https://placehold.co/600x400.png'); // Use a placeholder for search results
@@ -169,6 +176,24 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     }
   }
 
+  const handleScanButtonClick = () => {
+     if (selectedCategory) {
+        setIsScannerOpen(true);
+    } else {
+        setIsCategorySelectorOpen(true);
+    }
+  }
+
+  const handleScanSuccess = (scanResult: string) => {
+    setIsScannerOpen(false);
+    toast({
+        title: "Scan Successful",
+        description: `Found code: ${scanResult}`
+    });
+    // Assume the scanned code is the item's ID for this mock implementation
+    handleSearch(scanResult, selectedCategory || undefined);
+  }
+
 
   if (loading) {
     return (
@@ -198,7 +223,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
       <main className="flex-1 relative flex flex-col items-center justify-center overflow-hidden p-4">
         
         <div className="relative z-10 w-full max-w-2xl mx-auto flex flex-col items-center justify-center text-center">
-            {view === 'capture' && !isCameraOpen && (
+            {view === 'capture' && !isCameraOpen && !isScannerOpen &&(
                  <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-8 text-slate-800">
                     <h1 className="text-4xl font-headline font-bold text-primary mb-2">Select a Category</h1>
                     <p className="max-w-md mb-6 mx-auto text-lg">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
@@ -219,6 +244,13 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
            <div className="absolute inset-0 bg-black">
               <CameraFeed ref={cameraRef} />
            </div>
+        )}
+        
+        {isScannerOpen && (
+             <BarcodeScanner
+                onScanSuccess={handleScanSuccess}
+                onClose={() => setIsScannerOpen(false)}
+            />
         )}
 
         {view === 'matches' && capturedImage && (
@@ -249,15 +281,13 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
         <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col items-center p-6 space-y-4">
           
-          {(view === 'capture' && !isCameraOpen) && (
+          {(view === 'capture' && !isCameraOpen && !isScannerOpen) && (
             <div className="flex justify-center gap-4 w-full max-w-lg">
                 <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleCameraButtonClick}>
                     <Camera className="mr-2"/>
                     Use Camera
                 </Button>
-                 <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={() => {
-                  toast({title: "Coming Soon!", description: "Barcode scanning will be available in a future update."});
-                 }}>
+                 <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleScanButtonClick}>
                     <QrCode className="mr-2" />
                     Scan Code
                 </Button>
@@ -280,7 +310,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
               </Button>
           )}
 
-          {(view !== 'capture' || isCameraOpen) && (
+          {(view !== 'capture' || isCameraOpen || isScannerOpen) && (
              <Button
                 variant="outline"
                 className="bg-black/50 border-white/50 text-white hover:bg-black/70 hover:text-white rounded-full"
@@ -331,19 +361,23 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         <AlertDialog open={isSourceSelectorOpen} onOpenChange={setIsSourceSelectorOpen}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Now, provide an image</AlertDialogTitle>
+                    <AlertDialogTitle>Now, provide an image or code</AlertDialogTitle>
                     <AlertDialogDescription>
-                        You can use your camera or upload from your gallery.
+                        You can use your camera, upload from your gallery, or scan a barcode.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                <AlertDialogFooter className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
                     <Button size="lg" onClick={() => { setIsCameraOpen(true); setIsSourceSelectorOpen(false); }}>
                         <Camera className="mr-2"/>
-                        Use Camera
+                        Camera
+                    </Button>
+                    <Button size="lg" onClick={() => { setIsScannerOpen(true); setIsSourceSelectorOpen(false); }}>
+                        <QrCode className="mr-2"/>
+                        Scan Code
                     </Button>
                      <Button size="lg" onClick={() => { handleBrowseClick(); setIsSourceSelectorOpen(false); }}>
                         <Upload className="mr-2" />
-                        Upload Image
+                        Upload
                     </Button>
                 </AlertDialogFooter>
             </AlertDialogContent>
