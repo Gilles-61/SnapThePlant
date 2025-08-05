@@ -6,7 +6,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader, Edit2, Trash2 } from 'lucide-react';
+import { Loader, Edit2, Trash2, Heart } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from '@/hooks/use-language';
 import { useCollection } from '@/hooks/use-collection';
@@ -116,7 +116,8 @@ export default function ProfilePage() {
                         <p className="text-muted-foreground">{t('profile.freePlan')}</p>
                         <Button asChild>
                              <a href={buyMeACoffeeLink} target="_blank" rel="noopener noreferrer">
-                                {t('profile.manageSubscription')}
+                                <Heart className="mr-2 h-4 w-4" />
+                                Support the Project
                             </a>
                         </Button>
                     </div>

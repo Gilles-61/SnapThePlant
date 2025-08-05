@@ -72,12 +72,6 @@ import { Languages, Heart, LogIn } from "lucide-react"
             <DropdownMenuItem asChild>
               <Link href="/profile">{t('userNav.profile')}</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              {t('userNav.billing')}
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              {t('userNav.settings')}
-            </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
            <DropdownMenuSub>
@@ -109,3 +103,4 @@ import { Languages, Heart, LogIn } from "lucide-react"
       </DropdownMenu>
     )
   }
+
