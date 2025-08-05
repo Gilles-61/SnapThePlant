@@ -138,10 +138,10 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
   if (loading) {
     return (
-        <div className="flex flex-col min-h-screen bg-background text-foreground">
+        <div className="flex flex-col min-h-screen">
             <SiteHeader />
             <main className="flex-1 flex items-center justify-center">
-                <Loader className="h-12 w-12 animate-spin" />
+                <Loader className="h-12 w-12 animate-spin text-white" />
             </main>
         </div>
     )
@@ -149,7 +149,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
   if (!user) {
     return (
-        <div className="flex flex-col min-h-screen bg-background text-foreground">
+        <div className="flex flex-col min-h-screen">
             <SiteHeader />
             <main className="flex-1">
                 <AuthGate />
@@ -159,31 +159,31 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
+    <div className="flex flex-col min-h-screen text-white">
       <SiteHeader />
-      <main className="flex-1 relative flex flex-col items-center justify-center overflow-hidden">
+      <main className="flex-1 relative flex flex-col items-center justify-center overflow-hidden p-4">
         
         {/* Base background and initial UI */}
-        <div className="w-full h-full relative flex flex-col items-center justify-center text-center">
+        <div className="w-full h-full absolute inset-0">
             <Image
-              src="https://placehold.co/1080x1920.png"
-              alt="A lush green landscape"
+              src="https://placehold.co/1200x800.png"
+              alt="A lush green forest background"
               fill
-              className="object-cover"
-              data-ai-hint="nature landscape"
+              className="object-cover blur-sm"
+              data-ai-hint="forest background"
             />
-            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-black/50" />
+        </div>
 
-             {/* This content is only visible initially */}
+        <div className="relative z-10 w-full max-w-2xl mx-auto flex flex-col items-center justify-center text-center">
             {view === 'capture' && !isCameraOpen && (
-                 <div className="relative z-10 p-8 text-white">
-                    <ImageIcon className="w-24 h-24 mb-4 mx-auto" />
-                    <p className="text-lg font-semibold mb-2">Select a category to begin</p>
-                    <p className="max-w-md mb-6 mx-auto">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
+                 <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-8 text-slate-800">
+                    <h1 className="text-4xl font-headline font-bold text-primary mb-2">Select a Category</h1>
+                    <p className="max-w-md mb-6 mx-auto text-lg">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
                     <CategorySelector
-                            selectedCategory={selectedCategory}
-                            onSelectCategory={handleCategorySelect}
-                        />
+                        selectedCategory={selectedCategory}
+                        onSelectCategory={handleCategorySelect}
+                    />
                 </div>
             )}
         </div>
@@ -222,14 +222,14 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col items-center p-6 space-y-4">
           
           {(view === 'capture' && !isCameraOpen) && (
-            <div className="flex justify-center gap-4 w-full max-w-sm bg-background/80 backdrop-blur-sm p-4 rounded-xl">
-                <Button size="lg" className="flex-1" onClick={handleCameraButtonClick}>
+            <div className="flex justify-center gap-4 w-full max-w-sm">
+                <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleCameraButtonClick}>
                     <Camera className="mr-2"/>
                     Use Camera
                 </Button>
-                <Button size="lg" className="flex-1" variant="secondary" onClick={handleUploadButtonClick}>
+                <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleUploadButtonClick}>
                     <Upload className="mr-2" />
-                    Upload from Gallery
+                    Upload
                 </Button>
             </div>
           )}
@@ -249,7 +249,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
           {(view !== 'capture' || isCameraOpen) && (
              <Button
                 variant="outline"
-                className="bg-black/50 border-white/50 text-white hover:bg-black/70 hover:text-white"
+                className="bg-black/50 border-white/50 text-white hover:bg-black/70 hover:text-white rounded-full"
                 onClick={handleReset}
              >
                 <RotateCcw className="mr-2 h-4 w-4" />

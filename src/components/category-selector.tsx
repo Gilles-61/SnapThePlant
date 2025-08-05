@@ -8,10 +8,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/t
 import { useTranslation } from '@/hooks/use-language';
 
 export const categories = [
-  { name: 'Plant', icon: Leaf, hintKey: 'categories.plantHint' },
-  { name: 'Tree', icon: TreeDeciduous, hintKey: 'categories.treeHint' },
-  { name: 'Weed', icon: Sprout, hintKey: 'categories.weedHint' },
-  { name: 'Insect', icon: Bug, hintKey: 'categories.insectHint' },
+  { name: 'Plant', icon: Leaf, hintKey: 'categories.plantHint', colorClass: 'category-tile-plant' },
+  { name: 'Tree', icon: TreeDeciduous, hintKey: 'categories.treeHint', colorClass: 'category-tile-tree' },
+  { name: 'Weed', icon: Sprout, hintKey: 'categories.weedHint', colorClass: 'category-tile-weed' },
+  { name: 'Insect', icon: Bug, hintKey: 'categories.insectHint', colorClass: 'category-tile-insect' },
 ] as const;
 
 export type Category = typeof categories[number]['name'];
@@ -31,24 +31,23 @@ export function CategorySelector({
 
   return (
     <TooltipProvider>
-      <div className={cn("flex justify-center items-center gap-3 p-2 bg-muted/50 backdrop-blur-md rounded-full", className)}>
-        {categories.map(({ name, icon: Icon, hintKey }) => (
+      <div className={cn("flex justify-center items-center flex-wrap gap-4 p-2", className)}>
+        {categories.map(({ name, icon: Icon, hintKey, colorClass }) => (
           <Tooltip key={name} delayDuration={300}>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
+              <button
                 className={cn(
-                  "rounded-full w-20 h-20 flex flex-col gap-1.5 text-foreground/80 hover:bg-accent/80 hover:text-foreground transition-all duration-300",
-                  selectedCategory === name && "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground scale-110"
+                  "rounded-lg w-32 h-32 flex flex-col items-center justify-center gap-2 text-lg font-semibold shadow-md transition-all duration-200 ease-in-out hover:transform hover:scale-105 hover:shadow-lg",
+                  colorClass,
+                  selectedCategory === name && "ring-4 ring-offset-2 ring-white transform scale-105 shadow-xl"
                 )}
                 onClick={() => onSelectCategory(name)}
                 aria-label={t(hintKey)}
                 aria-pressed={selectedCategory === name}
               >
-                <Icon className="w-7 h-7" />
-                <span className="text-sm font-medium">{t(`categories.${name.toLowerCase()}`)}</span>
-              </Button>
+                <Icon className="w-10 h-10" />
+                <span>{t(`categories.${name.toLowerCase()}`)}</span>
+              </button>
             </TooltipTrigger>
             <TooltipContent side="top" className="bg-popover text-popover-foreground border-border">
               <p>{t(hintKey)}</p>

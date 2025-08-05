@@ -4,25 +4,34 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 4.8% 95.9%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 4.8% 95.9%;
+    --background: 60 30% 96%; /* #F5F5DC - Light desaturated beige */
+    --foreground: 20 14% 4%;
+    
+    --card: 60 30% 96%;
+    --card-foreground: 20 14% 4%;
+    
+    --popover: 60 30% 96%;
+    --popover-foreground: 20 14% 4%;
+    
+    --primary: 88 50% 53%; /* #7CB342 - Vibrant natural green */
+    --primary-foreground: 60 100% 10%;
+    
+    --secondary: 60 5% 96%;
     --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
+    
+    --muted: 60 5% 96%;
     --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
+    
+    --accent: 35 100% 50%; /* #FFB300 - Yellow-orange */
     --accent-foreground: 240 5.9% 10%;
+    
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
+    
+    --border: 88 25% 80%;
+    --input: 88 25% 85%;
+    --ring: 88 50% 53%;
+    
     --radius: 0.8rem;
   }
 
@@ -33,19 +42,19 @@
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
+    --primary: 88 50% 53%;
+    --primary-foreground: 60 100% 10%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 240 3.7% 15.9%;
+    --accent: 35 100% 50%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 0 0% 83.1%;
+    --ring: 88 50% 53%;
   }
 }
 
@@ -55,5 +64,39 @@
   }
   body {
     @apply bg-background text-foreground;
+    background: linear-gradient(135deg, #8BC34A, #CDDC39);
   }
+}
+
+/* Custom styles for category tiles */
+.category-tile-plant {
+    background-color: #4CAF50;
+    color: white;
+}
+.category-tile-plant:hover {
+    background-color: #43A047;
+}
+
+.category-tile-tree {
+    background-color: #8D6E63;
+    color: white;
+}
+.category-tile-tree:hover {
+    background-color: #795548;
+}
+
+.category-tile-weed {
+    background-color: #CDDC39;
+    color: #333;
+}
+.category-tile-weed:hover {
+    background-color: #C0CA33;
+}
+
+.category-tile-insect {
+    background-color: #FF9800;
+    color: white;
+}
+.category-tile-insect:hover {
+    background-color: #FB8C00;
 }
