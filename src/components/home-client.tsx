@@ -25,7 +25,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: any }) {
   if (loading) {
     return (
         <div className="flex flex-col min-h-screen bg-background">
-            <SiteHeader />
             <main className="flex-1 flex items-center justify-center">
                 <Loader className="h-12 w-12 animate-spin" />
             </main>
@@ -36,7 +35,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: any }) {
   if (!user) {
     return (
         <div className="flex flex-col min-h-screen bg-background">
-            <SiteHeader />
             <main className="flex-1">
                 <AuthGate />
             </main>
