@@ -22,12 +22,11 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 
 // This is the new parent component that handles server-side logic
 export default function HomePageWrapper({
-  searchParams,
+  searchParams: { category },
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: { category?: Category };
 }) {
-  const initialCategory = searchParams?.category as Category | undefined;
-  return <HomePage initialCategory={initialCategory} />;
+  return <HomePage initialCategory={category} />;
 }
 
 
