@@ -21,7 +21,7 @@ export interface Species {
     careTips?: CareTip[];
 }
 
-const database: Species[] = [
+export const database: Species[] = [
     // --- PLANTS ---
     {
         id: 1, category: 'Plant', name: 'Monstera Deliciosa', scientificName: 'Monstera deliciosa',

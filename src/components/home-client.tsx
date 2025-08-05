@@ -13,7 +13,7 @@ import { IdentificationResult } from '@/components/identification-result';
 import CameraFeed, { type CameraFeedHandle } from '@/components/camera-feed';
 import { useTranslation } from '@/hooks/use-language';
 import { MatchSelector } from '@/components/match-selector';
-import { filterDatabase, type Species } from '@/lib/mock-database';
+import { filterDatabase, type Species, database } from '@/lib/mock-database';
 import { useAuth } from '@/hooks/use-auth';
 import { AuthGate } from '@/components/auth-gate';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -84,25 +84,37 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setIsResultOpen(true);
   }, []);
 
-  const handleSearch = useCallback((query: string, category?: Category) => {
-    const searchCategory = category || selectedCategory;
-    if (!searchCategory) {
-      toast({
-        title: "Please select a category first",
-        variant: "destructive",
-      });
-      return;
-    }
+  const handleSearch = useCallback((query: string) => {
     setIsLoading(true);
-    // This is a simplified search. In a real app, you'd likely use a more sophisticated search algorithm or an API endpoint.
-    const matches = filterDatabase(searchCategory, {}).filter(s => 
-        s.name.toLowerCase().includes(query.toLowerCase()) || 
-        s.id.toString() === query
-    );
+
+    let matches: Species[];
+    if (selectedCategory) {
+      // If a category is selected, filter within that category
+      matches = filterDatabase(selectedCategory, {}).filter(s => 
+          s.name.toLowerCase().includes(query.toLowerCase()) || 
+          s.id.toString() === query
+      );
+    } else {
+      // If no category is selected, search the entire database
+      matches = database.filter(s => 
+          s.name.toLowerCase().includes(query.toLowerCase()) || 
+          s.scientificName.toLowerCase().includes(query.toLowerCase()) ||
+          s.id.toString() === query
+      );
+    }
+
     setPossibleMatches(matches);
     setView('matches');
     setCapturedImage('https://placehold.co/600x400.png'); // Use a placeholder for search results
     setIsLoading(false);
+
+    if (matches.length === 0) {
+      toast({
+        title: "No Results",
+        description: `No items found matching "${query}".`,
+        variant: "default",
+      });
+    }
   }, [selectedCategory, toast]);
 
 
@@ -186,7 +198,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         description: `Found code: ${scanResult}`
     });
     // Assume the scanned code is the item's ID for this mock implementation
-    handleSearch(scanResult, selectedCategory || undefined);
+    handleSearch(scanResult);
   }
 
 
