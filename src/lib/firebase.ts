@@ -1,8 +1,8 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp, getApps, getApp } from "firebase/app";
+import { initializeApp, getApps, getApp, type FirebaseOptions } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
-const firebaseConfig = {
+export const firebaseConfig: FirebaseOptions = {
   "projectId": "snaptheplant-2qivc",
   "appId": "1:766003553871:web:8a7a006940d561c8806c3a",
   "storageBucket": "snaptheplant-2qivc.firebasestorage.app",

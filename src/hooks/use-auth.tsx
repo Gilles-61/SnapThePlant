@@ -3,7 +3,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth, signInWithGoogle as signInWithGoogleFirebase, signOutFromGoogle, signUpWithEmailPassword, signInWithEmailPassword } from '@/lib/firebase';
+import { auth, signInWithGoogle as signInWithGoogleFirebase, signOutFromGoogle, signUpWithEmailPassword, signInWithEmailPassword, firebaseConfig } from '@/lib/firebase';
 import { useToast } from './use-toast';
 import { useRouter } from 'next/navigation';
 
@@ -25,6 +25,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
+    // This line ensures that authentication requests are associated with your project's authorized domain.
+    auth.tenantId = firebaseConfig.authDomain;
+    
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
