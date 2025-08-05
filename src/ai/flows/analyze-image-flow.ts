@@ -50,9 +50,11 @@ export async function analyzeImage(input: AnalyzeImageInput): Promise<AnalyzeIma
 }
 
 const promptText = `
-    You are an expert biologist and botanist. Your first task is to assess the quality of the provided image. Set the 'isClear' flag to false ONLY if the image is extremely blurry, out of focus, or if the subject is impossible to identify. For all other images, including moderately good ones, set 'isClear' to true.
+    You are an expert biologist and botanist. Your main goal is to analyze the provided image and extract its visual attributes.
 
-    If the image is clear, your second task is to analyze the image of a {{category}} and determine its visual characteristics based on a predefined set of questions, as if you were answering a quiz.
+    As a secondary task, assess the image quality. **You must default to setting 'isClear' to true.** Only set the 'isClear' flag to 'false' if the image is so poor that a human expert would find it **impossible** to identify (e.g., it is completely black, hopelessly blurry, or the subject is a tiny, unrecognizable speck). For any image where the subject is even remotely discernible, you MUST set 'isClear' to true.
+
+    Analyze the image of a {{category}} and determine its visual characteristics based on a predefined set of questions, as if you were answering a quiz.
     Focus on the most visually distinct features of the subject in the photo.
 
     Based on the category "{{category}}", answer the following questions and provide the answer key for each.
