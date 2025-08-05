@@ -46,18 +46,7 @@ export function MatchSelector({ matches, onSelect, onBack }: MatchSelectorProps)
                         <ScrollArea className="h-full">
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pr-4">
                                 {matches.map((species) => (
-                                    <Card key={species.id} className="overflow-hidden">
-                                        <CardHeader className="p-0">
-                                        <div className="relative aspect-video">
-                                                <Image
-                                                    src={species.image}
-                                                    alt={species.name}
-                                                    fill
-                                                    className="object-cover"
-                                                    data-ai-hint="nature"
-                                                />
-                                        </div>
-                                        </CardHeader>
+                                    <Card key={species.id} className="overflow-hidden flex flex-col justify-between">
                                         <CardContent className="p-4">
                                             <h3 className="font-bold">{species.name}</h3>
                                             <p className="text-sm text-muted-foreground line-clamp-2">{species.keyInformation}</p>
