@@ -6,16 +6,23 @@ import { useAuth } from '@/hooks/use-auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader, Edit2 } from 'lucide-react';
+import { Loader, Edit2, Trash2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from '@/hooks/use-language';
+import { useCollection } from '@/hooks/use-collection';
+import type { Species } from '@/lib/mock-database';
+import Image from 'next/image';
+import { IdentificationResult } from '@/components/identification-result';
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const { t } = useTranslation();
+  const { collection, removeItem } = useCollection();
   const buyMeACoffeeLink = "https://buymeacoffee.com/snaptheplant";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [selectedSpecies, setSelectedSpecies] = useState<Species | null>(null);
+  const [isResultOpen, setIsResultOpen] = useState(false);
 
   if (loading) {
     return (
@@ -57,13 +64,23 @@ export default function ProfilePage() {
     }
   };
 
+  const handleSpeciesSelect = (species: Species) => {
+    setSelectedSpecies(species);
+    setIsResultOpen(true);
+  };
+  
+  const handleResultClose = () => {
+      setIsResultOpen(false);
+      setTimeout(() => setSelectedSpecies(null), 300);
+  }
+
   const effectiveAvatarSrc = avatarPreview || user.photoURL || `https://placehold.co/100x100.png`;
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <SiteHeader />
       <main className="flex-1 p-4 md:p-8">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-4xl mx-auto space-y-8">
             <Card>
                 <CardHeader>
                     <div className="flex items-center space-x-6">
@@ -105,8 +122,56 @@ export default function ProfilePage() {
                     </div>
                 </CardContent>
             </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>My Collection</CardTitle>
+                    <CardDescription>Items you have saved for offline viewing.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {collection && collection.length > 0 ? (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            {collection.map(item => (
+                                <div key={item.id} className="relative group">
+                                    <Card className="overflow-hidden cursor-pointer" onClick={() => handleSpeciesSelect(item)}>
+                                        <div className="relative aspect-square">
+                                            <Image src={item.image} alt={item.name} fill className="object-cover" />
+                                        </div>
+                                        <div className="p-2">
+                                            <h4 className="font-semibold text-sm truncate">{item.name}</h4>
+                                        </div>
+                                    </Card>
+                                    <Button
+                                        variant="destructive"
+                                        size="icon"
+                                        className="absolute top-1 right-1 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            removeItem(item.id);
+                                        }}
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-muted-foreground text-center py-8">Your collection is empty. Save items you identify to see them here.</p>
+                    )}
+                </CardContent>
+            </Card>
         </div>
       </main>
+
+       <IdentificationResult
+            open={isResultOpen}
+            onOpenChange={(open) => {
+                if (!open) handleResultClose();
+            }}
+            result={selectedSpecies}
+            onConfirm={handleResultClose}
+            onReject={handleResultClose}
+        />
     </div>
   );
 }

@@ -15,10 +15,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Textarea } from '@/components/ui/textarea';
-import { Droplets, Sun, Sprout, Package, Thermometer, Leaf, Check, X, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { Droplets, Sun, Sprout, Package, Thermometer, Leaf, Check, X, ThumbsDown, ThumbsUp, Bookmark } from 'lucide-react';
 import type { Species, CareTip } from '@/lib/mock-database';
 import { useTranslation } from '@/hooks/use-language';
 import { Separator } from './ui/separator';
+import { useCollection } from '@/hooks/use-collection';
+import { useToast } from '@/hooks/use-toast';
 
 interface IdentificationResultProps {
   result: Species | null;
@@ -46,19 +48,41 @@ export function IdentificationResult({
 }: IdentificationResultProps) {
   const { t } = useTranslation();
   const [notes, setNotes] = useState('');
+  const { collection, addItem, removeItem } = useCollection();
+  const { toast } = useToast();
 
   if (!result) return null;
+
+  const isInCollection = collection?.some(item => item.id === result.id);
+
+  const handleSaveToggle = () => {
+    if (isInCollection) {
+      removeItem(result.id);
+      toast({ title: "Removed from collection" });
+    } else {
+      addItem(result);
+      toast({ title: "Saved to collection" });
+    }
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="rounded-t-2xl max-h-[90vh] h-full flex flex-col bg-background/95 backdrop-blur-sm p-0">
         <SheetHeader className="text-left p-6 pb-2">
-          <SheetTitle className="text-3xl font-bold font-headline">{result.name}</SheetTitle>
-          <SheetDescription asChild>
-             <div className="pt-1 text-foreground/80 italic">
-              {result.scientificName}
+          <div className="flex justify-between items-start">
+            <div>
+              <SheetTitle className="text-3xl font-bold font-headline">{result.name}</SheetTitle>
+              <SheetDescription asChild>
+                <div className="pt-1 text-foreground/80 italic">
+                  {result.scientificName}
+                </div>
+              </SheetDescription>
             </div>
-          </SheetDescription>
+            <Button onClick={handleSaveToggle} variant={isInCollection ? 'secondary' : 'default'} size="lg">
+              <Bookmark className="mr-2 h-5 w-5" />
+              {isInCollection ? 'Saved' : 'Save'}
+            </Button>
+          </div>
         </SheetHeader>
         <div className="flex-1 overflow-y-auto p-6 pt-4 grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Left Column */}
