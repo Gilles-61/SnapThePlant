@@ -18,11 +18,16 @@ import { useAuth } from '@/hooks/use-auth';
 import { AuthGate } from '@/components/auth-gate';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { SearchInput } from './search-input';
-import { analyzeImage, type AnalyzeImageOutput } from '@/ai/flows/analyze-image-flow';
+import { analyzeImage } from '@/ai/flows/analyze-image-flow';
+import { analyzeInsect } from '@/ai/flows/analyze-insect-flow';
 import type { Category } from '@/lib/categories';
 import { BarcodeScanner } from './barcode-scanner';
 import { Card, CardContent } from './ui/card';
 
+type AnalysisResult = {
+    isPoisonous: boolean;
+    attributes: { key: string; value: string }[];
+};
 
 export function HomeClient({ initialCategory }: { initialCategory?: Category }) {
   const { t } = useTranslation();
@@ -55,7 +60,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setAction(null);
   }, []);
 
-  const proceedWithAnalysis = (analysis: AnalyzeImageOutput) => {
+  const proceedWithAnalysis = (analysis: AnalysisResult) => {
     if (!analysis || !analysis.attributes) {
         toast({
           title: "Analysis Failed",
@@ -90,10 +95,16 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setIsLoading(true);
 
     try {
-      const analysis: AnalyzeImageOutput = await analyzeImage({
-        photoDataUri: imageDataUri,
-        category: category,
-      });
+      let analysis: AnalysisResult;
+
+      if (category === 'Insect') {
+        analysis = await analyzeInsect({ photoDataUri: imageDataUri });
+      } else {
+        analysis = await analyzeImage({
+            photoDataUri: imageDataUri,
+            category: category,
+        });
+      }
       
       proceedWithAnalysis(analysis);
 
