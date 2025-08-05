@@ -29,11 +29,11 @@ export function PricingPage() {
             priceSuffix: "/month",
             description: "Flexibility at its best.",
             features: [
-                "AI Meal Plan Generation",
-                "Existing Menu Analysis",
-                "Smart Grocery List",
-                "Weight Progress Tracking",
-                "AI Dietitian Chatbot"
+                "Unlimited AI Identifications",
+                "High-Accuracy Identification Model",
+                "Save Unlimited Items to Collection",
+                "Offline Access for Your Collection",
+                "Priority Support"
             ],
             buttonText: "Subscribe Now",
             buttonVariant: "default" as const,
@@ -45,11 +45,11 @@ export function PricingPage() {
             priceSuffix: "/year",
             description: "Save with an annual plan.",
             features: [
-                "AI Meal Plan Generation",
-                "Existing Menu Analysis",
-                "Smart Grocery List",
-                "Weight Progress Tracking",
-                "AI Dietitian Chatbot"
+                "Unlimited AI Identifications",
+                "High-Accuracy Identification Model",
+                "Save Unlimited Items to Collection",
+                "Offline Access for Your Collection",
+                "Priority Support"
             ],
             buttonText: "Subscribe Now",
             buttonVariant: "default" as const,
