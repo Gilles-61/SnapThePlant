@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
@@ -44,7 +45,8 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
 
         if (options) {
             Object.keys(options).forEach(optKey => {
-                translation = translation.replace(`{{${optKey}}}`, String(options[optKey]));
+                const regex = new RegExp(`\\{${optKey}\\}`, 'g');
+                translation = translation.replace(regex, String(options[optKey]));
             });
         }
 
