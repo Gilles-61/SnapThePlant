@@ -36,8 +36,11 @@ const generateImageFlow = ai.defineFlow(
     const prompt = `Generate a realistic, high-quality, vibrant, detailed photo of a ${name}, which is a type of ${category}. The subject should be clearly visible and centered. The background should be natural and slightly blurred.`;
 
     const { media } = await ai.generate({
-      model: 'googleai/gemini-pro-vision',
+      model: 'googleai/gemini-2.0-flash-preview-image-generation',
       prompt,
+      config: {
+        responseModalities: ['TEXT', 'IMAGE'],
+      },
     });
 
     if (!media?.url) {
