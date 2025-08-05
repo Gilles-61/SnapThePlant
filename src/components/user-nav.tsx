@@ -26,7 +26,7 @@ import {
   } from "@/components/ui/dropdown-menu"
 import { useLanguage, languages } from "@/hooks/use-language"
 import { useAuth } from "@/hooks/use-auth"
-import { Heart, LogIn } from "lucide-react"
+import { Globe, Heart, LogIn } from "lucide-react"
   
   export function UserNav() {
     const { language, setLanguage, t } = useLanguage()
@@ -81,7 +81,10 @@ import { Heart, LogIn } from "lucide-react"
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
            <DropdownMenuSub>
-            <DropdownMenuSubTrigger>{t('userNav.language')}</DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger>
+                <Globe className="mr-2 h-4 w-4" />
+                {t('userNav.language')}
+            </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
               <DropdownMenuRadioGroup value={language} onValueChange={(value) => setLanguage(value as any)}>
                 {languages.map(lang => (
@@ -106,3 +109,4 @@ import { Heart, LogIn } from "lucide-react"
       </DropdownMenu>
     )
   }
+
