@@ -31,16 +31,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
-      if (user) {
-        router.push('/');
-      }
     });
     return () => unsubscribe();
-  }, [router]);
+  }, []);
 
   const signInWithGoogle = async () => {
     try {
       await signInWithGoogleFirebase();
+      router.push('/');
     } catch (error) {
       console.error("Error signing in with Google: ", error);
       toast({
@@ -54,6 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signUpWithEmail = async (email: string, pass: string) => {
     try {
         await signUpWithEmailPassword(email, pass);
+        router.push('/');
     } catch (error: any) {
         console.error("Error signing up: ", error);
         toast({
@@ -67,6 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signInWithEmail = async (email: string, pass: string) => {
     try {
         await signInWithEmailPassword(email, pass);
+        router.push('/');
     } catch (error: any) {
         console.error("Error signing in: ", error);
         toast({

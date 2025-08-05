@@ -38,7 +38,6 @@ const formSchema = z
 
 export function SignUpForm() {
   const { signUpWithEmail, signInWithGoogle } = useAuth();
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -53,7 +52,6 @@ export function SignUpForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await signUpWithEmail(values.email, values.password);
-    router.push('/');
   }
 
   return (

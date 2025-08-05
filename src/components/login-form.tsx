@@ -28,7 +28,7 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const { signInWithEmail, signInWithGoogle } = useAuth();
-  const router = useRouter();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -41,7 +41,6 @@ export function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await signInWithEmail(values.email, values.password);
-    router.push('/');
   }
 
   return (
