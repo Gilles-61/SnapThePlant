@@ -36,7 +36,9 @@
         "weed": "Weed",
         "weedHint": "Identify a weed",
         "insect": "Insect",
-        "insectHint": "Identify an insect"
+        "insectHint": "Identify an insect",
+        "cactus": "Cactus",
+        "cactusHint": "Identify a cactus"
     },
     "result": {
         "confidenceScore": "Confidence Score",

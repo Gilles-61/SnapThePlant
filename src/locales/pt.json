@@ -36,7 +36,9 @@
         "weed": "Erva daninha",
         "weedHint": "Identificar uma erva daninha",
         "insect": "Inseto",
-        "insectHint": "Identificar um inseto"
+        "insectHint": "Identificar um inseto",
+        "cactus": "Cacto",
+        "cactusHint": "Identificar um cacto"
     },
     "result": {
         "confidenceScore": "Pontuação de Confiança",

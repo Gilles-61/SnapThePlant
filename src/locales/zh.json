@@ -36,7 +36,9 @@
         "weed": "杂草",
         "weedHint": "识别杂草",
         "insect": "昆虫",
-        "insectHint": "识别昆虫"
+        "insectHint": "识别昆虫",
+        "cactus": "仙人掌",
+        "cactusHint": "识别仙人掌"
     },
     "result": {
         "confidenceScore": "置信度分数",

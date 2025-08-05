@@ -100,3 +100,11 @@
 .category-tile-insect:hover {
     background-color: #FB8C00;
 }
+
+.category-tile-cactus {
+    background-color: #2E7D32; /* A deep green */
+    color: white;
+}
+.category-tile-cactus:hover {
+    background-color: #1B5E20;
+}

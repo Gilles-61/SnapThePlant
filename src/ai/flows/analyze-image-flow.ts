@@ -60,6 +60,12 @@ const promptText = `
     2. Does it have wings? (key: "wings", options: "yes", "no")
     3. How many legs does it have? (key: "legs", options: "6", "8", "more")
 
+    Category: Cactus
+    Questions:
+    1. What is the overall shape of the cactus? (key: "shape", options: "columnar", "globular", "paddles")
+    2. Are there flowers visible? (key: "flowers", options: "yes", "no")
+    3. What color is it? (key: "color", options: "green", "blue-green", "grey-green")
+
     Analyze the image and determine the most appropriate option for each question corresponding to the given category.
     Your output MUST be a JSON object where keys are the attribute keys (e.g., "color", "shape") and values are the single best option chosen from the list.
 

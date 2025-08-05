@@ -154,6 +154,15 @@ const database: Species[] = [
         furtherReading: 'https://en.wikipedia.org/wiki/Coccinellidae',
         image: 'https://placehold.co/600x400.png',
         attributes: { color: 'red', wings: 'yes', legs: '6' }
+    },
+    
+    // --- CACTI ---
+    {
+        id: 17, category: 'Cactus', name: 'Saguaro Cactus', scientificName: 'Carnegiea gigantea',
+        keyInformation: 'A large, tree-like cactus native to the Sonoran Desert. Famous for its arms that branch out. Can live for over 150 years.',
+        furtherReading: 'https://en.wikipedia.org/wiki/Saguaro',
+        image: 'https://placehold.co/600x400.png',
+        attributes: { shape: 'columnar', flowers: 'yes', color: 'green' }
     }
 ];
 

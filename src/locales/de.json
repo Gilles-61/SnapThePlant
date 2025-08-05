@@ -36,7 +36,9 @@
         "weed": "Unkraut",
         "weedHint": "Ein Unkraut identifizieren",
         "insect": "Insekt",
-        "insectHint": "Ein Insekt identifizieren"
+        "insectHint": "Ein Insekt identifizieren",
+        "cactus": "Kaktus",
+        "cactusHint": "Einen Kaktus identifizieren"
     },
     "result": {
         "confidenceScore": "Konfidenzwert",

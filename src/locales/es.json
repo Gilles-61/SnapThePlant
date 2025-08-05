@@ -36,7 +36,9 @@
         "weed": "Maleza",
         "weedHint": "Identificar una maleza",
         "insect": "Insecto",
-        "insectHint": "Identificar un insecto"
+        "insectHint": "Identificar un insecto",
+        "cactus": "Cactus",
+        "cactusHint": "Identificar un cactus"
     },
     "result": {
         "confidenceScore": "Puntuación de confianza",
