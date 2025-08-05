@@ -71,6 +71,14 @@
         "logout": "Déconnexion",
         "becomeMember": "Devenir membre"
     },
+    "profile": {
+        "valuedUser": "Utilisateur apprécié",
+        "membership": "Adhésion",
+        "freePlan": "Vous êtes actuellement sur le plan gratuit.",
+        "manageSubscription": "Gérer l'abonnement",
+        "loginPrompt": "Veuillez vous connecter pour voir votre profil.",
+        "editPhotoLabel": "Changer de photo de profil"
+    },
     "quiz": {
         "title": "Aidez-nous à l'identifier !",
         "description": "Répondez à quelques questions pour affiner les résultats.",

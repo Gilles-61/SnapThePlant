@@ -8,9 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader, Edit2 } from 'lucide-react';
 import { useRef, useState } from 'react';
+import { useTranslation } from '@/hooks/use-language';
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
+  const { t } = useTranslation();
   const buyMeACoffeeLink = "https://buymeacoffee.com/snaptheplant";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -32,7 +34,7 @@ export default function ProfilePage() {
         <div className="flex flex-col min-h-screen bg-background text-foreground">
             <SiteHeader />
             <main className="flex-1 flex items-center justify-center">
-                <p>Please log in to see your profile.</p>
+                <p>{t('profile.loginPrompt')}</p>
             </main>
         </div>
     )
@@ -67,13 +69,13 @@ export default function ProfilePage() {
                     <div className="flex items-center space-x-6">
                         <div className="relative">
                             <Avatar className="h-24 w-24 border-2 border-primary">
-                                <AvatarImage src={effectiveAvatarSrc} alt={user.displayName ?? 'User'} />
+                                <AvatarImage src={effectiveAvatarSrc} alt={user.displayName ?? t('profile.valuedUser')} />
                                 <AvatarFallback>{user.displayName?.charAt(0)?.toUpperCase() ?? 'U'}</AvatarFallback>
                             </Avatar>
                              <button
                                 onClick={handleAvatarClick}
                                 className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform hover:scale-110"
-                                aria-label="Change profile photo"
+                                aria-label={t('profile.editPhotoLabel')}
                             >
                                 <Edit2 className="h-4 w-4" />
                             </button>
@@ -86,18 +88,18 @@ export default function ProfilePage() {
                             />
                         </div>
                         <div className="space-y-1">
-                            <CardTitle className="text-3xl font-bold">{user.displayName ?? 'Valued User'}</CardTitle>
+                            <CardTitle className="text-3xl font-bold">{user.displayName ?? t('profile.valuedUser')}</CardTitle>
                             <CardDescription className="text-base">{user.email}</CardDescription>
                         </div>
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-6 pt-6">
                     <div className="space-y-2">
-                        <h3 className="text-xl font-semibold">Membership</h3>
-                        <p className="text-muted-foreground">You are currently on the free plan.</p>
+                        <h3 className="text-xl font-semibold">{t('profile.membership')}</h3>
+                        <p className="text-muted-foreground">{t('profile.freePlan')}</p>
                         <Button asChild>
                              <a href={buyMeACoffeeLink} target="_blank" rel="noopener noreferrer">
-                                Manage Subscription
+                                {t('profile.manageSubscription')}
                             </a>
                         </Button>
                     </div>

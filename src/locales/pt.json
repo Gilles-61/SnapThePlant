@@ -71,6 +71,14 @@
         "logout": "Sair",
         "becomeMember": "Torne-se um membro"
     },
+    "profile": {
+        "valuedUser": "Usuário Valioso",
+        "membership": "Adesão",
+        "freePlan": "Você está atualmente no plano gratuito.",
+        "manageSubscription": "Gerenciar Assinatura",
+        "loginPrompt": "Faça login para ver seu perfil.",
+        "editPhotoLabel": "Mudar foto de perfil"
+    },
     "quiz": {
         "title": "Ajude-nos a identificá-lo!",
         "description": "Responda a algumas perguntas para refinar os resultados.",

@@ -71,6 +71,14 @@
         "logout": "Cerrar sesión",
         "becomeMember": "Hacerse miembro"
     },
+    "profile": {
+        "valuedUser": "Usuario Valorado",
+        "membership": "Membresía",
+        "freePlan": "Actualmente estás en el plan gratuito.",
+        "manageSubscription": "Gestionar Suscripción",
+        "loginPrompt": "Por favor, inicia sesión para ver tu perfil.",
+        "editPhotoLabel": "Cambiar foto de perfil"
+    },
     "quiz": {
         "title": "¡Ayúdanos a identificarlo!",
         "description": "Responde algunas preguntas para acotar los resultados.",

@@ -71,6 +71,14 @@
         "logout": "登出",
         "becomeMember": "成为会员"
     },
+    "profile": {
+        "valuedUser": "尊贵的用户",
+        "membership": "会员资格",
+        "freePlan": "您目前使用的是免费计划。",
+        "manageSubscription": "管理订阅",
+        "loginPrompt": "请登录以查看您的个人资料。",
+        "editPhotoLabel": "更改个人资料照片"
+    },
     "quiz": {
         "title": "帮助我们识别它！",
         "description": "回答几个问题以缩小结果范围。",

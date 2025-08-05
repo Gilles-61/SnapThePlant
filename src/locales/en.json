@@ -71,6 +71,14 @@
         "logout": "Log out",
         "becomeMember": "Become a Member"
     },
+    "profile": {
+        "valuedUser": "Valued User",
+        "membership": "Membership",
+        "freePlan": "You are currently on the free plan.",
+        "manageSubscription": "Manage Subscription",
+        "loginPrompt": "Please log in to see your profile.",
+        "editPhotoLabel": "Change profile photo"
+    },
     "quiz": {
         "title": "Help us identify it!",
         "description": "Answer a few questions to narrow down the results.",
