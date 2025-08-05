@@ -22,6 +22,7 @@ import { Eye, EyeOff, Leaf, LogIn } from 'lucide-react';
 import Image from 'next/image';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { Label } from './ui/label';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email.' }),
