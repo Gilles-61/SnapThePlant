@@ -21,7 +21,7 @@ export default function CommunityPage() {
         icon: UploadCloud,
         title: t('pages.community.features.submissions.title'),
         description: t('pages.community.features.submissions.description'),
-        href: '/?category=Plant'
+        href: '/'
     },
     {
         icon: Users,
