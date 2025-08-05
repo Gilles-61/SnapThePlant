@@ -164,6 +164,11 @@ export default function HomePage() {
       )
     }
 
+    // Hide placeholder content if a dialog is open
+    if (isCategorySelectorOpen || isSourceSelectorOpen) {
+        return <div className="w-full h-full bg-muted" />;
+    }
+
     return (
       <div className="w-full h-full bg-muted flex flex-col items-center justify-center text-muted-foreground p-8 text-center">
           <ImageIcon className="w-24 h-24 mb-4" />
@@ -215,7 +220,7 @@ export default function HomePage() {
 
         <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col items-center p-6 space-y-4">
           
-          {(view === 'capture' && !isCameraOpen) && (
+          {(view === 'capture' && !isCameraOpen && !selectedCategory) && (
             <div className="flex justify-center gap-4 w-full">
                 <Button size="lg" className="flex-1" onClick={handleCameraButtonClick}>
                     <Camera className="mr-2"/>
