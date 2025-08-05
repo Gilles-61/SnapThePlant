@@ -1,3 +1,6 @@
+"use client"
+
+import * as React from "react"
 import {
     Avatar,
     AvatarFallback,
@@ -10,12 +13,19 @@ import {
     DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
     DropdownMenuSeparator,
     DropdownMenuShortcut,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
   
   export function UserNav() {
+    const [language, setLanguage] = React.useState("en")
+
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -51,6 +61,20 @@ import {
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
+           <DropdownMenuSub>
+            <DropdownMenuSubTrigger>Language</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuRadioGroup value={language} onValueChange={setLanguage}>
+                <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="fr">French</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="es">Spanish</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="de">German</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="pt">Portuguese</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="zh">Mandarin</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+          <DropdownMenuSeparator />
           <DropdownMenuItem>
             Log out
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
@@ -59,4 +83,3 @@ import {
       </DropdownMenu>
     )
   }
-  
