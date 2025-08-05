@@ -18,16 +18,12 @@ import { useAuth } from '@/hooks/use-auth';
 import { AuthGate } from '@/components/auth-gate';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { SearchInput } from './search-input';
-import { identifySpecies } from '@/ai/flows/identify-species-flow';
+import { identifySpecies, type IdentifySpeciesOutput } from '@/ai/flows/identify-species-flow';
 import type { Category } from '@/lib/categories';
 import { BarcodeScanner } from './barcode-scanner';
 import { Card, CardContent } from './ui/card';
+import { generateImage } from '@/ai/flows/generate-image-flow';
 
-type AnalysisResult = {
-    name: string;
-    scientificName: string;
-    isPoisonous: boolean;
-};
 
 export function HomeClient({ initialCategory }: { initialCategory?: Category }) {
   const { t } = useTranslation();
@@ -60,7 +56,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setAction(null);
   }, []);
 
-  const proceedWithAnalysis = (analysis: AnalysisResult) => {
+  const proceedWithAnalysis = async (analysis: IdentifySpeciesOutput) => {
     if (!analysis || !analysis.name) {
         toast({
           title: "Analysis Failed",
@@ -71,30 +67,47 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         return;
     }
 
-    const topMatch = findSpeciesByName(analysis.name);
+    let topMatch = findSpeciesByName(analysis.name);
 
     if (topMatch) {
-      // The AI can override the poison status from the database
-      topMatch.isPoisonous = analysis.isPoisonous;
-      
-      const scoredMatch: ScoredSpecies = {
-        species: topMatch,
-        score: 1, // We have a direct match
-        confidence: 98 // High confidence from direct AI identification
-      };
-      
-      // For now, let's just use the top match.
-      // In the future, we could search for similar species as alternatives.
-      setPossibleMatches([scoredMatch]);
-      setView('matches');
-
+      topMatch = { ...topMatch, isPoisonous: analysis.isPoisonous };
+      setResult(topMatch);
+      setIsResultOpen(true);
     } else {
       toast({
-        title: "Not in Database",
-        description: `We identified a "${analysis.name}", but it's not in our database yet.`,
+        title: "New Species Identified!",
+        description: `We've identified a "${analysis.name}". Generating details...`,
         variant: "default",
       });
-      handleReset();
+      try {
+        const { imageDataUri } = await generateImage({
+            name: analysis.name,
+            category: selectedCategory!,
+        });
+        
+        const newSpecies: Species = {
+          id: -1, // Temporary ID for new species
+          name: analysis.name,
+          scientificName: analysis.scientificName,
+          isPoisonous: analysis.isPoisonous,
+          category: selectedCategory!,
+          image: imageDataUri,
+          keyInformation: `This is an AI-generated entry for ${analysis.name}. Details are based on general knowledge.`,
+          furtherReading: `https://www.google.com/search?q=${encodeURIComponent(analysis.scientificName)}`,
+          attributes: {},
+        };
+        setResult(newSpecies);
+        setIsResultOpen(true);
+
+      } catch (genError) {
+        console.error("Error generating image for new species", genError);
+        toast({
+            title: "Could Not Display New Species",
+            description: "An error occurred while generating details for the new species.",
+            variant: "destructive"
+        })
+        handleReset();
+      }
     }
   }
 
@@ -108,7 +121,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
           category: category,
       });
       
-      proceedWithAnalysis(analysis);
+      await proceedWithAnalysis(analysis);
 
     } catch (error) {
       console.error("Error analyzing image:", error);
@@ -117,35 +130,24 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         description: "There was an error analyzing the image. Please try again.",
         variant: "destructive"
       });
-      handleReset();
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
+        // Only reset if no result was set
+        if (!result) {
+            handleReset();
+        }
     }
-  }, [toast, handleReset, selectedCategory]);
+  }, [toast, handleReset, selectedCategory, result]);
 
-
-  const handleMatchSelected = useCallback((species: Species) => {
-    setResult(species);
-    setIsResultOpen(true);
-  }, []);
 
   const handleSearch = useCallback((query: string) => {
     setIsLoading(true);
 
     const matches = searchDatabase(query, selectedCategory);
     
-    const scoredMatches: ScoredSpecies[] = matches.map((m, i) => ({
-      species: m,
-      score: 1, // Assume high score for direct search
-      confidence: 100,
-    }));
-
-    if (scoredMatches.length > 0) {
-        setPossibleMatches(scoredMatches.slice(0, 5));
-        setView('matches');
-        if (typeof document !== 'undefined') {
-            setCapturedImage('/search-placeholder.png'); 
-        }
+    if (matches.length > 0) {
+        setResult(matches[0]);
+        setIsResultOpen(true);
     } else {
       toast({
         title: "No Results",
@@ -378,7 +380,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
               <MatchSelector
                 image={capturedImage}
                 matches={possibleMatches} 
-                onSelect={handleMatchSelected} 
+                onSelect={() => {}} 
                 onBack={handleReset} 
               />
             </div>

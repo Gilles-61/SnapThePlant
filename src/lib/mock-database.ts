@@ -238,7 +238,14 @@ export const database: Species[] = [
         attributes: { color: 'green', wings: 'yes', legs: '6' },
         isPoisonous: false,
     },
-
+    {
+        id: 28, category: 'Insect', name: 'Dragonfly', scientificName: 'Anisoptera',
+        keyInformation: 'An insect known for its large multifaceted eyes, two pairs of strong transparent wings, and an elongated body. They are agile fliers and are generally found near water.',
+        furtherReading: 'https://en.wikipedia.org/wiki/Dragonfly',
+        image: 'https://placehold.co/600x400.png',
+        attributes: { color: 'blue', wings: 'yes', legs: '6' },
+        isPoisonous: false,
+    },
 
     // --- CACTI ---
     {
