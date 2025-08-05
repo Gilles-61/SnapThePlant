@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import { Loader, Camera, RotateCcw, Image as ImageIcon, Upload, QrCode } from 'lucide-react';
 
@@ -40,6 +40,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   const [view, setView] = useState<'capture' | 'matches'>('capture');
   const [possibleMatches, setPossibleMatches] = useState<ScoredSpecies[]>([]);
   const [isCategorySelectorOpen, setIsCategorySelectorOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<'camera' | 'upload' | null>(null);
 
 
   const handleReset = useCallback(() => {
@@ -184,12 +185,14 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
   const handleCategorySelect = (category: Category) => {
     setSelectedCategory(category);
+    setIsCategorySelectorOpen(false);
   }
   
   const handleCameraButtonClick = () => {
     if (selectedCategory) {
         setIsCameraOpen(true);
     } else {
+        setPendingAction('camera');
         setIsCategorySelectorOpen(true);
     }
   };
@@ -198,6 +201,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     if (selectedCategory) {
         handleBrowseClick();
     } else {
+        setPendingAction('upload');
         setIsCategorySelectorOpen(true);
     }
   }
@@ -214,6 +218,17 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     });
     handleSearch(scanResult);
   }
+
+  useEffect(() => {
+    if (selectedCategory && pendingAction) {
+        if (pendingAction === 'camera') {
+            setIsCameraOpen(true);
+        } else if (pendingAction === 'upload') {
+            handleBrowseClick();
+        }
+        setPendingAction(null);
+    }
+  }, [selectedCategory, pendingAction]);
 
 
   if (loading) {
@@ -357,14 +372,11 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
                 <div className="py-4">
                     <CategorySelector
                         selectedCategory={selectedCategory}
-                        onSelectCategory={(category) => {
-                           setSelectedCategory(category);
-                           setIsCategorySelectorOpen(false);
-                        }}
+                        onSelectCategory={handleCategorySelect}
                     />
                 </div>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel onClick={() => setPendingAction(null)}>Cancel</AlertDialogCancel>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
