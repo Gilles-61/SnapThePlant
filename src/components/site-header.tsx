@@ -9,7 +9,7 @@ export function SiteHeader() {
       <div className="container flex h-14 max-w-screen-2xl items-center px-4 sm:px-6">
         <div className="mr-4 flex items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Leaf className="h-6 w-6 text-primary" />
+            <Leaf className="h-6 w-6 text-foreground" />
             <span className="font-bold sm:inline-block font-headline">SnapThePlant</span>
           </Link>
           <nav>

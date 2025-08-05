@@ -98,7 +98,7 @@ export function IdentificationResult({
                                 <AccordionItem value={tip.title} key={tip.title}>
                                     <AccordionTrigger className="text-base font-medium">
                                         <div className="flex items-center gap-3">
-                                            {Icon && <Icon className="w-5 h-5 text-primary" />}
+                                            {Icon && <Icon className="w-5 h-5 text-foreground" />}
                                             {t(`result.care_titles.${tip.title.toLowerCase().replace(' ', '_')}`)}
                                         </div>
                                     </AccordionTrigger>

@@ -164,11 +164,11 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
     // Hide placeholder content if a dialog is open
     if (isCategorySelectorOpen || isSourceSelectorOpen) {
-        return <div className="w-full h-full bg-muted" />;
+        return <div className="w-full h-full bg-background" />;
     }
 
     return (
-      <div className="w-full h-full bg-muted flex flex-col items-center justify-center text-muted-foreground p-8 text-center">
+      <div className="w-full h-full bg-background flex flex-col items-center justify-center text-muted-foreground p-8 text-center">
           <ImageIcon className="w-24 h-24 mb-4" />
           <p className="text-lg font-semibold text-foreground mb-2">Select a category to begin</p>
           <p className="max-w-md mb-6">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
@@ -234,7 +234,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
           {isCameraOpen && (
              <Button
                 size="lg"
-                className="rounded-full h-20 w-20 p-0 border-4 border-white/50 bg-accent/90 hover:bg-accent text-accent-foreground shadow-2xl disabled:opacity-50 transition-transform active:scale-95"
+                className="rounded-full h-20 w-20 p-0 border-4 border-white/50 bg-primary/90 hover:bg-primary text-primary-foreground shadow-2xl disabled:opacity-50 transition-transform active:scale-95"
                 onClick={handleCapture}
                 disabled={isLoading}
                 aria-label={t('capturePhotoLabel')}

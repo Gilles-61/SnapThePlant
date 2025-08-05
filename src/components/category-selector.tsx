@@ -31,7 +31,7 @@ export function CategorySelector({
 
   return (
     <TooltipProvider>
-      <div className={cn("flex justify-center items-center gap-3 p-2 bg-black/30 backdrop-blur-md rounded-full", className)}>
+      <div className={cn("flex justify-center items-center gap-3 p-2 bg-muted/50 backdrop-blur-md rounded-full", className)}>
         {categories.map(({ name, icon: Icon, hintKey }) => (
           <Tooltip key={name} delayDuration={300}>
             <TooltipTrigger asChild>
@@ -39,7 +39,7 @@ export function CategorySelector({
                 variant="ghost"
                 size="icon"
                 className={cn(
-                  "rounded-full w-20 h-20 flex flex-col gap-1.5 text-white/80 hover:bg-white/20 hover:text-white transition-all duration-300",
+                  "rounded-full w-20 h-20 flex flex-col gap-1.5 text-foreground/80 hover:bg-accent/80 hover:text-foreground transition-all duration-300",
                   selectedCategory === name && "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground scale-110"
                 )}
                 onClick={() => onSelectCategory(name)}
@@ -50,7 +50,7 @@ export function CategorySelector({
                 <span className="text-sm font-medium">{t(`categories.${name.toLowerCase()}`)}</span>
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="top" className="bg-black/80 text-white border-0">
+            <TooltipContent side="top" className="bg-popover text-popover-foreground border-border">
               <p>{t(hintKey)}</p>
             </TooltipContent>
           </Tooltip>
