@@ -34,7 +34,7 @@ export default function RootLayout({
       <body className={cn("font-body antialiased flex flex-col min-h-screen", ptSans.variable)}>
         <AuthProvider>
           <LanguageProvider>
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col bg-background text-foreground">
               {children}
             </div>
             <SiteFooter />
