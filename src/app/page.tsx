@@ -84,7 +84,11 @@ export default function HomePage() {
   }, [processImage, toast, t]);
 
   const handleBrowseClick = () => {
-    fileInputRef.current?.click();
+    if (selectedCategory) {
+        fileInputRef.current?.click();
+    } else {
+        setIsCategorySelectorOpen(true);
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -165,10 +169,10 @@ export default function HomePage() {
           <ImageIcon className="w-24 h-24 mb-4" />
           <p className="text-lg font-semibold text-foreground mb-2">Select a category to begin</p>
           <p className="max-w-md mb-6">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
-           <Button size="lg" onClick={handleCameraButtonClick}>
-                <Camera className="mr-2"/>
-                Use Camera
-            </Button>
+           <CategorySelector
+                selectedCategory={selectedCategory}
+                onSelectCategory={handleCategorySelect}
+            />
       </div>
     );
   }
@@ -212,10 +216,16 @@ export default function HomePage() {
         <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col items-center p-6 space-y-4">
           
           {(view === 'capture' && !isCameraOpen) && (
-             <Button size="lg" onClick={() => { handleBrowseClick(); }}>
-                <Upload className="mr-2" />
-                Upload from Gallery
-            </Button>
+            <div className="flex justify-center gap-4 w-full">
+                <Button size="lg" className="flex-1" onClick={handleCameraButtonClick}>
+                    <Camera className="mr-2"/>
+                    Use Camera
+                </Button>
+                <Button size="lg" className="flex-1" variant="secondary" onClick={handleBrowseClick}>
+                    <Upload className="mr-2" />
+                    Upload from Gallery
+                </Button>
+            </div>
           )}
 
           {isCameraOpen && (
