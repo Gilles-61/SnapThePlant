@@ -1,34 +1,38 @@
 
 "use client";
 
-import { CheckCircle, Gift } from "lucide-react";
+import { CheckCircle, Gift, Star } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useAuth, type SubscriptionStatus } from "@/hooks/use-auth";
 
 export function PricingPage() {
+    const { subscriptionStatus } = useAuth();
     const buyMeACoffeeLink = "https://buymeacoffee.com/snaptheplant";
 
     const tiers = [
         {
             name: "Beta Tester",
+            id: 'beta' as SubscriptionStatus,
             price: "Free",
-            priceSuffix: "/access",
-            description: "Get early access and help shape the future of our app.",
+            priceSuffix: "/during beta",
+            description: "Full access to all features while we are in beta. Your feedback is our reward!",
             features: [
-                "Provide valuable feedback and get full access during the beta period.",
+                "Unlimited AI Identifications",
+                "Save Unlimited Items to Collection",
+                "Provide valuable feedback",
+                "Shape the future of our app",
             ],
-            buttonText: "Sign Up Now",
-            buttonVariant: "default" as const,
-            href: "/signup",
-            isInternal: true,
+            buttonText: "Current Plan",
         },
         {
             name: "Monthly",
+            id: 'paid' as SubscriptionStatus,
             price: "$4",
             priceSuffix: "/month",
-            description: "Flexibility at its best.",
+            description: "The best way to support the project and get full access.",
             features: [
                 "Unlimited AI Identifications",
                 "High-Accuracy Identification Model",
@@ -37,49 +41,40 @@ export function PricingPage() {
                 "Priority Support"
             ],
             buttonText: "Subscribe Now",
-            buttonVariant: "default" as const,
-            href: buyMeACoffeeLink,
-            isInternal: false,
-        },
-        {
-            name: "Yearly",
-            price: "$45",
-            priceSuffix: "/year",
-            description: "Save with an annual plan.",
-            features: [
-                "Unlimited AI Identifications",
-                "High-Accuracy Identification Model",
-                "Save Unlimited Items to Collection",
-                "Offline Access for Your Collection",
-                "Priority Support"
-            ],
-            buttonText: "Subscribe Now",
-            buttonVariant: "default" as const,
             isMostPopular: true,
-            href: buyMeACoffeeLink,
-            isInternal: false,
         },
         {
             name: "Donation",
+            id: 'free' as SubscriptionStatus,
             price: "Any Amount",
-            description: "Support the project's growth.",
+            description: "Not ready to subscribe? Support the project with a one-time donation.",
             features: [],
             buttonText: "Donate",
-            buttonVariant: "outline" as const,
-            href: buyMeACoffeeLink,
-            isInternal: false,
         },
     ];
 
     return (
-        <div className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="py-12 px-4 sm:px-6 lg:px-8 bg-background">
             <div className="max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
+                <div className="text-center mb-12">
+                    <h1 className="text-4xl font-bold font-headline">Find the perfect plan</h1>
+                    <p className="text-lg text-muted-foreground mt-2">
+                        You are currently on the <span className="font-semibold text-primary">{subscriptionStatus.charAt(0).toUpperCase() + subscriptionStatus.slice(1)}</span> plan.
+                    </p>
+                </div>
+                <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                     {tiers.map((tier) => (
-                        <Card key={tier.name} className={cn("flex flex-col relative", tier.isMostPopular && "border-primary shadow-lg")}>
-                            {tier.isMostPopular && (
+                        <Card key={tier.name} className={cn(
+                            "flex flex-col relative", 
+                            tier.isMostPopular && "border-primary shadow-lg",
+                            subscriptionStatus === tier.id && "ring-2 ring-primary"
+                        )}>
+                             {tier.isMostPopular && (
                                 <div className="absolute top-0 right-4 -mt-3">
-                                    <div className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full uppercase">Most Popular</div>
+                                    <div className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full uppercase flex items-center gap-1">
+                                        <Star className="w-3 h-3"/>
+                                        Most Popular
+                                    </div>
                                 </div>
                             )}
                             <CardHeader className="flex-1">
@@ -91,7 +86,7 @@ export function PricingPage() {
                                 </div>
                             </CardHeader>
                             <CardContent className="flex-1">
-                                {tier.name === 'Donation' ? (
+                                {tier.id === 'free' ? (
                                     <p className="text-muted-foreground">
                                         Your support helps us improve and maintain the app for everyone. Thank you for considering a donation!
                                     </p>
@@ -107,17 +102,20 @@ export function PricingPage() {
                                 )}
                             </CardContent>
                             <CardFooter>
-                                <Button asChild className="w-full" variant={tier.buttonVariant}>
-                                     {tier.isInternal ? (
-                                        <Link href={tier.href}>
-                                            {tier.buttonText}
-                                        </Link>
-                                    ) : (
-                                        <a href={tier.href} target="_blank" rel="noopener noreferrer">
-                                            {tier.name === "Donation" && <Gift className="mr-2 h-4 w-4" />}
+                                <Button 
+                                    asChild={tier.id !== 'beta'}
+                                    className="w-full" 
+                                    variant={subscriptionStatus === tier.id ? 'outline' : 'default'}
+                                    disabled={subscriptionStatus === tier.id}
+                                >
+                                     {tier.id === 'beta' ? (
+                                        <span>{tier.buttonText}</span>
+                                     ) : (
+                                        <a href={buyMeACoffeeLink} target="_blank" rel="noopener noreferrer">
+                                            {tier.id === 'free' && <Gift className="mr-2 h-4 w-4" />}
                                             {tier.buttonText}
                                         </a>
-                                    )}
+                                     )}
                                 </Button>
                             </CardFooter>
                         </Card>

@@ -6,16 +6,17 @@ import { useAuth } from '@/hooks/use-auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader, Edit2, Trash2, Heart } from 'lucide-react';
+import { Loader, Edit2, Trash2, Heart, ShieldCheck } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from '@/hooks/use-language';
 import { useCollection, type CollectionItem } from '@/hooks/use-collection';
 import type { Species } from '@/lib/mock-database';
 import Image from 'next/image';
 import { IdentificationResult } from '@/components/identification-result';
+import Link from 'next/link';
 
 export default function ProfilePage() {
-  const { user, loading } = useAuth();
+  const { user, loading, subscriptionStatus } = useAuth();
   const { t } = useTranslation();
   const { collection, removeItem } = useCollection();
   const buyMeACoffeeLink = "https://buymeacoffee.com/snaptheplant";
@@ -23,6 +24,12 @@ export default function ProfilePage() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<CollectionItem | null>(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
+
+  const planDetails = {
+    beta: { name: 'Beta Tester', description: 'You have full access during the beta period.' },
+    paid: { name: 'Paid Subscriber', description: 'Thank you for your support! You have full access.' },
+    free: { name: 'Free Plan', description: 'Upgrade to a paid plan for more features.' }
+  }
 
   if (loading) {
     return (
@@ -113,12 +120,15 @@ export default function ProfilePage() {
                 <CardContent className="space-y-6 pt-6">
                     <div className="space-y-2">
                         <h3 className="text-xl font-semibold">{t('profile.membership')}</h3>
-                        <p className="text-muted-foreground">{t('profile.freePlan')}</p>
-                        <Button asChild>
-                             <a href={buyMeACoffeeLink} target="_blank" rel="noopener noreferrer">
-                                <Heart className="mr-2 h-4 w-4" />
-                                Support the Project
-                            </a>
+                        <div className="flex items-center gap-2 text-primary font-semibold">
+                            <ShieldCheck className="h-5 w-5" />
+                            <span>{planDetails[subscriptionStatus].name}</span>
+                        </div>
+                        <p className="text-muted-foreground">{planDetails[subscriptionStatus].description}</p>
+                         <Button asChild>
+                             <Link href="/pricing">
+                                {subscriptionStatus === 'paid' ? 'Manage Subscription' : 'View Plans'}
+                            </Link>
                         </Button>
                     </div>
                 </CardContent>

@@ -7,9 +7,12 @@ import { auth, signInWithGoogle as signInWithGoogleFirebase, signOutFromGoogle, 
 import { useToast } from './use-toast';
 import { useRouter } from 'next/navigation';
 
+export type SubscriptionStatus = 'free' | 'paid' | 'beta';
+
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  subscriptionStatus: SubscriptionStatus;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   signUpWithEmail: (email: string, pass: string) => Promise<void>;
@@ -21,12 +24,22 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus>('free');
   const { toast } = useToast();
   const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
+      
+      if (user) {
+        // TODO: Replace with your Firestore logic to fetch subscription status
+        // For now, all logged-in users are considered 'beta' testers
+        setSubscriptionStatus('beta');
+      } else {
+        setSubscriptionStatus('free');
+      }
+
       setLoading(false);
     });
     return () => unsubscribe();
@@ -89,7 +102,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOut, signUpWithEmail, signInWithEmail }}>
+    <AuthContext.Provider value={{ user, loading, subscriptionStatus, signInWithGoogle, signOut, signUpWithEmail, signInWithEmail }}>
       {children}
     </AuthContext.Provider>
   );
