@@ -33,15 +33,19 @@ export default function ProfilePage() {
   }
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
+    if (!loading) {
+        if (!user) {
+            router.push('/login');
+        } else if (subscriptionStatus === 'free') {
+            router.push('/pricing');
+        }
     }
-  }, [user, loading, router]);
+  }, [user, loading, subscriptionStatus, router]);
 
 
-  if (loading || !user) {
+  if (loading || !user || subscriptionStatus === 'free') {
     return (
-        <div className="flex flex-col min-h-screen bg-background text-foreground">
+        <div className="flex flex-col min-h-screen bg-background">
             <SiteHeader />
             <main className="flex-1 flex items-center justify-center bg-background">
                 <Loader className="h-12 w-12 animate-spin" />

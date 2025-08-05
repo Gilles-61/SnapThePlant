@@ -11,15 +11,19 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function CommunityPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, subscriptionStatus } = useAuth();
   const router = useRouter();
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!loading && !user) {
-        router.push('/login');
+    if (!loading) {
+        if (!user) {
+            router.push('/login');
+        } else if (subscriptionStatus === 'free') {
+            router.push('/pricing');
+        }
     }
-  }, [user, loading, router]);
+  }, [user, loading, subscriptionStatus, router]);
 
 
   const features = [
@@ -43,7 +47,7 @@ export default function CommunityPage() {
     }
   ]
   
-  if (loading || !user) {
+  if (loading || !user || subscriptionStatus === 'free') {
     return (
         <div className="flex flex-col min-h-screen bg-background">
             <SiteHeader />

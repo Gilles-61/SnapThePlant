@@ -32,7 +32,7 @@ const getAvailableFilters = (category: Category) => {
 };
 
 export default function ExplorePage() {
-    const { user, loading } = useAuth();
+    const { user, loading, subscriptionStatus } = useAuth();
     const router = useRouter();
     const { t } = useTranslation();
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -41,10 +41,14 @@ export default function ExplorePage() {
     const [isResultOpen, setIsResultOpen] = useState(false);
 
     useEffect(() => {
-        if (!loading && !user) {
-            router.push('/login');
+        if (!loading) {
+            if (!user) {
+                router.push('/login');
+            } else if (subscriptionStatus === 'free') {
+                router.push('/pricing');
+            }
         }
-    }, [user, loading, router]);
+    }, [user, loading, subscriptionStatus, router]);
 
 
     const availableFilters = useMemo(() => {
@@ -89,7 +93,7 @@ export default function ExplorePage() {
         setTimeout(() => setSelectedSpecies(null), 300);
     };
 
-    if (loading || !user) {
+    if (loading || !user || subscriptionStatus === 'free') {
         return (
             <div className="flex flex-col min-h-screen bg-background">
                 <SiteHeader />

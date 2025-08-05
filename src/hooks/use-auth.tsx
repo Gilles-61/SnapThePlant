@@ -47,11 +47,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const handleAuthSuccess = (user: User) => {
     // In a real app, you'd fetch this from Firestore after login.
-    const currentSubscriptionStatus: SubscriptionStatus = 'beta'; // or 'paid'
+    // For this example, all authenticated users are 'beta' testers.
+    const currentSubscriptionStatus: SubscriptionStatus = 'beta';
     setSubscriptionStatus(currentSubscriptionStatus);
     
-    // For this example, we'll treat 'beta' as having access.
-    // If we implemented a real 'free' tier, we'd redirect.
+    // Redirect based on subscription. 'free' goes to pricing, others to home.
     if (currentSubscriptionStatus === 'free') {
       router.push('/pricing');
     } else {
