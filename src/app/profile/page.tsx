@@ -61,7 +61,7 @@ export default function ProfilePage() {
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <SiteHeader />
       <main className="flex-1 p-4 md:p-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-2xl mx-auto">
             <Card>
                 <CardHeader>
                     <div className="flex items-center space-x-6">
@@ -86,14 +86,14 @@ export default function ProfilePage() {
                             />
                         </div>
                         <div className="space-y-1">
-                            <CardTitle className="text-3xl">{user.displayName ?? 'Valued User'}</CardTitle>
-                            <CardDescription>{user.email}</CardDescription>
+                            <CardTitle className="text-3xl font-bold">{user.displayName ?? 'Valued User'}</CardTitle>
+                            <CardDescription className="text-base">{user.email}</CardDescription>
                         </div>
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-6 pt-6">
                     <div className="space-y-2">
-                        <h3 className="text-lg font-semibold">Membership</h3>
+                        <h3 className="text-xl font-semibold">Membership</h3>
                         <p className="text-muted-foreground">You are currently on the free plan.</p>
                         <Button asChild>
                              <a href={buyMeACoffeeLink} target="_blank" rel="noopener noreferrer">
