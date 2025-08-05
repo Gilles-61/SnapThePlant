@@ -1,6 +1,7 @@
 
 "use client";
 
+import Image from 'next/image';
 import {
   Sheet,
   SheetContent,
@@ -45,6 +46,15 @@ export function IdentificationResult({
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-y-auto py-4 space-y-6">
+          <div className="relative aspect-video w-full rounded-lg overflow-hidden border">
+             <Image 
+                src={result.image}
+                alt={result.name}
+                fill
+                className="object-cover"
+                data-ai-hint="nature"
+              />
+          </div>
           <div>
             <h3 className="font-semibold text-lg mb-2 font-headline">{t('result.keyInformation')}</h3>
             <p className="text-foreground/80 leading-relaxed">{result.keyInformation}</p>

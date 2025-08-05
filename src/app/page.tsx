@@ -110,13 +110,6 @@ export default function HomePage() {
   }, [toast, handleReset, t]);
   
   const renderContent = () => {
-    if (view === 'quiz' && capturedImage) {
-        return <IdentificationQuiz category={selectedCategory} onComplete={handleQuizComplete} />;
-    }
-    if (view === 'matches') {
-        return <MatchSelector matches={possibleMatches} onSelect={handleMatchSelected} onBack={() => setView('quiz')} />;
-    }
-    
     return (
         <div className="absolute inset-0 bg-black">
         {capturedImage ? (
@@ -135,6 +128,13 @@ export default function HomePage() {
               <ImageIcon className="w-24 h-24 mb-4" />
               <p className="text-lg">{t('placeholder.useCameraOrUpload')}</p>
           </div>
+        )}
+        
+        {view === 'quiz' && (
+            <IdentificationQuiz category={selectedCategory} onComplete={handleQuizComplete} />
+        )}
+        {view === 'matches' && (
+            <MatchSelector matches={possibleMatches} onSelect={handleMatchSelected} onBack={() => setView('quiz')} />
         )}
       </div>
     );

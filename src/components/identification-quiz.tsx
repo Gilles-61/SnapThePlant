@@ -83,7 +83,7 @@ export function IdentificationQuiz({ category, onComplete }: IdentificationQuizP
                                 {Object.entries(q.options).map(([value, label]) => (
                                     <div key={value} className="flex items-center space-x-2">
                                         <RadioGroupItem value={value} id={`${q.id}-${value}`} />
-                                        <Label htmlFor={`${q.id}-${value}`}>{label}</Label>
+                                        <Label htmlFor={`${q.id}-${value}`}>{label as string}</Label>
                                     </div>
                                 ))}
                             </RadioGroup>
