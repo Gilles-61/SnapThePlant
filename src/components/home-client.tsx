@@ -67,7 +67,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     }
 
     const allMatches = filterDatabase(selectedCategory!, analysis);
-    const topMatches = allMatches.filter(match => match.confidence >= 50).slice(0, 3);
+    const topMatches = allMatches.slice(0, 3);
     
     if (topMatches.length > 0) {
       setPossibleMatches(topMatches);
