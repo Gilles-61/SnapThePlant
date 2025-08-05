@@ -15,12 +15,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Textarea } from '@/components/ui/textarea';
-import { Droplets, Sun, Sprout, Package, Thermometer, Leaf, Check, X, ThumbsDown, ThumbsUp, Bookmark } from 'lucide-react';
+import { Droplets, Sun, Sprout, Package, Thermometer, Leaf, Check, X, ThumbsDown, ThumbsUp, Bookmark, AlertTriangle } from 'lucide-react';
 import type { Species, CareTip } from '@/lib/mock-database';
 import { useTranslation } from '@/hooks/use-language';
 import { Separator } from './ui/separator';
 import { useCollection } from '@/hooks/use-collection';
 import { useToast } from '@/hooks/use-toast';
+import { Badge } from './ui/badge';
 
 interface IdentificationResultProps {
   result: Species | null;
@@ -71,7 +72,15 @@ export function IdentificationResult({
         <SheetHeader className="text-left p-6 pb-2">
           <div className="flex justify-between items-start">
             <div>
-              <SheetTitle className="text-3xl font-bold font-headline">{result.name}</SheetTitle>
+              <div className="flex items-center gap-3">
+                <SheetTitle className="text-3xl font-bold font-headline">{result.name}</SheetTitle>
+                {result.isPoisonous && (
+                  <Badge variant="destructive" className="text-base">
+                    <AlertTriangle className="mr-2 h-4 w-4" />
+                    Poisonous
+                  </Badge>
+                )}
+              </div>
               <SheetDescription asChild>
                 <div className="pt-1 text-foreground/80 italic">
                   {result.scientificName}
@@ -97,6 +106,12 @@ export function IdentificationResult({
                         data-ai-hint="nature"
                     />
                 </div>
+                {result.isPoisonous && result.toxicityWarning && (
+                     <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+                        <h3 className="font-bold text-destructive flex items-center gap-2"><AlertTriangle/>Warning</h3>
+                        <p className="text-destructive/90 mt-2">{result.toxicityWarning}</p>
+                    </div>
+                )}
                 <div>
                     <h3 className="text-xl font-semibold mb-2 font-headline">{t('result.myNotes')}</h3>
                     <Textarea 

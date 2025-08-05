@@ -55,8 +55,8 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setAction(null);
   }, []);
 
-  const proceedWithAnalysis = (analysis: AnalyzeImageOutput['attributes']) => {
-    if (!analysis) {
+  const proceedWithAnalysis = (analysis: AnalyzeImageOutput) => {
+    if (!analysis || !analysis.attributes) {
         toast({
           title: "Analysis Failed",
           description: "The AI model failed to return valid attributes.",
@@ -66,10 +66,13 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         return;
     }
 
-    const allMatches = filterDatabase(selectedCategory!, analysis);
+    const allMatches = filterDatabase(selectedCategory!, analysis.attributes);
     const topMatches = allMatches.slice(0, 3);
     
     if (topMatches.length > 0) {
+      // If AI thinks it's poisonous, give those results a boost
+      // or potentially add the warning to the selected match.
+      // For now, let's just pass the matches.
       setPossibleMatches(topMatches);
       setView('matches');
     } else {
@@ -92,7 +95,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         category: category,
       });
       
-      proceedWithAnalysis(analysis.attributes);
+      proceedWithAnalysis(analysis);
 
     } catch (error) {
       console.error("Error analyzing image:", error);

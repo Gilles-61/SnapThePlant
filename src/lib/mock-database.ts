@@ -20,6 +20,8 @@ export interface Species {
     image: string;
     attributes: Record<string, string>;
     careTips?: CareTip[];
+    isPoisonous?: boolean;
+    toxicityWarning?: string;
 }
 
 export interface ScoredSpecies {
@@ -36,6 +38,8 @@ export const database: Species[] = [
         furtherReading: 'https://en.wikipedia.org/wiki/Monstera_deliciosa',
         image: 'https://placehold.co/600x400.png',
         attributes: { color: 'green', shape: 'lobed', size: 'medium' },
+        isPoisonous: true,
+        toxicityWarning: 'Contains calcium oxalate crystals, which are toxic to cats, dogs, and humans if ingested, causing oral irritation, pain and swelling of mouth, tongue and lips, excessive drooling, vomiting, and difficulty swallowing.',
         careTips: [
             { title: 'Watering', description: 'Water every 1-2 weeks, allowing soil to dry out between waterings. Increase frequency with more light.' },
             { title: 'Sunlight', description: 'Thrives in bright to medium indirect light. Not suited for intense, direct sun.' },
@@ -48,7 +52,8 @@ export const database: Species[] = [
         keyInformation: 'A woody perennial with thorny stems. Cultivated for its beautiful and fragrant flowers. Some varieties produce edible rose hips.',
         furtherReading: 'https://en.wikipedia.org/wiki/Rose',
         image: 'https://placehold.co/600x400.png',
-        attributes: { color: 'red', shape: 'compound', size: 'small' }
+        attributes: { color: 'red', shape: 'compound', size: 'small' },
+        isPoisonous: false,
     },
     {
         id: 3, category: 'Plant', name: 'Sunflower', scientificName: 'Helianthus annuus',
@@ -56,6 +61,7 @@ export const database: Species[] = [
         furtherReading: 'https://en.wikipedia.org/wiki/Helianthus',
         image: 'https://placehold.co/600x400.png',
         attributes: { color: 'yellow', shape: 'simple', size: 'large' },
+        isPoisonous: false,
         careTips: [
             { title: 'Watering', description: 'Requires a lot of water, especially during peak growth. Water deeply but infrequently to encourage deep root growth.' },
             { title: 'Sunlight', description: 'Full sun is essential. Needs at least 6-8 hours of direct sunlight per day.' },
@@ -70,7 +76,8 @@ export const database: Species[] = [
         keyInformation: 'A fragrant herb in the mint family, known for its purple flowers and calming scent. Used in essential oils and culinary arts.',
         furtherReading: 'https://en.wikipedia.org/wiki/Lavandula',
         image: 'https://placehold.co/600x400.png',
-        attributes: { color: 'blue', shape: 'simple', size: 'small' }
+        attributes: { color: 'blue', shape: 'simple', size: 'small' },
+        isPoisonous: false,
     },
     {
         id: 18, category: 'Plant', name: 'Snake Plant', scientificName: 'Dracaena trifasciata',
@@ -78,6 +85,8 @@ export const database: Species[] = [
         furtherReading: 'https://en.wikipedia.org/wiki/Dracaena_trifasciata',
         image: 'https://placehold.co/600x400.png',
         attributes: { color: 'green', shape: 'simple', size: 'medium' },
+        isPoisonous: true,
+        toxicityWarning: 'Mildly toxic to pets if ingested, which can cause gastrointestinal issues like nausea, vomiting, and diarrhea.',
         careTips: [
             { title: 'Watering', description: 'Water sparingly. Allow soil to dry out completely between waterings. Overwatering is the most common cause of death.' },
             { title: 'Sunlight', description: 'Prefers indirect light but is highly tolerant of low light conditions. Can also handle some direct sun.' },
@@ -91,6 +100,8 @@ export const database: Species[] = [
         furtherReading: 'https://en.wikipedia.org/wiki/Epipremnum_aureum',
         image: 'https://placehold.co/600x400.png',
         attributes: { color: 'green', shape: 'simple', size: 'small' },
+        isPoisonous: true,
+        toxicityWarning: 'Toxic to cats and dogs if ingested. It can cause oral irritation, vomiting, and difficulty swallowing.',
         careTips: [
             { title: 'Watering', description: 'Water every 1-2 weeks, allowing the soil to dry out between waterings. Tolerant of underwatering.' },
             { title: 'Sunlight', description: 'Thrives in a wide range of lighting conditions, from low to bright indirect light. Avoid direct sun, which can scorch leaves.' },
@@ -106,28 +117,33 @@ export const database: Species[] = [
         keyInformation: 'A keystone species in many ecosystems, known for its strength, acorns, and lobed leaves. Supports a high diversity of wildlife.',
         furtherReading: 'https://en.wikipedia.org/wiki/Oak',
         image: 'https://placehold.co/600x400.png',
-        attributes: { bark: 'rough', leaf_shape: 'lobed', has_fruit: 'yes' }
+        attributes: { bark: 'rough', leaf_shape: 'lobed', has_fruit: 'yes' },
+        isPoisonous: true,
+        toxicityWarning: 'Leaves and acorns are toxic to cattle, horses, sheep, and goats if eaten in large quantities, due to tannic acid.',
     },
     {
         id: 5, category: 'Tree', name: 'Pine Tree', scientificName: 'Pinus',
         keyInformation: 'An evergreen coniferous tree with characteristic needles and cones. Important for timber and paper production.',
         furtherReading: 'https://en.wikipedia.org/wiki/Pine',
         image: 'https://placehold.co/600x400.png',
-        attributes: { bark: 'rough', leaf_shape: 'needle', has_fruit: 'no' }
+        attributes: { bark: 'rough', leaf_shape: 'needle', has_fruit: 'no' },
+        isPoisonous: false,
     },
     {
         id: 6, category: 'Tree', name: 'Paper Birch', scientificName: 'Betula papyrifera',
         keyInformation: 'A deciduous tree known for its thin, white bark that often peels in paper-like layers. Native to North America.',
         furtherReading: 'https://en.wikipedia.org/wiki/Betula_papyrifera',
         image: 'https://placehold.co/600x400.png',
-        attributes: { bark: 'peeling', leaf_shape: 'simple', has_fruit: 'no' }
+        attributes: { bark: 'peeling', leaf_shape: 'simple', has_fruit: 'no' },
+        isPoisonous: false,
     },
     {
         id: 13, category: 'Tree', name: 'Japanese Maple', scientificName: 'Acer palmatum',
         keyInformation: 'A popular ornamental tree known for its striking leaf shapes and vibrant red or purple colors. Native to Asia.',
         furtherReading: 'https://en.wikipedia.org/wiki/Acer_palmatum',
         image: 'https://placehold.co/600x400.png',
-        attributes: { bark: 'smooth', leaf_shape: 'lobed', has_fruit: 'no' }
+        attributes: { bark: 'smooth', leaf_shape: 'lobed', has_fruit: 'no' },
+        isPoisonous: false,
     },
     
     // --- WEEDS ---
@@ -136,28 +152,32 @@ export const database: Species[] = [
         keyInformation: 'An invasive weed with yellow flowers and a deep taproot. The entire plant is edible and has medicinal uses.',
         furtherReading: 'https://en.wikipedia.org/wiki/Taraxacum',
         image: 'https://placehold.co/600x400.png',
-        attributes: { flower_color: 'yellow', location: 'lawn', leaf_type: 'toothed' }
+        attributes: { flower_color: 'yellow', location: 'lawn', leaf_type: 'toothed' },
+        isPoisonous: false,
     },
     {
         id: 8, category: 'Weed', name: 'White Clover', scientificName: 'Trifolium repens',
         keyInformation: 'A common lawn weed that fixes nitrogen in the soil. Its white flowers are attractive to bees. Can be invasive in gardens.',
         furtherReading: 'https://en.wikipedia.org/wiki/Trifolium_repens',
         image: 'https://placehold.co/600x400.png',
-        attributes: { flower_color: 'white', location: 'lawn', leaf_type: 'broad' }
+        attributes: { flower_color: 'white', location: 'lawn', leaf_type: 'broad' },
+        isPoisonous: false,
     },
     {
         id: 14, category: 'Weed', name: 'Crabgrass', scientificName: 'Digitaria',
         keyInformation: 'An annual weed that spreads quickly in lawns and gardens, especially in summer heat. It outcompetes desired grasses.',
         furtherReading: 'https://en.wikipedia.org/wiki/Digitaria',
         image: 'https://placehold.co/600x400.png',
-        attributes: { flower_color: 'other', location: 'lawn', leaf_type: 'grassy' }
+        attributes: { flower_color: 'other', location: 'lawn', leaf_type: 'grassy' },
+        isPoisonous: false,
     },
     {
         id: 15, category: 'Weed', name: 'Canada Thistle', scientificName: 'Cirsium arvense',
         keyInformation: 'A persistent and invasive perennial weed with sharp spines on its leaves and purple flowers. Difficult to remove due to its root system.',
         furtherReading: 'https://en.wikipedia.org/wiki/Cirsium_arvense',
         image: 'https://placehold.co/600x400.png',
-        attributes: { flower_color: 'red', location: 'garden', leaf_type: 'toothed' }
+        attributes: { flower_color: 'red', location: 'garden', leaf_type: 'toothed' },
+        isPoisonous: false, // Spiny, but not toxic
     },
 
     // --- INSECTS ---
@@ -166,35 +186,42 @@ export const database: Species[] = [
         keyInformation: 'A vital pollinator for many crops and wild plants. Social insects living in large colonies. Will sting if threatened.',
         furtherReading: 'https://en.wikipedia.org/wiki/Honey_bee',
         image: 'https://placehold.co/600x400.png',
-        attributes: { main_color: 'yellow', has_wings: 'yes', number_of_legs: '6' }
+        attributes: { main_color: 'yellow', has_wings: 'yes', number_of_legs: '6' },
+        isPoisonous: true,
+        toxicityWarning: 'Honey bees can deliver a painful sting that injects venom. For most people this is only painful, but it can cause a life-threatening allergic reaction in some individuals.',
     },
     {
         id: 10, category: 'Insect', name: 'Carpenter Ant', scientificName: 'Camponotus',
         keyInformation: 'A common pest that excavates wood to build nests, which can cause structural damage to homes. Does not eat wood.',
         furtherReading: 'https://en.wikipedia.org/wiki/Carpenter_ant',
         image: 'https://placehold.co/600x400.png',
-        attributes: { main_color: 'black', has_wings: 'no', number_of_legs: '6' }
+        attributes: { main_color: 'black', has_wings: 'no', number_of_legs: '6' },
+        isPoisonous: false,
     },
     {
         id: 11, category: 'Insect', name: 'Garden Spider', scientificName: 'Argiope aurantia',
         keyInformation: 'A common orb-weaver spider, harmless to humans. Known for building large, intricate, circular webs in gardens.',
         furtherReading: 'https://en.wikipedia.org/wiki/Argiope_aurantia',
         image: 'https://placehold.co/600x400.png',
-        attributes: { main_color: 'yellow', has_wings: 'no', number_of_legs: '8' }
+        attributes: { main_color: 'yellow', has_wings: 'no', number_of_legs: '8' },
+        isPoisonous: false,
     },
     {
         id: 16, category: 'Insect', name: 'Ladybug', scientificName: 'Coccinellidae',
         keyInformation: 'A well-known beetle, considered a beneficial insect as it preys on aphids and other garden pests. Many cultures consider it a sign of good luck.',
         furtherReading: 'https://en.wikipedia.org/wiki/Coccinellidae',
         image: 'https://placehold.co/600x400.png',
-        attributes: { main_color: 'red', has_wings: 'yes', number_of_legs: '6' }
+        attributes: { main_color: 'red', has_wings: 'yes', number_of_legs: '6' },
+        isPoisonous: false,
     },
     {
         id: 19, category: 'Insect', name: 'Monarch Butterfly', scientificName: 'Danaus plexippus',
         keyInformation: 'A famous migratory butterfly known for its striking orange and black wings. Its larvae feed exclusively on milkweed plants.',
         furtherReading: 'https://en.wikipedia.org/wiki/Monarch_butterfly',
         image: 'https://placehold.co/600x400.png',
-        attributes: { main_color: 'orange', has_wings: 'yes', number_of_legs: '6' }
+        attributes: { main_color: 'orange', has_wings: 'yes', number_of_legs: '6' },
+        isPoisonous: true,
+        toxicityWarning: 'Monarchs are toxic to predators due to cardenolide chemicals they sequester from their milkweed diet. They are not dangerous to touch.',
     },
     
     // --- CACTI ---
@@ -203,21 +230,24 @@ export const database: Species[] = [
         keyInformation: 'A large, tree-like cactus native to the Sonoran Desert. Famous for its arms that branch out. Can live for over 150 years.',
         furtherReading: 'https://en.wikipedia.org/wiki/Saguaro',
         image: 'https://placehold.co/600x400.png',
-        attributes: { shape: 'columnar', flowers: 'yes', color: 'green' }
+        attributes: { shape: 'columnar', flowers: 'yes', color: 'green' },
+        isPoisonous: false,
     },
     {
         id: 20, category: 'Cactus', name: 'Prickly Pear', scientificName: 'Opuntia',
         keyInformation: 'A cactus characterized by its flat, paddle-like stems. Produces edible fruit (tunas) and pads (nopales). Covered in sharp spines and smaller glochids.',
         furtherReading: 'https://en.wikipedia.org/wiki/Opuntia',
         image: 'https://placehold.co/600x400.png',
-        attributes: { shape: 'paddles', flowers: 'yes', color: 'green' }
+        attributes: { shape: 'paddles', flowers: 'yes', color: 'green' },
+        isPoisonous: false,
     },
     {
         id: 21, category: 'Cactus', name: 'Golden Barrel Cactus', scientificName: 'Echinocactus grusonii',
         keyInformation: 'A popular landscape cactus, nearly spherical in shape. Known for its sharp, yellow spines. Endangered in the wild.',
         furtherReading: 'https://en.wikipedia.org/wiki/Echinocactus_grusonii',
         image: 'https://placehold.co/600x400.png',
-        attributes: { shape: 'globular', flowers: 'yes', color: 'green' }
+        attributes: { shape: 'globular', flowers: 'yes', color: 'green' },
+        isPoisonous: false,
     },
 
     // --- SUCCULENTS ---
@@ -227,6 +257,7 @@ export const database: Species[] = [
         furtherReading: 'https://en.wikipedia.org/wiki/Echeveria',
         image: 'https://placehold.co/600x400.png',
         attributes: { color: 'blue', shape: 'rosette', texture: 'fleshy' },
+        isPoisonous: false,
         careTips: [
             { title: 'Watering', description: 'Water thoroughly when soil is completely dry to the touch. Avoid letting water sit in the rosette.' },
             { title: 'Sunlight', description: 'Prefers full sun to light shade. Brighter light brings out more vibrant colors in the leaves.' },
@@ -240,6 +271,8 @@ export const database: Species[] = [
         furtherReading: 'https://en.wikipedia.org/wiki/Crassula_ovata',
         image: 'https://placehold.co/600x400.png',
         attributes: { color: 'green', shape: 'oval', texture: 'fleshy' },
+        isPoisonous: true,
+        toxicityWarning: 'Mildly toxic to cats and dogs. Ingestion may cause vomiting and depression.',
         careTips: [
             { title: 'Watering', description: 'Water when the soil is dry to the touch. Be careful not to overwater, especially in winter.' },
             { title: 'Sunlight', description: 'Needs plenty of light. At least 4 hours of direct sun per day is ideal.' },
@@ -253,6 +286,7 @@ export const database: Species[] = [
         furtherReading: 'https://en.wikipedia.org/wiki/Sempervivum',
         image: 'https://placehold.co/600x400.png',
         attributes: { color: 'green', shape: 'rosette', texture: 'fleshy' },
+        isPoisonous: false,
         careTips: [
             { title: 'Watering', description: 'Very drought-tolerant. Water only when the soil is completely dry.' },
             { title: 'Sunlight', description: 'Thrives in full sun and well-drained, gritty soil.' },

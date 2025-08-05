@@ -28,6 +28,7 @@ const AttributeSchema = z.object({
 });
 
 const AnalyzeImageOutputSchema = z.object({
+  isPoisonous: z.boolean().describe('Whether the item is poisonous or toxic to humans or pets.'),
   attributes: z
     .array(AttributeSchema)
     .describe(
@@ -41,12 +42,14 @@ export async function analyzeImage(input: AnalyzeImageInput): Promise<AnalyzeIma
 }
 
 const promptText = `
-    You are an expert biologist and botanist. Your main goal is to analyze the provided image and extract its most distinct visual attributes as an array of key-value pairs.
+    You are an expert biologist and botanist. Your main goal is to analyze the provided image, determine if it is poisonous, and extract its most distinct visual attributes.
 
     Analyze the image of a {{category}} and describe its visual characteristics. 
     Focus on objective, observable features. Prioritize the overall form and structure (like leaf shape, bark texture, or wing presence) over color, as colors can sometimes be misleading.
     The attribute keys should be simple and descriptive (e.g., "color", "leaf_shape", "bark_texture").
     The attribute values should be simple, single words if possible (e.g., "green", "lobed", "smooth").
+
+    Most importantly, determine if the item is known to be poisonous or toxic to humans or pets and set the 'isPoisonous' boolean field accordingly. If you are unsure, default to 'false'.
 
     Here are some examples of good attributes for different categories:
     - Plant: "color", "shape", "size"
@@ -57,7 +60,7 @@ const promptText = `
     - Succulent: "color", "shape", "texture"
     
     Do not guess. Only return attributes you can confidently identify from the image.
-    Your output MUST be a JSON object containing the "attributes" key, which holds an array of key-value objects. For example: [{ "key": "color", "value": "green" }]
+    Your output MUST be a JSON object containing the "isPoisonous" key and the "attributes" key, which holds an array of key-value objects. For example: { "isPoisonous": true, "attributes": [{ "key": "color", "value": "green" }] }
 
     Photo: {{media url=photoDataUri}}
 `;
