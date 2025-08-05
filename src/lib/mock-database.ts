@@ -223,7 +223,15 @@ export const database: Species[] = [
         isPoisonous: true,
         toxicityWarning: 'Monarchs are toxic to predators due to cardenolide chemicals they sequester from their milkweed diet. They are not dangerous to touch.',
     },
-    
+    {
+        id: 26, category: 'Insect', name: 'Comma Butterfly', scientificName: 'Polygonia c-album',
+        keyInformation: 'Known for its ragged-edged wings and a small, white C-shaped mark on the underside of its hindwings. It has a fast, erratic flight.',
+        furtherReading: 'https://en.wikipedia.org/wiki/Polygonia_c-album',
+        image: 'https://placehold.co/600x400.png',
+        attributes: { color: 'orange', wings: 'yes', legs: '6' },
+        isPoisonous: false,
+    },
+
     // --- CACTI ---
     {
         id: 17, category: 'Cactus', name: 'Saguaro Cactus', scientificName: 'Carnegiea gigantea',
