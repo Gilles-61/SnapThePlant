@@ -20,6 +20,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { SearchInput } from './search-input';
 import { analyzeImage, type AnalyzeImageOutput } from '@/ai/flows/analyze-image-flow';
 import type { Category } from '@/lib/categories';
+import { BarcodeScanner } from './barcode-scanner';
 
 
 export function HomeClient({ initialCategory }: { initialCategory?: Category }) {
@@ -35,6 +36,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   const [result, setResult] = useState<Species | null>(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [view, setView] = useState<'capture' | 'matches'>('capture');
   const [possibleMatches, setPossibleMatches] = useState<Species[]>([]);
   const [isCategorySelectorOpen, setIsCategorySelectorOpen] = useState(false);
@@ -46,6 +48,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setIsResultOpen(false);
     setIsLoading(false);
     setIsCameraOpen(false);
+    setIsScannerOpen(false);
     setView('capture');
     setPossibleMatches([]);
     setSelectedCategory(null);
@@ -185,16 +188,14 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   }
 
   const handleScanButtonClick = () => {
-   toast({
-    title: "Coming Soon!",
-    description: "Barcode scanning will be available in a future update."
-   })
+   setIsScannerOpen(true);
   }
 
   const handleScanSuccess = (scanResult: string) => {
+    setIsScannerOpen(false);
     toast({
         title: "Scan Successful",
-        description: `Found code: ${scanResult}`
+        description: `Searching for code: ${scanResult}`
     });
     // Assume the scanned code is the item's ID for this mock implementation
     handleSearch(scanResult);
@@ -250,6 +251,13 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
            <div className="absolute inset-0 bg-black">
               <CameraFeed ref={cameraRef} />
            </div>
+        )}
+
+        {isScannerOpen && (
+          <BarcodeScanner 
+            onScanSuccess={handleScanSuccess}
+            onClose={() => setIsScannerOpen(false)}
+          />
         )}
         
         {view === 'matches' && capturedImage && (
