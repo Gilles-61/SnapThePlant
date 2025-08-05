@@ -102,18 +102,18 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
       );
     }
 
-    setPossibleMatches(matches);
-    setView('matches');
-    setCapturedImage('https://placehold.co/600x400.png'); // Use a placeholder for search results
-    setIsLoading(false);
-
-    if (matches.length === 0) {
+    if (matches.length > 0) {
+        setPossibleMatches(matches);
+        setView('matches');
+        setCapturedImage('https://placehold.co/600x400.png'); // Use a placeholder for search results
+    } else {
       toast({
         title: "No Results",
         description: `No items found matching "${query}".`,
         variant: "default",
       });
     }
+    setIsLoading(false);
   }, [selectedCategory, toast]);
 
 
@@ -154,14 +154,14 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     }
   };
 
-  const handleSaveNotes = useCallback(() => {
+  const handleFeedback = useCallback((wasCorrect: boolean) => {
     // In a real app, this would send feedback to a backend
     toast({
-        title: t('toast.feedback.title'),
-        description: t('toast.feedback.description'),
+        title: "Feedback Received",
+        description: "Thank you for helping us improve our accuracy!",
     });
-    // Don't reset immediately, let the sheet close handle it.
-  }, [toast, t]);
+    handleReset();
+  }, [toast, handleReset]);
 
   const handleCategorySelect = (category: Category) => {
     setSelectedCategory(category);
@@ -254,12 +254,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         
         {view === 'matches' && capturedImage && (
            <div className="absolute inset-0 bg-black">
-              <Image
-                src={capturedImage}
-                alt="Captured for identification"
-                fill
-                className="object-contain"
-              />
+             
               <MatchSelector 
                 matches={possibleMatches} 
                 onSelect={handleMatchSelected} 
@@ -327,8 +322,8 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
             else setIsResultOpen(true);
           }}
           result={result}
-          onConfirm={handleSaveNotes}
-          onReject={handleReset}
+          onConfirm={() => handleFeedback(true)}
+          onReject={() => handleFeedback(false)}
         />
 
         <AlertDialog open={isCategorySelectorOpen} onOpenChange={setIsCategorySelectorOpen}>
