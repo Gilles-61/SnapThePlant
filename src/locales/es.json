@@ -68,7 +68,8 @@
         "billing": "Facturación",
         "settings": "Configuración",
         "language": "Idioma",
-        "logout": "Cerrar sesión"
+        "logout": "Cerrar sesión",
+        "becomeMember": "Hacerse miembro"
     },
     "quiz": {
         "title": "¡Ayúdanos a identificarlo!",

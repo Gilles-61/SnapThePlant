@@ -26,11 +26,12 @@ import {
   } from "@/components/ui/dropdown-menu"
 import { useLanguage, languages } from "@/hooks/use-language"
 import { useAuth } from "@/hooks/use-auth"
-import { LogIn } from "lucide-react"
+import { Heart, LogIn } from "lucide-react"
   
   export function UserNav() {
     const { language, setLanguage, t } = useLanguage()
     const { user, loading, signOut } = useAuth();
+    const buyMeACoffeeLink = "https://buymeacoffee.com/snaptheplant";
 
     if (loading) {
       return <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" disabled><Avatar className="h-8 w-8" /></Button>
@@ -93,6 +94,13 @@ import { LogIn } from "lucide-react"
             </DropdownMenuSubContent>
           </DropdownMenuSub>
           <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+              <a href={buyMeACoffeeLink} target="_blank" rel="noopener noreferrer" className="flex items-center cursor-pointer">
+                <Heart className="mr-2 h-4 w-4" />
+                {t('userNav.becomeMember')}
+              </a>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={signOut}>
             {t('userNav.logout')}
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
@@ -101,3 +109,4 @@ import { LogIn } from "lucide-react"
       </DropdownMenu>
     )
   }
+

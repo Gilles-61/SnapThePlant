@@ -68,7 +68,8 @@
         "billing": "Abrechnung",
         "settings": "Einstellungen",
         "language": "Sprache",
-        "logout": "Abmelden"
+        "logout": "Abmelden",
+        "becomeMember": "Mitglied werden"
     },
     "quiz": {
         "title": "Hilf uns bei der Identifizierung!",

@@ -68,7 +68,8 @@
         "billing": "Faturamento",
         "settings": "Configurações",
         "language": "Idioma",
-        "logout": "Sair"
+        "logout": "Sair",
+        "becomeMember": "Torne-se um membro"
     },
     "quiz": {
         "title": "Ajude-nos a identificá-lo!",

@@ -68,7 +68,8 @@
         "billing": "Billing",
         "settings": "Settings",
         "language": "Language",
-        "logout": "Log out"
+        "logout": "Log out",
+        "becomeMember": "Become a Member"
     },
     "quiz": {
         "title": "Help us identify it!",

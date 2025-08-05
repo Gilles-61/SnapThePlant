@@ -68,7 +68,8 @@
         "billing": "Facturation",
         "settings": "Paramètres",
         "language": "Langue",
-        "logout": "Déconnexion"
+        "logout": "Déconnexion",
+        "becomeMember": "Devenir membre"
     },
     "quiz": {
         "title": "Aidez-nous à l'identifier !",
