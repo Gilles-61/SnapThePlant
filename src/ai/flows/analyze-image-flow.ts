@@ -23,6 +23,7 @@ const AnalyzeImageInputSchema = z.object({
 export type AnalyzeImageInput = z.infer<typeof AnalyzeImageInputSchema>;
 
 const AnalyzeImageOutputSchema = z.object({
+  isClear: z.boolean().describe("Whether the image is clear and high-quality enough for accurate identification."),
   attributes: z
     .object({
       color: z.string().optional().describe("Primary color of the plant, flower, or insect."),
@@ -49,7 +50,9 @@ export async function analyzeImage(input: AnalyzeImageInput): Promise<AnalyzeIma
 }
 
 const promptText = `
-    You are an expert biologist and botanist. Your task is to analyze the provided image of a {{category}} and determine its visual characteristics based on a predefined set of questions, as if you were answering a quiz.
+    You are an expert biologist and botanist. Your first task is to assess the quality of the provided image. If the image is blurry, out of focus, poorly lit, or if the subject is too far away to see details, set the 'isClear' flag to false. Otherwise, set it to true.
+
+    If the image is clear, your second task is to analyze the image of a {{category}} and determine its visual characteristics based on a predefined set of questions, as if you were answering a quiz.
     Focus on the most visually distinct features of the subject in the photo.
 
     Based on the category "{{category}}", answer the following questions and provide the answer key for each.

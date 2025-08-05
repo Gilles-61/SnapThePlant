@@ -3,7 +3,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import Image from 'next/image';
-import { Loader, Camera, RotateCcw, Image as ImageIcon, Upload, QrCode, ArrowLeft } from 'lucide-react';
+import { Loader, Camera, RotateCcw, Image as ImageIcon, Upload, QrCode, ArrowLeft, AlertCircle } from 'lucide-react';
 
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -41,6 +41,8 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   const [view, setView] = useState<'capture' | 'matches'>('capture');
   const [possibleMatches, setPossibleMatches] = useState<ScoredSpecies[]>([]);
   const [action, setAction] = useState<'camera' | 'upload' | null>(null);
+  const [isQualityAlertOpen, setIsQualityAlertOpen] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<AnalyzeImageOutput | null>(null);
   
   const handleReset = useCallback(() => {
     setCapturedImage(null);
@@ -53,12 +55,40 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setPossibleMatches([]);
     setSelectedCategory(null);
     setAction(null);
+    setAnalysisResult(null);
+    setIsQualityAlertOpen(false);
   }, []);
+
+  const proceedWithAnalysis = (analysis: AnalyzeImageOutput) => {
+    if (!analysis.attributes) {
+        toast({
+          title: "Analysis Failed",
+          description: "The AI model failed to return valid attributes.",
+          variant: "destructive"
+        });
+        handleReset();
+        return;
+    }
+
+    const allMatches = filterDatabase(selectedCategory!, analysis.attributes);
+    const topMatches = allMatches.slice(0, 3);
+    
+    if (topMatches.length > 0) {
+      setPossibleMatches(topMatches);
+      setView('matches');
+    } else {
+      toast({
+        title: "No Matches Found",
+        description: "We couldn't find a match. Please try another image or category.",
+        variant: "default",
+      });
+      handleReset();
+    }
+  }
 
   const findMatches = useCallback(async (imageDataUri: string, category: Category) => {
     setCapturedImage(imageDataUri);
     setIsLoading(true);
-    setView('matches');
 
     try {
       const analysis: AnalyzeImageOutput = await analyzeImage({
@@ -66,23 +96,15 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         category: category,
       });
 
-      if (!analysis.attributes) {
-        throw new Error("The AI model failed to return valid attributes.");
+      if (!analysis.isClear) {
+        setAnalysisResult(analysis);
+        setIsQualityAlertOpen(true);
+        setIsLoading(false);
+        return;
       }
 
-      const allMatches = filterDatabase(category, analysis.attributes);
-      const topMatches = allMatches.slice(0, 3);
-      
-      if (topMatches.length > 0) {
-        setPossibleMatches(topMatches);
-      } else {
-        toast({
-          title: "No Matches Found",
-          description: "We couldn't find a match. Please try another image or category.",
-          variant: "default",
-        });
-        handleReset();
-      }
+      proceedWithAnalysis(analysis);
+
     } catch (error) {
       console.error("Error analyzing image:", error);
       toast({
@@ -92,9 +114,9 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
       });
       handleReset();
     } finally {
-      setIsLoading(false);
+      if (!isQualityAlertOpen) setIsLoading(false);
     }
-  }, [toast, handleReset]);
+  }, [toast, handleReset, isQualityAlertOpen]);
 
 
   const handleMatchSelected = useCallback((species: Species) => {
@@ -384,6 +406,32 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
           onConfirm={() => handleFeedback(true)}
           onReject={() => handleFeedback(false)}
         />
+
+        <AlertDialog open={isQualityAlertOpen} onOpenChange={setIsQualityAlertOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2">
+                <AlertCircle className="text-amber-500" />
+                Image Quality Warning
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                The uploaded image may be blurry or unclear. This could lead to inaccurate identification. Would you like to proceed anyway?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={handleReset}>Try Again</AlertDialogCancel>
+              <AlertDialogAction onClick={() => {
+                setIsQualityAlertOpen(false);
+                setIsLoading(true);
+                proceedWithAnalysis(analysisResult!);
+                setIsLoading(false);
+              }}>
+                Continue Anyway
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
 
         <input
             type="file"
