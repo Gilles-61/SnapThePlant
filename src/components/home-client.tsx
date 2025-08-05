@@ -70,10 +70,11 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         throw new Error("The AI model failed to return valid attributes.");
       }
 
-      const matches = filterDatabase(category, analysis.attributes);
+      const allMatches = filterDatabase(category, analysis.attributes);
+      const topMatches = allMatches.slice(0, 3);
       
-      if (matches.length > 0) {
-        setPossibleMatches(matches);
+      if (topMatches.length > 0) {
+        setPossibleMatches(topMatches);
       } else {
         toast({
           title: "No Matches Found",
@@ -125,7 +126,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     }));
 
     if (scoredMatches.length > 0) {
-        setPossibleMatches(scoredMatches);
+        setPossibleMatches(scoredMatches.slice(0, 3));
         setView('matches');
         if (typeof document !== 'undefined') {
             setCapturedImage('https://placehold.co/600x400.png'); 
