@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -18,7 +19,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/use-auth';
-import { Leaf, LogIn } from 'lucide-react';
+import { Eye, EyeOff, Leaf, LogIn } from 'lucide-react';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email.' }),
@@ -28,6 +29,7 @@ const formSchema = z.object({
 export function LoginForm() {
   const { signInWithEmail, signInWithGoogle } = useAuth();
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -88,9 +90,14 @@ export function LoginForm() {
                 render={({ field }) => (
                     <FormItem>
                     <FormLabel>Password</FormLabel>
-                    <FormControl>
-                        <Input type="password" placeholder="Your password" {...field} />
-                    </FormControl>
+                    <div className="relative">
+                      <FormControl>
+                          <Input type={showPassword ? "text" : "password"} placeholder="Your password" {...field} />
+                      </FormControl>
+                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 flex items-center pr-3">
+                        {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
+                      </button>
+                    </div>
                     <FormMessage />
                     </FormItem>
                 )}
