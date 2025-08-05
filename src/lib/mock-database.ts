@@ -1,6 +1,5 @@
 
 import type { Category } from "@/lib/categories";
-import type { AnalyzeImageOutput } from "@/ai/flows/analyze-image-flow";
 
 // This is now just a type alias, the logic is in the component.
 export type Answers = Record<string, string>;
@@ -313,42 +312,19 @@ export const database: Species[] = [
     }
 ];
 
-export function filterDatabase(category: Category, attributes: AnalyzeImageOutput['attributes']): ScoredSpecies[] {
-    const categorySpecies = database.filter(s => s.category === category);
-    
-    if (attributes.length === 0) {
-        // If no attributes, return all species in the category with a neutral score
-        return categorySpecies.map(s => ({ species: s, score: 0, confidence: 0 }));
-    }
+export function findSpeciesByName(name: string): Species | null {
+    const searchTerm = name.toLowerCase();
+    const species = database.find(s => s.name.toLowerCase() === searchTerm || s.scientificName.toLowerCase() === searchTerm);
+    return species || null;
+}
 
-    const aiAttributeCount = attributes.length;
-    if (aiAttributeCount === 0) return [];
-
-    const scoredSpecies = categorySpecies.map(species => {
-        let score = 0;
-        
-        // Iterate over the attributes the AI provided
-        attributes.forEach(aiAttr => {
-             // Check if the database species has this attribute key
-            if (species.attributes.hasOwnProperty(aiAttr.key)) {
-                if (aiAttr.value.toLowerCase() === species.attributes[aiAttr.key].toLowerCase()) {
-                    score++; // Direct match
-                }
-            }
-        });
-        
-        // A simple confidence score: ratio of matched attributes to the number of attributes the AI provided.
-        // This measures how well the database entry aligns with the AI's description.
-        const confidence = aiAttributeCount > 0 ? Math.round((score / aiAttributeCount) * 100) : 0;
-        
-        return { species, score, confidence };
+export function searchDatabase(query: string, category: Category | null): Species[] {
+    const searchTerm = query.toLowerCase();
+    return database.filter(s => {
+        const inCategory = category ? s.category === category : true;
+        const nameMatch = s.name.toLowerCase().includes(searchTerm);
+        const scientificNameMatch = s.scientificName.toLowerCase().includes(searchTerm);
+        const idMatch = s.id.toString() === searchTerm;
+        return inCategory && (nameMatch || scientificNameMatch || idMatch);
     });
-
-    // Filter out species that have a score of 0, as they are not relevant matches.
-    const matchedSpecies = scoredSpecies.filter(item => item.score > 0);
-
-    // Sort by the highest score (most matches) first.
-    matchedSpecies.sort((a, b) => b.score - a.score);
-
-    return matchedSpecies;
 }

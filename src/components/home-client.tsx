@@ -13,20 +13,20 @@ import { IdentificationResult } from '@/components/identification-result';
 import CameraFeed, { type CameraFeedHandle } from '@/components/camera-feed';
 import { useTranslation } from '@/hooks/use-language';
 import { MatchSelector } from '@/components/match-selector';
-import { filterDatabase, type Species, database, type ScoredSpecies } from '@/lib/mock-database';
+import { findSpeciesByName, type Species, database, type ScoredSpecies, searchDatabase } from '@/lib/mock-database';
 import { useAuth } from '@/hooks/use-auth';
 import { AuthGate } from '@/components/auth-gate';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { SearchInput } from './search-input';
-import { analyzeImage } from '@/ai/flows/analyze-image-flow';
-import { analyzeInsect } from '@/ai/flows/analyze-insect-flow';
+import { identifySpecies } from '@/ai/flows/identify-species-flow';
 import type { Category } from '@/lib/categories';
 import { BarcodeScanner } from './barcode-scanner';
 import { Card, CardContent } from './ui/card';
 
 type AnalysisResult = {
+    name: string;
+    scientificName: string;
     isPoisonous: boolean;
-    attributes: { key: string; value: string }[];
 };
 
 export function HomeClient({ initialCategory }: { initialCategory?: Category }) {
@@ -61,29 +61,37 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   }, []);
 
   const proceedWithAnalysis = (analysis: AnalysisResult) => {
-    if (!analysis || !analysis.attributes) {
+    if (!analysis || !analysis.name) {
         toast({
           title: "Analysis Failed",
-          description: "The AI model failed to return valid attributes.",
+          description: "The AI model failed to return a valid identification.",
           variant: "destructive"
         });
         handleReset();
         return;
     }
 
-    const allMatches = filterDatabase(selectedCategory!, analysis.attributes);
-    const topMatches = allMatches.slice(0, 3);
-    
-    if (topMatches.length > 0) {
-      // If AI thinks it's poisonous, give those results a boost
-      // or potentially add the warning to the selected match.
-      // For now, let's just pass the matches.
-      setPossibleMatches(topMatches);
+    const topMatch = findSpeciesByName(analysis.name);
+
+    if (topMatch) {
+      // The AI can override the poison status from the database
+      topMatch.isPoisonous = analysis.isPoisonous;
+      
+      const scoredMatch: ScoredSpecies = {
+        species: topMatch,
+        score: 1, // We have a direct match
+        confidence: 98 // High confidence from direct AI identification
+      };
+      
+      // For now, let's just use the top match.
+      // In the future, we could search for similar species as alternatives.
+      setPossibleMatches([scoredMatch]);
       setView('matches');
+
     } else {
       toast({
-        title: "No Matches Found",
-        description: "We couldn't find a confident match. Please try another image or category.",
+        title: "Not in Database",
+        description: `We identified a "${analysis.name}", but it's not in our database yet.`,
         variant: "default",
       });
       handleReset();
@@ -95,16 +103,10 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setIsLoading(true);
 
     try {
-      let analysis: AnalysisResult;
-
-      if (category === 'Insect') {
-        analysis = await analyzeInsect({ photoDataUri: imageDataUri });
-      } else {
-        analysis = await analyzeImage({
-            photoDataUri: imageDataUri,
-            category: category,
-        });
-      }
+      const analysis = await identifySpecies({
+          photoDataUri: imageDataUri,
+          category: category,
+      });
       
       proceedWithAnalysis(analysis);
 
@@ -130,31 +132,19 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   const handleSearch = useCallback((query: string) => {
     setIsLoading(true);
 
-    let matches: Species[];
-    if (selectedCategory) {
-      matches = filterDatabase(selectedCategory, []).map(s => s.species).filter(s => 
-          s.name.toLowerCase().includes(query.toLowerCase()) || 
-          s.id.toString() === query
-      );
-    } else {
-      matches = database.filter(s => 
-          s.name.toLowerCase().includes(query.toLowerCase()) || 
-          s.scientificName.toLowerCase().includes(query.toLowerCase()) ||
-          s.id.toString() === query
-      );
-    }
+    const matches = searchDatabase(query, selectedCategory);
     
     const scoredMatches: ScoredSpecies[] = matches.map((m, i) => ({
       species: m,
-      score: 1,
+      score: 1, // Assume high score for direct search
       confidence: 100,
     }));
 
     if (scoredMatches.length > 0) {
-        setPossibleMatches(scoredMatches.slice(0, 3));
+        setPossibleMatches(scoredMatches.slice(0, 5));
         setView('matches');
         if (typeof document !== 'undefined') {
-            setCapturedImage('https://placehold.co/600x400.png'); 
+            setCapturedImage('/search-placeholder.png'); 
         }
     } else {
       toast({
