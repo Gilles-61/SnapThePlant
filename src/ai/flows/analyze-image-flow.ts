@@ -44,7 +44,7 @@ const promptText = `
     You are an expert biologist and botanist. Your main goal is to analyze the provided image and extract its most distinct visual attributes as an array of key-value pairs.
 
     Analyze the image of a {{category}} and describe its visual characteristics. 
-    Focus on objective, observable features.
+    Focus on objective, observable features. Prioritize the overall form and structure (like leaf shape, bark texture, or wing presence) over color, as colors can sometimes be misleading.
     The attribute keys should be simple and descriptive (e.g., "color", "leaf_shape", "bark_texture").
     The attribute values should be simple, single words if possible (e.g., "green", "lobed", "smooth").
 
