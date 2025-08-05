@@ -22,6 +22,7 @@ export function PricingPage() {
             buttonText: "Sign Up Now",
             buttonVariant: "default" as const,
             href: "/signup",
+            isInternal: true,
         },
         {
             name: "Monthly",
@@ -38,6 +39,7 @@ export function PricingPage() {
             buttonText: "Subscribe Now",
             buttonVariant: "default" as const,
             href: buyMeACoffeeLink,
+            isInternal: false,
         },
         {
             name: "Yearly",
@@ -55,6 +57,7 @@ export function PricingPage() {
             buttonVariant: "default" as const,
             isMostPopular: true,
             href: buyMeACoffeeLink,
+            isInternal: false,
         },
         {
             name: "Donation",
@@ -64,6 +67,7 @@ export function PricingPage() {
             buttonText: "Donate",
             buttonVariant: "outline" as const,
             href: buyMeACoffeeLink,
+            isInternal: false,
         },
     ];
 
@@ -104,7 +108,7 @@ export function PricingPage() {
                             </CardContent>
                             <CardFooter>
                                 <Button asChild className="w-full" variant={tier.buttonVariant}>
-                                     {tier.href.startsWith('/') ? (
+                                     {tier.isInternal ? (
                                         <Link href={tier.href}>
                                             {tier.buttonText}
                                         </Link>

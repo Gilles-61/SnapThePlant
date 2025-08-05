@@ -26,7 +26,7 @@ import {
   } from "@/components/ui/dropdown-menu"
 import { useLanguage, languages } from "@/hooks/use-language"
 import { useAuth } from "@/hooks/use-auth"
-import { Languages, Heart, LogIn, LifeBuoy } from "lucide-react"
+import { Languages, Heart, LogIn, LifeBuoy, User as UserIcon } from "lucide-react"
   
   export function UserNav() {
     const { language, setLanguage, t } = useLanguage()
@@ -54,7 +54,7 @@ import { Languages, Heart, LogIn, LifeBuoy } from "lucide-react"
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
               <AvatarImage src={user.photoURL ?? "https://placehold.co/100x100.png"} alt={user.displayName ?? 'User'} />
-              <AvatarFallback>{user.displayName?.charAt(0) ?? 'U'}</AvatarFallback>
+              <AvatarFallback>{user.displayName?.charAt(0)?.toUpperCase() ?? 'U'}</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
@@ -70,7 +70,10 @@ import { Languages, Heart, LogIn, LifeBuoy } from "lucide-react"
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
-              <Link href="/profile">{t('userNav.profile')}</Link>
+              <Link href="/profile">
+                <UserIcon className="mr-2 h-4 w-4" />
+                <span>{t('userNav.profile')}</span>
+              </Link>
             </DropdownMenuItem>
              <DropdownMenuItem asChild>
               <a href="mailto:feedback@snaptheplant.com?subject=Beta Feedback for SnapThePlant">
@@ -109,4 +112,3 @@ import { Languages, Heart, LogIn, LifeBuoy } from "lucide-react"
       </DropdownMenu>
     )
   }
-
