@@ -24,22 +24,9 @@ export type AnalyzeImageInput = z.infer<typeof AnalyzeImageInputSchema>;
 
 const AnalyzeImageOutputSchema = z.object({
   attributes: z
-    .object({
-      color: z.string().optional().describe("Primary color of the plant, flower, or insect."),
-      shape: z.string().optional().describe("Overall shape of the plant or cactus."),
-      size: z.string().optional().describe("Approximate size of the plant."),
-      bark: z.string().optional().describe("Texture of the tree bark."),
-      leaf_shape: z.string().optional().describe("Shape of the tree's leaves."),
-      has_fruit: z.string().optional().describe("Whether the tree has fruit or flowers."),
-      flower_color: z.string().optional().describe("Color of the weed's flowers."),
-      location: z.string().optional().describe("Where the weed is growing."),
-      leaf_type: z.string().optional().describe("The type of leaves on the weed."),
-      wings: z.string().optional().describe("Whether the insect has wings."),
-      legs: z.string().optional().describe("The number of legs the insect has."),
-      flowers: z.string().optional().describe("Whether the cactus has flowers visible."),
-    })
+    .record(z.string())
     .describe(
-      'The extracted visual attributes of the item in the photo, matching the quiz options.'
+      'A flexible list of key-value pairs describing the visual attributes of the item in the photo.'
     ),
 });
 export type AnalyzeImageOutput = z.infer<typeof AnalyzeImageOutputSchema>;
@@ -49,46 +36,22 @@ export async function analyzeImage(input: AnalyzeImageInput): Promise<AnalyzeIma
 }
 
 const promptText = `
-    You are an expert biologist and botanist. Your main goal is to analyze the provided image and extract its visual attributes.
+    You are an expert biologist and botanist. Your main goal is to analyze the provided image and extract its most distinct visual attributes as key-value pairs.
 
-    Analyze the image of a {{category}} and determine its visual characteristics based on a predefined set of questions, as if you were answering a quiz.
-    Focus on the most visually distinct features of the subject in the photo.
+    Analyze the image of a {{category}} and describe its visual characteristics. 
+    Focus on objective, observable features.
+    The attribute keys should be simple and descriptive (e.g., "color", "leaf_shape", "bark_texture").
+    The attribute values should be simple, single words if possible (e.g., "green", "lobed", "smooth").
 
-    Based on the category "{{category}}", answer the following questions and provide the answer key for each.
+    Here are some examples of good attributes for different categories:
+    - Plant: "color", "shape", "size"
+    - Tree: "bark", "leaf_shape", "has_fruit"
+    - Weed: "flower_color", "location", "leaf_type"
+    - Insect: "color", "wings", "legs"
+    - Cactus: "shape", "flowers", "color"
     
-    Category: Plant
-    Questions:
-    1. What is the primary color of the flower/leaves? (key: "color", options: "red", "green", "yellow", "blue", "white", "other")
-    2. What is the leaf shape? (key: "shape", options: "simple", "lobed", "needle", "compound")
-    3. What is the approximate size? (key: "size", options: "small", "medium", "large")
-    
-    Category: Tree
-    Questions:
-    1. What does the bark look like? (key: "bark", options: "smooth", "rough", "peeling")
-    2. What is the leaf shape? (key: "leaf_shape", options: "simple", "lobed", "needle")
-    3. Does it have fruit or flowers? (key: "has_fruit", options: "yes", "no")
-    
-    Category: Weed
-    Questions:
-    1. What color are the flowers, if any? (key: "flower_color", options: "red", "green", "yellow", "blue", "white", "other")
-    2. Where is it growing? (key: "location", options: "lawn", "garden", "pavement")
-    3. What do the leaves look like? (key: "leaf_type", options: "broad", "grassy", "toothed")
-
-    Category: Insect
-    Questions:
-    1. What is the main color of the insect? (key: "color", options: "red", "green", "yellow", "blue", "white", "other")
-    2. Does it have wings? (key: "wings", options: "yes", "no")
-    3. How many legs does it have? (key: "legs", options: "6", "8", "more")
-
-    Category: Cactus
-    Questions:
-    1. What is the overall shape of the cactus? (key: "shape", options: "columnar", "globular", "paddles")
-    2. Are there flowers visible? (key: "flowers", options: "yes", "no")
-    3. What color is it? (key: "color", options: "green", "blue-green", "grey-green")
-
-    Analyze the image and determine the most appropriate option for each question corresponding to the given category.
-    Your output MUST be a JSON object where keys are the attribute keys (e.g., "color", "shape") and values are the single best option chosen from the list.
-    If the image is clearly a sunflower, the primary color is "yellow".
+    Do not guess. Only return attributes you can confidently identify from the image.
+    Your output MUST be a JSON object containing the "attributes" key, which holds the key-value pairs.
 
     Photo: {{media url=photoDataUri}}
 `;

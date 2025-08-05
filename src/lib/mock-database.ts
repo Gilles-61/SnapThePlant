@@ -235,16 +235,21 @@ export function filterDatabase(category: Category, attributes: Record<string, st
         let score = 0;
         let maxScore = 0;
         
-        for (const key in species.attributes) {
-            maxScore++; // Increment for every attribute the species has
-            if (attributes[key] && attributes[key].toLowerCase() === species.attributes[key].toLowerCase()) {
-                score++;
+        // Iterate over the attributes the AI provided
+        for (const key in attributes) {
+             // Check if the database species has this attribute at all
+            if (species.attributes.hasOwnProperty(key)) {
+                maxScore++; // Potential for a match
+                if (attributes[key].toLowerCase() === species.attributes[key].toLowerCase()) {
+                    score++; // Direct match
+                }
             }
         }
-
-        // Calculate confidence based on the number of matching attributes out of the total attributes for that species.
-        // This gives a more accurate representation of how well the AI's analysis matches the database entry.
-        const confidence = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+        
+        // A simple confidence score: ratio of matched attributes to the number of attributes the AI provided.
+        // This measures how well the database entry aligns with the AI's description.
+        const confidence = aiAttributeCount > 0 ? Math.round((score / aiAttributeCount) * 100) : 0;
+        
         return { species, score, confidence };
     });
 
