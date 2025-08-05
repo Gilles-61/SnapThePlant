@@ -5,7 +5,6 @@ import { useState, useRef, useCallback, Suspense } from 'react';
 import Image from 'next/image';
 import { Loader, Camera, RotateCcw, Image as ImageIcon } from 'lucide-react';
 
-import type { EnhanceIdentificationContextOutput } from '@/ai/flows/enhance-identification-context';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { SiteHeader } from '@/components/site-header';
@@ -27,7 +26,7 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category>(categories[0].name);
-  const [result, setResult] = useState<EnhanceIdentificationContextOutput | null>(null);
+  const [result, setResult] = useState<Species | null>(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [view, setView] = useState<'capture' | 'quiz' | 'matches'>('capture');
@@ -50,23 +49,14 @@ export default function HomePage() {
 
   const handleQuizComplete = useCallback((answers: Answers) => {
     setIsLoading(true);
-    // Simulate filtering delay
-    setTimeout(() => {
-        const matches = filterDatabase(selectedCategory, answers);
-        setPossibleMatches(matches);
-        setView('matches');
-        setIsLoading(false);
-    }, 1000);
+    const matches = filterDatabase(selectedCategory, answers);
+    setPossibleMatches(matches);
+    setView('matches');
+    setIsLoading(false);
   }, [selectedCategory]);
 
   const handleMatchSelected = useCallback((species: Species) => {
-    const finalResult: EnhanceIdentificationContextOutput = {
-        speciesName: species.name,
-        confidenceScore: 1.0, // Manual selection is 100% confident
-        keyInformation: species.keyInformation,
-        furtherReading: species.furtherReading,
-    };
-    setResult(finalResult);
+    setResult(species);
     setIsResultOpen(true);
   }, []);
 

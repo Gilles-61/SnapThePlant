@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -9,13 +10,12 @@ import {
   SheetFooter,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { ExternalLink, CheckCircle, XCircle } from 'lucide-react';
-import type { EnhanceIdentificationContextOutput } from '@/ai/flows/enhance-identification-context';
+import type { Species } from '@/lib/mock-database';
 import { useTranslation } from '@/hooks/use-language';
 
 interface IdentificationResultProps {
-  result: EnhanceIdentificationContextOutput | null;
+  result: Species | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
@@ -33,20 +33,14 @@ export function IdentificationResult({
 
   if (!result) return null;
 
-  const confidencePercentage = Math.round(result.confidenceScore * 100);
-
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="rounded-t-2xl max-h-[90vh] flex flex-col bg-background/95 backdrop-blur-sm">
         <SheetHeader className="text-left pt-2">
-          <SheetTitle className="text-3xl font-bold font-headline">{result.speciesName}</SheetTitle>
+          <SheetTitle className="text-3xl font-bold font-headline">{result.name}</SheetTitle>
           <SheetDescription asChild>
-            <div className="pt-2">
-                <span className="text-sm font-medium text-foreground/80">{t('result.confidenceScore')}</span>
-                <div className="flex items-center gap-3 mt-1">
-                    <Progress value={confidencePercentage} className="w-full h-2.5" />
-                    <span className="text-base font-bold text-foreground whitespace-nowrap">{confidencePercentage}%</span>
-                </div>
+            <div className="pt-2 text-foreground/80">
+              Manually selected match.
             </div>
           </SheetDescription>
         </SheetHeader>
@@ -59,7 +53,7 @@ export function IdentificationResult({
             <div>
               <h3 className="font-semibold text-lg mb-2 font-headline">{t('result.furtherReading')}</h3>
               <a
-                href={result.furtherReading.startsWith('http') ? result.furtherReading : `https://www.bing.com/search?q=${encodeURIComponent(result.speciesName)}`}
+                href={result.furtherReading.startsWith('http') ? result.furtherReading : `https://www.bing.com/search?q=${encodeURIComponent(result.name)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline flex items-center gap-1 transition-colors"
