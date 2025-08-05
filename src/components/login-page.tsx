@@ -9,7 +9,7 @@ import Image from "next/image";
 export function LoginPage() {
     const { signIn } = useAuth();
     // Later, you can replace this with the actual link you mentioned.
-    const googleFormLink = "https://docs.google.com/forms/d/e/1FAIpQLSc_1234567890_abcdefg/viewform";
+    const googleFormLink = "https://docs.google.com/forms/d/e/1FAIpQLSfmHONQYVgZumuAEx1t6VHULp7fDIWjeu8iNtYxpz6EYsngGg/viewform?pli=1";
 
     return (
         <div className="container relative h-full flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
