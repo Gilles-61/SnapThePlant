@@ -65,6 +65,19 @@ export const database: Species[] = [
         image: 'https://placehold.co/600x400.png',
         attributes: { color: 'blue', shape: 'simple', size: 'small' }
     },
+    {
+        id: 18, category: 'Plant', name: 'Snake Plant', scientificName: 'Dracaena trifasciata',
+        keyInformation: 'A very hardy and popular houseplant with stiff, upright leaves. Known for its air-purifying qualities and tolerance of low light.',
+        furtherReading: 'https://en.wikipedia.org/wiki/Dracaena_trifasciata',
+        image: 'https://placehold.co/600x400.png',
+        attributes: { color: 'green', shape: 'simple', size: 'medium' },
+        careTips: [
+            { title: 'Watering', description: 'Water sparingly. Allow soil to dry out completely between waterings. Overwatering is the most common cause of death.' },
+            { title: 'Sunlight', description: 'Prefers indirect light but is highly tolerant of low light conditions. Can also handle some direct sun.' },
+            { title: 'Soil', description: 'Use a free-draining cactus or succulent mix to prevent root rot.' },
+            { title: 'Extra Tips', description: 'Extremely durable and a great choice for beginners. Can be easily propagated by leaf cuttings.' }
+        ]
+    },
 
     // --- TREES ---
     {
@@ -155,6 +168,13 @@ export const database: Species[] = [
         image: 'https://placehold.co/600x400.png',
         attributes: { color: 'red', wings: 'yes', legs: '6' }
     },
+    {
+        id: 19, category: 'Insect', name: 'Monarch Butterfly', scientificName: 'Danaus plexippus',
+        keyInformation: 'A famous migratory butterfly known for its striking orange and black wings. Its larvae feed exclusively on milkweed plants.',
+        furtherReading: 'https://en.wikipedia.org/wiki/Monarch_butterfly',
+        image: 'https://placehold.co/600x400.png',
+        attributes: { color: 'other', wings: 'yes', legs: '6' }
+    },
     
     // --- CACTI ---
     {
@@ -163,6 +183,20 @@ export const database: Species[] = [
         furtherReading: 'https://en.wikipedia.org/wiki/Saguaro',
         image: 'https://placehold.co/600x400.png',
         attributes: { shape: 'columnar', flowers: 'yes', color: 'green' }
+    },
+    {
+        id: 20, category: 'Cactus', name: 'Prickly Pear', scientificName: 'Opuntia',
+        keyInformation: 'A cactus characterized by its flat, paddle-like stems. Produces edible fruit (tunas) and pads (nopales). Covered in sharp spines and smaller glochids.',
+        furtherReading: 'https://en.wikipedia.org/wiki/Opuntia',
+        image: 'https://placehold.co/600x400.png',
+        attributes: { shape: 'paddles', flowers: 'yes', color: 'green' }
+    },
+    {
+        id: 21, category: 'Cactus', name: 'Golden Barrel Cactus', scientificName: 'Echinocactus grusonii',
+        keyInformation: 'A popular landscape cactus, nearly spherical in shape. Known for its sharp, yellow spines. Endangered in the wild.',
+        furtherReading: 'https://en.wikipedia.org/wiki/Echinocactus_grusonii',
+        image: 'https://placehold.co/600x400.png',
+        attributes: { shape: 'globular', flowers: 'yes', color: 'green' }
     }
 ];
 
