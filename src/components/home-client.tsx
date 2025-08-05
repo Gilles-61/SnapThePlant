@@ -67,7 +67,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     }
 
     const allMatches = filterDatabase(selectedCategory!, analysis);
-    const topMatches = allMatches.slice(0, 3);
+    const topMatches = allMatches.filter(match => match.confidence >= 50).slice(0, 3);
     
     if (topMatches.length > 0) {
       setPossibleMatches(topMatches);
@@ -75,7 +75,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     } else {
       toast({
         title: "No Matches Found",
-        description: "We couldn't find a match. Please try another image or category.",
+        description: "We couldn't find a confident match. Please try another image or category.",
         variant: "default",
       });
       handleReset();
