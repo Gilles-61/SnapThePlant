@@ -19,7 +19,7 @@ export default function SubmissionsPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen text-foreground">
+    <div className="flex flex-col min-h-screen text-foreground bg-background">
         <SiteHeader />
         <main className="flex-1 flex flex-col items-center justify-center p-4">
             <Card className="w-full max-w-2xl text-center">

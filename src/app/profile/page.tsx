@@ -28,7 +28,7 @@ export default function ProfilePage() {
     return (
         <div className="flex flex-col min-h-screen bg-background text-foreground">
             <SiteHeader />
-            <main className="flex-1 flex items-center justify-center">
+            <main className="flex-1 flex items-center justify-center bg-background">
                 <Loader className="h-12 w-12 animate-spin" />
             </main>
         </div>
@@ -40,7 +40,7 @@ export default function ProfilePage() {
     return (
         <div className="flex flex-col min-h-screen bg-background text-foreground">
             <SiteHeader />
-            <main className="flex-1 flex items-center justify-center">
+            <main className="flex-1 flex items-center justify-center bg-background">
                 <p>{t('profile.loginPrompt')}</p>
             </main>
         </div>
@@ -79,7 +79,7 @@ export default function ProfilePage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <SiteHeader />
-      <main className="flex-1 p-4 md:p-8">
+      <main className="flex-1 p-4 md:p-8 bg-background">
         <div className="max-w-4xl mx-auto space-y-8">
             <Card>
                 <CardHeader>

@@ -34,7 +34,7 @@ export default function CommunityPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <SiteHeader />
-      <main className="flex-1 p-4 md:p-8">
+      <main className="flex-1 p-4 md:p-8 bg-background">
         <div className="max-w-4xl mx-auto">
           <Card className="text-center">
             <CardHeader>

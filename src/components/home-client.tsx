@@ -54,6 +54,8 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setPossibleMatches([]);
     setSelectedCategory(null);
     setAction(null);
+    // Also clear category from URL
+    window.history.pushState({}, '', window.location.pathname);
   }, []);
 
   const proceedWithAnalysis = async (analysis: IdentifySpeciesOutput, imageUri: string) => {
@@ -239,10 +241,10 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
   if (loading) {
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen bg-background">
             <SiteHeader />
             <main className="flex-1 flex items-center justify-center">
-                <Loader className="h-12 w-12 animate-spin text-white" />
+                <Loader className="h-12 w-12 animate-spin" />
             </main>
         </div>
     )
@@ -250,7 +252,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
   if (!user) {
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen bg-background">
             <SiteHeader />
             <main className="flex-1">
                 <AuthGate />
@@ -260,13 +262,13 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   }
 
   return (
-    <div className="flex flex-col min-h-screen text-white">
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
       <SiteHeader />
       <main className="flex-1 relative flex flex-col items-center justify-center overflow-auto p-4">
         
         <div className="w-full max-w-2xl mx-auto flex flex-col items-center justify-center text-center flex-grow">
             {view === 'capture' && !isCameraOpen && !selectedCategory && (
-                 <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-6 sm:p-8 text-slate-800">
+                 <div className="bg-background/90 backdrop-blur-md rounded-xl shadow-2xl p-6 sm:p-8">
                     <h1 className="text-3xl sm:text-4xl font-headline font-bold text-primary mb-2">Select a Category</h1>
                     <p className="max-w-md mb-6 mx-auto text-base sm:text-lg">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
                     <CategorySelector
@@ -282,11 +284,11 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
             {view === 'capture' && !isCameraOpen && selectedCategory && (
               <div className="w-full max-w-md flex flex-col items-center gap-4">
-                <Button variant="ghost" onClick={() => setSelectedCategory(null)} className="self-start text-white hover:text-white hover:bg-white/20">
+                <Button variant="ghost" onClick={handleReset} className="self-start text-foreground hover:text-foreground hover:bg-white/20">
                   <ArrowLeft className="mr-2 h-4 w-4"/>
                   Back to categories
                 </Button>
-                <Card className="w-full bg-white/90 backdrop-blur-md text-slate-800">
+                <Card className="w-full bg-background/90 backdrop-blur-md">
                   <CardContent className="p-6">
                     <h2 className="text-2xl font-bold mb-4">Identify a {selectedCategory}</h2>
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
