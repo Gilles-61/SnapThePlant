@@ -50,7 +50,7 @@ export default function CommunityPage() {
                     const isLink = !!feature.href;
 
                     return (
-                         <Wrapper key={index} {...props} className={`flex flex-col items-center text-center p-4 rounded-lg border ${isLink ? 'hover:bg-accent hover:text-accent-foreground transition-colors group cursor-pointer' : 'opacity-70'}`}>
+                         <Wrapper key={index} {...props} className={`flex flex-col items-center text-center p-4 rounded-lg border ${isLink ? 'hover:bg-accent hover:text-accent-foreground transition-colors group cursor-pointer' : 'opacity-70 cursor-not-allowed'}`}>
                             <Icon className="h-12 w-12 text-primary mb-4" />
                             <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
                             <p className="text-muted-foreground group-hover:text-accent-foreground">{feature.description}</p>
