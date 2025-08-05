@@ -44,6 +44,21 @@ export function PricingPage() {
             isMostPopular: true,
         },
         {
+            name: "Yearly",
+            id: 'paid' as SubscriptionStatus,
+            price: "$45",
+            priceSuffix: "/year",
+            description: "Save with an annual plan and get full access all year long.",
+            features: [
+                "Unlimited AI Identifications",
+                "High-Accuracy Identification Model",
+                "Save Unlimited Items to Collection",
+                "Offline Access for Your Collection",
+                "Priority Support"
+            ],
+            buttonText: "Subscribe Now",
+        },
+        {
             name: "Donation",
             id: 'free' as SubscriptionStatus,
             price: "Any Amount",
@@ -62,12 +77,12 @@ export function PricingPage() {
                         You are currently on the <span className="font-semibold text-primary">{subscriptionStatus.charAt(0).toUpperCase() + subscriptionStatus.slice(1)}</span> plan.
                     </p>
                 </div>
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
                     {tiers.map((tier) => (
                         <Card key={tier.name} className={cn(
                             "flex flex-col relative", 
                             tier.isMostPopular && "border-primary shadow-lg",
-                            subscriptionStatus === tier.id && "ring-2 ring-primary"
+                            subscriptionStatus === tier.id && tier.id !== 'paid' && "ring-2 ring-primary"
                         )}>
                              {tier.isMostPopular && (
                                 <div className="absolute top-0 right-4 -mt-3">
