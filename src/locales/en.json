@@ -1,9 +1,11 @@
+
 {
     "aiDescription": "Identify this {category}. Provide details about it.",
     "identifying": "Identifying...",
     "browseImageLabel": "Browse for an image",
     "retakePhotoLabel": "Retake photo",
     "capturePhotoLabel": "Capture photo",
+    "startOver": "Start Over",
     "placeholder": {
         "useCameraOrUpload": "Use your camera or upload an image"
     },
@@ -53,5 +55,47 @@
         "settings": "Settings",
         "language": "Language",
         "logout": "Log out"
+    },
+    "quiz": {
+        "title": "Help us identify it!",
+        "description": "Answer a few questions to narrow down the results.",
+        "submit": "Find Matches",
+        "noMatchesTitle": "No Matches Found",
+        "noMatchesDescription": "We couldn't find any matches based on your answers. Try adjusting your selections or starting over.",
+        "matchesFoundTitle": "We found {count} matches!",
+        "matchesFoundDescription": "Select the one that looks most like your image.",
+        "selectMatch": "Select this match",
+        "back": "Back to Questions",
+        "plant": {
+            "color": "What is the primary color of the flower/leaves?",
+            "shape": "What is the leaf shape?",
+            "size": "What is the approximate size?"
+        },
+        "tree": {
+            "bark": "What does the bark look like?",
+            "leaf_shape": "What is the leaf shape?",
+            "has_fruit": "Does it have fruit or flowers?"
+        },
+        "weed": {
+            "flower_color": "What color are the flowers, if any?",
+            "location": "Where is it growing?",
+            "leaf_type": "What do the leaves look like?"
+        },
+        "insect": {
+            "color": "What is the main color of the insect?",
+            "wings": "Does it have wings?",
+            "legs": "How many legs does it have?"
+        },
+        "options": {
+            "color": { "red": "Red", "green": "Green", "yellow": "Yellow", "blue": "Blue", "white": "White", "other": "Other" },
+            "shape": { "simple": "Simple", "lobed": "Lobed", "needle": "Needle-like", "compound": "Compound" },
+            "size": { "small": "Small (hand-sized)", "medium": "Medium (bush-sized)", "large": "Large (tree-sized)" },
+            "bark": { "smooth": "Smooth", "rough": "Rough", "peeling": "Peeling" },
+            "has_fruit": { "yes": "Yes", "no": "No" },
+            "location": { "lawn": "In the lawn", "garden": "In a garden bed", "pavement": "Pavement cracks" },
+            "leaf_type": { "broad": "Broad-leaf", "grassy": "Grass-like", "toothed": "Toothed" },
+            "wings": { "yes": "Yes", "no": "No" },
+            "legs": { "6": "6 legs", "8": "8 legs", "more": "More than 8" }
+        }
     }
 }

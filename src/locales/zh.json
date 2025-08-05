@@ -1,9 +1,11 @@
+
 {
     "aiDescription": "识别这个{category}。提供有关它的详细信息。",
     "identifying": "识别中...",
     "browseImageLabel": "浏览图片",
     "retakePhotoLabel": "重拍照片",
     "capturePhotoLabel": "拍摄照片",
+    "startOver": "重新开始",
     "placeholder": {
         "useCameraOrUpload": "使用您的相机或上传图片"
     },
@@ -53,5 +55,47 @@
         "settings": "设置",
         "language": "语言",
         "logout": "登出"
+    },
+    "quiz": {
+        "title": "帮助我们识别它！",
+        "description": "回答几个问题以缩小结果范围。",
+        "submit": "查找匹配项",
+        "noMatchesTitle": "未找到匹配项",
+        "noMatchesDescription": "根据您的回答，我们找不到任何匹配项。请尝试调整您的选择或重新开始。",
+        "matchesFoundTitle": "我们找到了 {count} 个匹配项！",
+        "matchesFoundDescription": "选择与您的图片最相似的一个。",
+        "selectMatch": "选择此匹配项",
+        "back": "返回问题",
+        "plant": {
+            "color": "花/叶的主要颜色是什么？",
+            "shape": "叶子的形状是什么？",
+            "size": "大概尺寸是多少？"
+        },
+        "tree": {
+            "bark": "树皮是什么样子的？",
+            "leaf_shape": "叶子的形状是什么？",
+            "has_fruit": "它有果实或花吗？"
+        },
+        "weed": {
+            "flower_color": "花是什么颜色的（如果有的话）？",
+            "location": "它在哪里生长？",
+            "leaf_type": "叶子是什么样子的？"
+        },
+        "insect": {
+            "color": "昆虫的主要颜色是什么？",
+            "wings": "它有翅膀吗？",
+            "legs": "它有多少条腿？"
+        },
+        "options": {
+            "color": { "red": "红色", "green": "绿色", "yellow": "黄色", "blue": "蓝色", "white": "白色", "other": "其他" },
+            "shape": { "simple": "单叶", "lobed": "裂叶", "needle": "针状", "compound": "复叶" },
+            "size": { "small": "小（手掌大小）", "medium": "中（灌木大小）", "large": "大（树木大小）" },
+            "bark": { "smooth": "光滑", "rough": "粗糙", "peeling": "剥落" },
+            "has_fruit": { "yes": "是", "no": "否" },
+            "location": { "lawn": "草坪上", "garden": "花园苗床", "pavement": "人行道裂缝" },
+            "leaf_type": { "broad": "阔叶", "grassy": "草状", "toothed": "齿状" },
+            "wings": { "yes": "是", "no": "否" },
+            "legs": { "6": "6条腿", "8": "8条腿", "more": "超过8条" }
+        }
     }
 }

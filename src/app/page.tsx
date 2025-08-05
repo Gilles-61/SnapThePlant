@@ -13,45 +13,9 @@ import { CategorySelector, categories, type Category } from '@/components/catego
 import { IdentificationResult } from '@/components/identification-result';
 import CameraFeed, { type CameraFeedHandle } from '@/components/camera-feed';
 import { useTranslation } from '@/hooks/use-language';
-
-// Mock function to simulate local database lookup
-const identifyFromLocalDatabase = (
-  category: Category
-): EnhanceIdentificationContextOutput => {
-  // In a real implementation, this would search a local database.
-  // For now, it returns a hardcoded result based on the category.
-  const mockResults: Record<Category, EnhanceIdentificationContextOutput> = {
-    Plant: {
-      speciesName: 'Monstera Deliciosa',
-      confidenceScore: 0.95,
-      keyInformation:
-        'A species of flowering plant native to tropical forests of southern Mexico, south to Panama. It is known for its large, glossy, and uniquely perforated leaves.',
-      furtherReading: 'https://en.wikipedia.org/wiki/Monstera_deliciosa',
-    },
-    Tree: {
-      speciesName: 'Oak Tree (Quercus)',
-      confidenceScore: 0.92,
-      keyInformation:
-        'A common tree in the Northern Hemisphere known for its strength, longevity, and acorns. There are approximately 500 extant species of oaks.',
-      furtherReading: 'https://en.wikipedia.org/wiki/Oak',
-    },
-    Weed: {
-      speciesName: 'Dandelion (Taraxacum)',
-      confidenceScore: 0.98,
-      keyInformation:
-        'A large genus of flowering plants in the family Asteraceae. They are well-known for their yellow flower heads that turn into round balls of silver-tufted fruits that disperse in the wind.',
-      furtherReading: 'https://en.wikipedia.org/wiki/Taraxacum',
-    },
-    Insect: {
-      speciesName: 'European Honey Bee (Apis mellifera)',
-      confidenceScore: 0.96,
-      keyInformation:
-        'The most common of the 7–12 species of honey bees worldwide. They are social insects that live in colonies and are essential for pollination.',
-      furtherReading: 'https://en.wikipedia.org/wiki/Western_honey_bee',
-    },
-  };
-  return mockResults[category];
-};
+import { IdentificationQuiz, type Answers } from '@/components/identification-quiz';
+import { MatchSelector } from '@/components/match-selector';
+import { filterDatabase, type Species } from '@/lib/mock-database';
 
 
 export default function HomePage() {
@@ -66,6 +30,8 @@ export default function HomePage() {
   const [result, setResult] = useState<EnhanceIdentificationContextOutput | null>(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [view, setView] = useState<'capture' | 'quiz' | 'matches'>('capture');
+  const [possibleMatches, setPossibleMatches] = useState<Species[]>([]);
 
   const handleReset = useCallback(() => {
     setCapturedImage(null);
@@ -73,32 +39,36 @@ export default function HomePage() {
     setIsResultOpen(false);
     setIsLoading(false);
     setIsCameraOpen(false);
+    setView('capture');
+    setPossibleMatches([]);
   }, []);
 
   const processImage = useCallback(async (imageDataUri: string) => {
     setCapturedImage(imageDataUri);
+    setView('quiz');
+  }, []);
+
+  const handleQuizComplete = useCallback((answers: Answers) => {
     setIsLoading(true);
+    // Simulate filtering delay
+    setTimeout(() => {
+        const matches = filterDatabase(selectedCategory, answers);
+        setPossibleMatches(matches);
+        setView('matches');
+        setIsLoading(false);
+    }, 1000);
+  }, [selectedCategory]);
 
-    // Simulate a delay for the database lookup
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    try {
-      // Replace AI call with a local, mock database lookup
-      const localResult = identifyFromLocalDatabase(selectedCategory);
-      setResult(localResult);
-      setIsResultOpen(true);
-    } catch (error) {
-      console.error("Local identification failed:", error);
-      toast({
-        title: t('toast.identificationFailed.title'),
-        description: t('toast.identificationFailed.description'),
-        variant: "destructive",
-      });
-      handleReset();
-    } finally {
-      setIsLoading(false);
-    }
-  }, [selectedCategory, toast, t, handleReset]);
+  const handleMatchSelected = useCallback((species: Species) => {
+    const finalResult: EnhanceIdentificationContextOutput = {
+        speciesName: species.name,
+        confidenceScore: 1.0, // Manual selection is 100% confident
+        keyInformation: species.keyInformation,
+        furtherReading: species.furtherReading,
+    };
+    setResult(finalResult);
+    setIsResultOpen(true);
+  }, []);
 
 
   const handleCapture = useCallback(async () => {
@@ -148,30 +118,44 @@ export default function HomePage() {
     });
     handleReset();
   }, [toast, handleReset, t]);
+  
+  const renderContent = () => {
+    if (view === 'quiz' && capturedImage) {
+        return <IdentificationQuiz category={selectedCategory} onComplete={handleQuizComplete} />;
+    }
+    if (view === 'matches') {
+        return <MatchSelector matches={possibleMatches} onSelect={handleMatchSelected} onBack={() => setView('quiz')} />;
+    }
+    
+    return (
+        <div className="absolute inset-0 bg-black">
+        {capturedImage ? (
+          <Image
+            src={capturedImage}
+            alt="Captured for identification"
+            fill
+            className="object-contain"
+          />
+        ) : isCameraOpen ? (
+          <Suspense fallback={<div className="w-full h-full bg-muted flex items-center justify-center"><Loader className="animate-spin" /></div>}>
+            <CameraFeed ref={cameraRef} />
+          </Suspense>
+        ) : (
+          <div className="w-full h-full bg-muted flex flex-col items-center justify-center text-muted-foreground">
+              <ImageIcon className="w-24 h-24 mb-4" />
+              <p className="text-lg">{t('placeholder.useCameraOrUpload')}</p>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <SiteHeader />
       <main className="flex-1 relative flex flex-col items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-black">
-          {capturedImage ? (
-            <Image
-              src={capturedImage}
-              alt="Captured for identification"
-              fill
-              className="object-contain"
-            />
-          ) : isCameraOpen ? (
-            <Suspense fallback={<div className="w-full h-full bg-muted flex items-center justify-center"><Loader className="animate-spin" /></div>}>
-              <CameraFeed ref={cameraRef} />
-            </Suspense>
-          ) : (
-            <div className="w-full h-full bg-muted flex flex-col items-center justify-center text-muted-foreground">
-                <ImageIcon className="w-24 h-24 mb-4" />
-                <p className="text-lg">{t('placeholder.useCameraOrUpload')}</p>
-            </div>
-          )}
-        </div>
+        
+        {renderContent()}
 
         {isLoading && (
           <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-20 backdrop-blur-sm">
@@ -181,14 +165,14 @@ export default function HomePage() {
         )}
 
         <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col items-center p-6 space-y-4">
-          {!capturedImage && !isLoading && (
+          {view === 'capture' && !capturedImage && !isLoading && (
             <CategorySelector
               selectedCategory={selectedCategory}
               onSelectCategory={setSelectedCategory}
             />
           )}
 
-          <div className="flex items-center justify-center gap-4">
+          {view === 'capture' && <div className="flex items-center justify-center gap-4">
             <input
               type="file"
               ref={fileInputRef}
@@ -225,7 +209,18 @@ export default function HomePage() {
 
             {/* Placeholder to balance the layout */}
             {!capturedImage && <div className="w-16 h-16" />}
-          </div>
+          </div>}
+
+          {view !== 'capture' && (
+             <Button
+                variant="outline"
+                className="bg-black/50 border-white/50 text-white hover:bg-black/70 hover:text-white"
+                onClick={handleReset}
+             >
+                <RotateCcw className="mr-2 h-4 w-4" />
+                {t('startOver')}
+             </Button>
+          )}
         </div>
         
         <IdentificationResult

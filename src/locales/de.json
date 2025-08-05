@@ -1,9 +1,11 @@
+
 {
     "aiDescription": "Identifiziere diesen {category}. Gib Details dazu an.",
     "identifying": "Identifiziere...",
     "browseImageLabel": "Bild durchsuchen",
     "retakePhotoLabel": "Foto wiederholen",
     "capturePhotoLabel": "Foto aufnehmen",
+    "startOver": "Neu anfangen",
     "placeholder": {
         "useCameraOrUpload": "Verwende deine Kamera oder lade ein Bild hoch"
     },
@@ -53,5 +55,47 @@
         "settings": "Einstellungen",
         "language": "Sprache",
         "logout": "Abmelden"
+    },
+    "quiz": {
+        "title": "Hilf uns bei der Identifizierung!",
+        "description": "Beantworte ein paar Fragen, um die Ergebnisse einzugrenzen.",
+        "submit": "Übereinstimmungen finden",
+        "noMatchesTitle": "Keine Übereinstimmungen gefunden",
+        "noMatchesDescription": "Wir konnten anhand deiner Antworten keine Übereinstimmungen finden. Versuche, deine Auswahl anzupassen oder von vorne zu beginnen.",
+        "matchesFoundTitle": "Wir haben {count} Übereinstimmungen gefunden!",
+        "matchesFoundDescription": "Wähle diejenige aus, die deinem Bild am ähnlichsten sieht.",
+        "selectMatch": "Diese Übereinstimmung auswählen",
+        "back": "Zurück zu den Fragen",
+        "plant": {
+            "color": "Was ist die Hauptfarbe der Blume/Blätter?",
+            "shape": "Welche Blattform hat sie?",
+            "size": "Was ist die ungefähre Größe?"
+        },
+        "tree": {
+            "bark": "Wie sieht die Rinde aus?",
+            "leaf_shape": "Welche Blattform hat sie?",
+            "has_fruit": "Hat er Früchte oder Blüten?"
+        },
+        "weed": {
+            "flower_color": "Welche Farbe haben die Blüten, falls vorhanden?",
+            "location": "Wo wächst es?",
+            "leaf_type": "Wie sehen die Blätter aus?"
+        },
+        "insect": {
+            "color": "Was ist die Hauptfarbe des Insekts?",
+            "wings": "Hat es Flügel?",
+            "legs": "Wie viele Beine hat es?"
+        },
+        "options": {
+            "color": { "red": "Rot", "green": "Grün", "yellow": "Gelb", "blue": "Blau", "white": "Weiß", "other": "Andere" },
+            "shape": { "simple": "Einfach", "lobed": "Gelappt", "needle": "Nadelartig", "compound": "Zusammengesetzt" },
+            "size": { "small": "Klein (handgroß)", "medium": "Mittel (buschgroß)", "large": "Groß (baumgroß)" },
+            "bark": { "smooth": "Glatt", "rough": "Rau", "peeling": "Schälend" },
+            "has_fruit": { "yes": "Ja", "no": "Nein" },
+            "location": { "lawn": "Im Rasen", "garden": "In einem Gartenbeet", "pavement": "Pflasterritzen" },
+            "leaf_type": { "broad": "Breitblättrig", "grassy": "Grasartig", "toothed": "Gezähnt" },
+            "wings": { "yes": "Ja", "no": "Nein" },
+            "legs": { "6": "6 Beine", "8": "8 Beine", "more": "Mehr als 8" }
+        }
     }
 }

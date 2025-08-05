@@ -1,9 +1,11 @@
+
 {
     "aiDescription": "Identifique este {category}. Forneça detalhes sobre ele.",
     "identifying": "Identificando...",
     "browseImageLabel": "Procurar uma imagem",
     "retakePhotoLabel": "Tirar foto novamente",
     "capturePhotoLabel": "Capturar foto",
+    "startOver": "Começar de novo",
     "placeholder": {
         "useCameraOrUpload": "Use sua câmera ou carregue uma imagem"
     },
@@ -53,5 +55,47 @@
         "settings": "Configurações",
         "language": "Idioma",
         "logout": "Sair"
+    },
+    "quiz": {
+        "title": "Ajude-nos a identificá-lo!",
+        "description": "Responda a algumas perguntas para refinar os resultados.",
+        "submit": "Encontrar correspondências",
+        "noMatchesTitle": "Nenhuma correspondência encontrada",
+        "noMatchesDescription": "Não conseguimos encontrar nenhuma correspondência com base nas suas respostas. Tente ajustar suas seleções ou começar de novo.",
+        "matchesFoundTitle": "Encontramos {count} correspondências!",
+        "matchesFoundDescription": "Selecione a que mais se parece com a sua imagem.",
+        "selectMatch": "Selecionar esta correspondência",
+        "back": "Voltar às perguntas",
+        "plant": {
+            "color": "Qual é a cor primária da flor/folhas?",
+            "shape": "Qual é o formato da folha?",
+            "size": "Qual é o tamanho aproximado?"
+        },
+        "tree": {
+            "bark": "Como é a casca?",
+            "leaf_shape": "Qual é o formato da folha?",
+            "has_fruit": "Tem frutos ou flores?"
+        },
+        "weed": {
+            "flower_color": "Qual a cor das flores, se houver?",
+            "location": "Onde está crescendo?",
+            "leaf_type": "Como são as folhas?"
+        },
+        "insect": {
+            "color": "Qual é a cor principal do inseto?",
+            "wings": "Tem asas?",
+            "legs": "Quantas pernas tem?"
+        },
+        "options": {
+            "color": { "red": "Vermelho", "green": "Verde", "yellow": "Amarelo", "blue": "Azul", "white": "Branco", "other": "Outro" },
+            "shape": { "simple": "Simples", "lobed": "Lobada", "needle": "Em forma de agulha", "compound": "Composta" },
+            "size": { "small": "Pequeno (tamanho da mão)", "medium": "Médio (tamanho de um arbusto)", "large": "Grande (tamanho de uma árvore)" },
+            "bark": { "smooth": "Lisa", "rough": "Áspera", "peeling": "Descascando" },
+            "has_fruit": { "yes": "Sim", "no": "Não" },
+            "location": { "lawn": "No gramado", "garden": "Em um canteiro", "pavement": "Rachaduras no pavimento" },
+            "leaf_type": { "broad": "Folha larga", "grassy": "Gramínea", "toothed": "Dentada" },
+            "wings": { "yes": "Sim", "no": "Não" },
+            "legs": { "6": "6 pernas", "8": "8 pernas", "more": "Mais de 8" }
+        }
     }
 }

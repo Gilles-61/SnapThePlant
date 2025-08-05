@@ -1,9 +1,11 @@
+
 {
     "aiDescription": "Identifiez ce {category}. Fournissez des détails à ce sujet.",
     "identifying": "Identification en cours...",
     "browseImageLabel": "Parcourir pour une image",
     "retakePhotoLabel": "Reprendre la photo",
     "capturePhotoLabel": "Capturer la photo",
+    "startOver": "Recommencer",
     "placeholder": {
         "useCameraOrUpload": "Utilisez votre appareil photo ou téléchargez une image"
     },
@@ -53,5 +55,47 @@
         "settings": "Paramètres",
         "language": "Langue",
         "logout": "Déconnexion"
+    },
+    "quiz": {
+        "title": "Aidez-nous à l'identifier !",
+        "description": "Répondez à quelques questions pour affiner les résultats.",
+        "submit": "Trouver des correspondances",
+        "noMatchesTitle": "Aucune correspondance trouvée",
+        "noMatchesDescription": "Nous n'avons trouvé aucune correspondance basée sur vos réponses. Essayez d'ajuster vos sélections ou de recommencer.",
+        "matchesFoundTitle": "Nous avons trouvé {count} correspondances !",
+        "matchesFoundDescription": "Sélectionnez celle qui ressemble le plus à votre image.",
+        "selectMatch": "Sélectionner cette correspondance",
+        "back": "Retour aux questions",
+        "plant": {
+            "color": "Quelle est la couleur principale de la fleur/des feuilles ?",
+            "shape": "Quelle est la forme de la feuille ?",
+            "size": "Quelle est la taille approximative ?"
+        },
+        "tree": {
+            "bark": "À quoi ressemble l'écorce ?",
+            "leaf_shape": "Quelle est la forme de la feuille ?",
+            "has_fruit": "A-t-il des fruits ou des fleurs ?"
+        },
+        "weed": {
+            "flower_color": "De quelle couleur sont les fleurs, s'il y en a ?",
+            "location": "Où pousse-t-elle ?",
+            "leaf_type": "À quoi ressemblent les feuilles ?"
+        },
+        "insect": {
+            "color": "Quelle est la couleur principale de l'insecte ?",
+            "wings": "A-t-il des ailes ?",
+            "legs": "Combien de pattes a-t-il ?"
+        },
+        "options": {
+            "color": { "red": "Rouge", "green": "Vert", "yellow": "Jaune", "blue": "Bleu", "white": "Blanc", "other": "Autre" },
+            "shape": { "simple": "Simple", "lobed": "Lobée", "needle": "En forme d'aiguille", "compound": "Composée" },
+            "size": { "small": "Petit (taille de la main)", "medium": "Moyen (taille d'un buisson)", "large": "Grand (taille d'un arbre)" },
+            "bark": { "smooth": "Lisse", "rough": "Rugueuse", "peeling": "Qui pèle" },
+            "has_fruit": { "yes": "Oui", "no": "Non" },
+            "location": { "lawn": "Dans la pelouse", "garden": "Dans un parterre de jardin", "pavement": "Fissures du trottoir" },
+            "leaf_type": { "broad": "À feuilles larges", "grassy": "Herbacée", "toothed": "Dentée" },
+            "wings": { "yes": "Oui", "no": "Non" },
+            "legs": { "6": "6 pattes", "8": "8 pattes", "more": "Plus de 8" }
+        }
     }
 }
