@@ -65,6 +65,10 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         category: category,
       });
 
+      if (!analysis.attributes) {
+        throw new Error("The AI model failed to return valid attributes.");
+      }
+
       const matches = filterDatabase(category, analysis.attributes);
       
       if (matches.length > 0) {
@@ -75,8 +79,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
           description: "We couldn't find a match. Please try another image or category.",
           variant: "default",
         });
-        setView('capture');
-        setCapturedImage(null);
+        handleReset();
       }
     } catch (error) {
       console.error("Error analyzing image:", error);
@@ -85,7 +88,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         description: "There was an error analyzing the image. Please try again.",
         variant: "destructive"
       });
-      handleReset(); // Reset on failure
+      handleReset();
     } finally {
       setIsLoading(false);
     }
@@ -102,13 +105,11 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
     let matches: Species[];
     if (selectedCategory) {
-      // If a category is selected, filter within that category
       matches = filterDatabase(selectedCategory, {}).map(s => s.species).filter(s => 
           s.name.toLowerCase().includes(query.toLowerCase()) || 
           s.id.toString() === query
       );
     } else {
-      // If no category is selected, search the entire database
       matches = database.filter(s => 
           s.name.toLowerCase().includes(query.toLowerCase()) || 
           s.scientificName.toLowerCase().includes(query.toLowerCase()) ||
@@ -118,14 +119,14 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     
     const scoredMatches: ScoredSpecies[] = matches.map((m, i) => ({
       species: m,
-      score: 1, // Full confidence for direct search
+      score: 1,
       confidence: 100,
     }));
 
     if (scoredMatches.length > 0) {
         setPossibleMatches(scoredMatches);
         setView('matches');
-        setCapturedImage('https://placehold.co/600x400.png'); // Use a placeholder for search results
+        setCapturedImage('https://placehold.co/600x400.png'); 
     } else {
       toast({
         title: "No Results",
@@ -168,14 +169,12 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
       };
       reader.readAsDataURL(file);
     }
-    // Reset file input to allow selecting the same file again
     if(event.target) {
         event.target.value = "";
     }
   };
 
   const handleFeedback = useCallback((wasCorrect: boolean) => {
-    // In a real app, this would send feedback to a backend
     toast({
         title: "Feedback Received",
         description: "Thank you for helping us improve our accuracy!",
@@ -185,7 +184,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
   const handleCategorySelect = (category: Category) => {
     setSelectedCategory(category);
-    // No longer opens a dialog, user will click a button next.
   }
   
   const handleCameraButtonClick = () => {
@@ -214,7 +212,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         title: "Scan Successful",
         description: `Searching for code: ${scanResult}`
     });
-    // Assume the scanned code is the item's ID for this mock implementation
     handleSearch(scanResult);
   }
 

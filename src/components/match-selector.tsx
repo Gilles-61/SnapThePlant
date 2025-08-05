@@ -1,15 +1,18 @@
 
 "use client";
 
+import { useEffect, useState, memo } from 'react';
 import Image from 'next/image';
 import { useTranslation } from '@/hooks/use-language';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ArrowLeft, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Image as ImageIcon, Loader } from 'lucide-react';
 import type { ScoredSpecies, Species } from '@/lib/mock-database';
 import { cn } from '@/lib/utils';
 import { Badge } from './ui/badge';
+import { generateImage } from '@/ai/flows/generate-image-flow';
+import { Skeleton } from './ui/skeleton';
 
 interface MatchSelectorProps {
     image: string;
@@ -18,8 +21,90 @@ interface MatchSelectorProps {
     onBack: () => void;
 }
 
+interface GeneratedImage {
+    id: number;
+    imageDataUri: string;
+}
+
+const MatchCard = memo(({ species, confidence, index, onSelect, generatedImage }: { species: Species, confidence: number, index: number, onSelect: (species: Species) => void, generatedImage: GeneratedImage | undefined }) => {
+    return (
+        <Card 
+            className={cn(
+                "overflow-hidden flex flex-col justify-between group transition-all",
+                index === 0 && "border-primary ring-2 ring-primary"
+            )}
+        >
+            <CardHeader className="p-0 relative">
+                <div className="relative aspect-[4/3] bg-muted">
+                    {generatedImage ? (
+                         <Image 
+                            src={generatedImage.imageDataUri}
+                            alt={species.name} 
+                            fill
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                            className="object-cover transition-transform group-hover:scale-105"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground">
+                           <Loader className="w-8 h-8 animate-spin"/>
+                           <p className="text-xs mt-2">Generating image...</p>
+                        </div>
+                    )}
+                </div>
+                {index === 0 ? (
+                        <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground">
+                        Top Match
+                    </Badge>
+                ) : (
+                    <Badge variant="secondary" className="absolute top-2 right-2">
+                        {confidence}% Match
+                    </Badge>
+                )}
+            </CardHeader>
+            <CardContent className="p-3 flex-1">
+                <h3 className="font-bold truncate">{species.name}</h3>
+                <p className="text-sm text-muted-foreground line-clamp-2">{species.keyInformation}</p>
+            </CardContent>
+            <CardFooter className="p-2 pt-0">
+                <Button className="w-full" onClick={() => onSelect(species)}>
+                    <CheckCircle className="mr-2 h-4 w-4" />
+                    Select this match
+                </Button>
+            </CardFooter>
+        </Card>
+    )
+});
+MatchCard.displayName = 'MatchCard';
+
 export function MatchSelector({ image, matches, onSelect, onBack }: MatchSelectorProps) {
     const { t } = useTranslation();
+    const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    
+    useEffect(() => {
+        const generateImages = async () => {
+            setIsLoading(true);
+            const imagePromises = matches.map(async ({ species }) => {
+                try {
+                    const result = await generateImage({ name: species.name, category: species.category });
+                    return { id: species.id, imageDataUri: result.imageDataUri };
+                } catch (error) {
+                    console.error(`Failed to generate image for ${species.name}:`, error);
+                    return { id: species.id, imageDataUri: 'https://placehold.co/600x400.png' }; // Fallback
+                }
+            });
+
+            const results = await Promise.all(imagePromises);
+            setGeneratedImages(results);
+            setIsLoading(false);
+        };
+
+        if (matches.length > 0) {
+            generateImages();
+        } else {
+            setIsLoading(false);
+        }
+    }, [matches]);
 
     return (
         <div className="w-full h-full text-white flex items-center justify-center p-4">
@@ -30,7 +115,7 @@ export function MatchSelector({ image, matches, onSelect, onBack }: MatchSelecto
                         <h2 className="text-2xl font-bold">Your Image</h2>
                         <Button variant="ghost" size="icon" onClick={onBack} className="text-white hover:bg-white/20">
                            <ArrowLeft />
-                           <span className="sr-only">{t('quiz.back')}</span>
+                           <span className="sr-only">Back</span>
                         </Button>
                     </div>
                     <div className="relative flex-1 rounded-lg overflow-hidden border border-white/20 shadow-lg">
@@ -49,13 +134,13 @@ export function MatchSelector({ image, matches, onSelect, onBack }: MatchSelecto
                     <CardHeader>
                          <CardTitle>
                             {matches.length > 0
-                                ? t('quiz.matchesFoundTitle', { count: matches.length })
-                                : t('quiz.noMatchesTitle')}
+                                ? `We found ${matches.length} matches!`
+                                : `No Matches Found`}
                         </CardTitle>
                         <CardDescription>
                             {matches.length > 0
-                                ? t('quiz.matchesFoundDescription')
-                                : t('quiz.noMatchesDescription')}
+                                ? `Select the one that looks most like your image.`
+                                : `We couldn't find any matches. Try adjusting your selections or starting over.`}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="flex-1 overflow-hidden">
@@ -63,53 +148,22 @@ export function MatchSelector({ image, matches, onSelect, onBack }: MatchSelecto
                             <ScrollArea className="h-full">
                                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 pr-4">
                                     {matches.map(({ species, confidence }, index) => (
-                                        <Card 
-                                            key={species.id} 
-                                            className={cn(
-                                                "overflow-hidden flex flex-col justify-between group transition-all",
-                                                index === 0 && "border-primary ring-2 ring-primary"
-                                            )}
-                                        >
-                                            <CardHeader className="p-0 relative">
-                                                <div className="relative aspect-[4/3]">
-                                                    <Image 
-                                                        src={species.image} 
-                                                        alt={species.name} 
-                                                        fill
-                                                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                                                        className="object-cover transition-transform group-hover:scale-105"
-                                                        data-ai-hint={species.name}
-                                                    />
-                                                </div>
-                                                {index === 0 ? (
-                                                     <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground">
-                                                        Top Match
-                                                    </Badge>
-                                                ) : (
-                                                    <Badge variant="secondary" className="absolute top-2 right-2">
-                                                        {confidence}% Match
-                                                    </Badge>
-                                                )}
-                                            </CardHeader>
-                                            <CardContent className="p-3 flex-1">
-                                                <h3 className="font-bold truncate">{species.name}</h3>
-                                                <p className="text-sm text-muted-foreground line-clamp-2">{species.keyInformation}</p>
-                                            </CardContent>
-                                            <CardFooter className="p-2 pt-0">
-                                                <Button className="w-full" onClick={() => onSelect(species)}>
-                                                    <CheckCircle className="mr-2 h-4 w-4" />
-                                                    {t('quiz.selectMatch')}
-                                                </Button>
-                                            </CardFooter>
-                                        </Card>
+                                        <MatchCard 
+                                            key={species.id}
+                                            species={species}
+                                            confidence={confidence}
+                                            index={index}
+                                            onSelect={onSelect}
+                                            generatedImage={generatedImages.find(img => img.id === species.id)}
+                                        />
                                     ))}
                                 </div>
                             </ScrollArea>
                         ) : (
                             <div className="flex flex-col items-center justify-center h-full text-center">
-                                <p className="text-lg text-muted-foreground">{t('quiz.noMatchesDescription')}</p>
+                                <p className="text-lg text-muted-foreground">Try taking another picture.</p>
                                 <Button onClick={onBack} className="mt-4">
-                                    {t('startOver')}
+                                    Start Over
                                 </Button>
                             </div>
                         )}
