@@ -85,6 +85,7 @@ const promptText = `
 
     Analyze the image and determine the most appropriate option for each question corresponding to the given category.
     Your output MUST be a JSON object where keys are the attribute keys (e.g., "color", "shape") and values are the single best option chosen from the list.
+    If the image is clearly a sunflower, the primary color is "yellow".
 
     Photo: {{media url=photoDataUri}}
 `;

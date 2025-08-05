@@ -66,7 +66,18 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
       });
 
       const matches = filterDatabase(category, analysis.attributes);
-      setPossibleMatches(matches);
+      
+      if (matches.length > 0) {
+        setPossibleMatches(matches);
+      } else {
+        toast({
+          title: "No Matches Found",
+          description: "We couldn't find a match. Please try another image or category.",
+          variant: "default",
+        });
+        setView('capture');
+        setCapturedImage(null);
+      }
     } catch (error) {
       console.error("Error analyzing image:", error);
       toast({
@@ -261,9 +272,10 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         )}
         
         {view === 'matches' && capturedImage && (
-           <div className="absolute inset-0 bg-black">
+           <div className="absolute inset-0 bg-black/90">
              
-              <MatchSelector 
+              <MatchSelector
+                image={capturedImage}
                 matches={possibleMatches} 
                 onSelect={handleMatchSelected} 
                 onBack={() => {
