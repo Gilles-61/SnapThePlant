@@ -107,15 +107,26 @@ export function LoginForm() {
                  <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 21.2 172.9 65.6l-58.2 58.2C336.7 97.2 296.4 80 248 80c-82.8 0-150.5 67.7-150.5 150.5S165.2 401 248 401c94.2 0 125.3-72.3 129.5-110.2h-129.5v-79.6h243.1c1.5 13.8 3.5 29.5 3.5 46.7z"></path></svg>
                 Sign In with Google
             </Button>
-            <p className="px-8 text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
-            <Link
-                href="/signup"
-                className="underline underline-offset-4 hover:text-primary"
-            >
-                Sign up
-            </Link>
-            </p>
+            <div className="text-center text-sm text-muted-foreground space-y-1">
+                <p>
+                    Don&apos;t have an account?{" "}
+                    <Link
+                        href="/signup"
+                        className="underline underline-offset-4 hover:text-primary"
+                    >
+                        Sign up
+                    </Link>
+                </p>
+                <p>
+                    Having trouble?{" "}
+                    <a
+                        href="mailto:support@snaptheplant.com"
+                        className="underline underline-offset-4 hover:text-primary"
+                    >
+                        Contact Support
+                    </a>
+                </p>
+            </div>
         </div>
         </div>
     </div>
