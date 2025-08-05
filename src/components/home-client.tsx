@@ -103,6 +103,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
   const findMatches = useCallback(async (imageDataUri: string, category: Category) => {
     setIsLoading(true);
+    setCapturedImage(imageDataUri);
     
     try {
       const analysis = await identifySpecies({
