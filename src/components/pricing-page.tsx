@@ -60,7 +60,7 @@ export function PricingPage() {
             name: "Donation",
             price: "Any Amount",
             description: "Support the project's growth.",
-            features: [], // Removed features to be handled differently
+            features: [],
             buttonText: "Donate",
             buttonVariant: "outline" as const,
             href: buyMeACoffeeLink,
