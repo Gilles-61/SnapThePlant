@@ -26,7 +26,7 @@ import {
   } from "@/components/ui/dropdown-menu"
 import { useLanguage, languages } from "@/hooks/use-language"
 import { useAuth } from "@/hooks/use-auth"
-import { Languages, Heart, LogIn, LifeBuoy, User as UserIcon } from "lucide-react"
+import { Languages, Heart, LogIn, LifeBuoy, User as UserIcon, LogOut } from "lucide-react"
 import { ThemeToggle } from "./theme-toggle";
   
   export function UserNav() {
@@ -82,7 +82,7 @@ import { ThemeToggle } from "./theme-toggle";
                     </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                    <a href="mailto:feedback@snaptheplant.com?subject=Beta Feedback for SnapThePlant">
+                    <a href="mailto:feedback@snaptheplant.com?subject=Beta Feedback for SnapThePlant" target="_blank" rel="noopener noreferrer">
                         <LifeBuoy className="mr-2 h-4 w-4" />
                         <span>{t('userNav.reportIssue')}</span>
                     </a>
@@ -111,8 +111,8 @@ import { ThemeToggle } from "./theme-toggle";
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={signOut}>
-                    {t('userNav.logout')}
-                    <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>{t('userNav.logout')}</span>
                 </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
