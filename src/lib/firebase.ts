@@ -1,7 +1,7 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp, type FirebaseOptions } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 
 export const firebaseConfig: FirebaseOptions = {
   "projectId": "snaptheplant-2qivc",
@@ -27,5 +27,7 @@ const signUpWithEmailPassword = (email: string, pass: string) => createUserWithE
 
 const signInWithEmailPassword = (email: string, pass: string) => signInWithEmailAndPassword(auth, email, pass);
 
+const sendPasswordReset = (email: string) => sendPasswordResetEmail(auth, email);
 
-export { auth, signInWithGoogle, signOutFromGoogle, signUpWithEmailPassword, signInWithEmailPassword };
+
+export { auth, signInWithGoogle, signOutFromGoogle, signUpWithEmailPassword, signInWithEmailPassword, sendPasswordReset };

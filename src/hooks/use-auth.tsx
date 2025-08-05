@@ -3,7 +3,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth, signInWithGoogle as signInWithGoogleFirebase, signOutFromGoogle, signUpWithEmailPassword, signInWithEmailPassword } from '@/lib/firebase';
+import { auth, signInWithGoogle as signInWithGoogleFirebase, signOutFromGoogle, signUpWithEmailPassword, signInWithEmailPassword, sendPasswordReset as sendPasswordResetFirebase } from '@/lib/firebase';
 import { useToast } from './use-toast';
 import { useRouter } from 'next/navigation';
 
@@ -17,6 +17,7 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   signUpWithEmail: (email: string, pass: string) => Promise<void>;
   signInWithEmail: (email: string, pass: string) => Promise<void>;
+  sendPasswordReset: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -117,8 +118,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const sendPasswordReset = async (email: string) => {
+    return sendPasswordResetFirebase(email);
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, subscriptionStatus, signInWithGoogle, signOut, signUpWithEmail, signInWithEmail }}>
+    <AuthContext.Provider value={{ user, loading, subscriptionStatus, signInWithGoogle, signOut, signUpWithEmail, signInWithEmail, sendPasswordReset }}>
       {children}
     </AuthContext.Provider>
   );

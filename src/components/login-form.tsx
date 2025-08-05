@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -21,16 +20,26 @@ import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/use-auth';
 import { Eye, EyeOff, Leaf, LogIn } from 'lucide-react';
 import Image from 'next/image';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email.' }),
   password: z.string().min(1, { message: 'Password is required.' }),
 });
 
+const passwordResetSchema = z.object({
+    resetEmail: z.string().email({ message: 'Please enter a valid email to send a reset link.' }),
+});
+
 export function LoginForm() {
-  const { signInWithEmail, signInWithGoogle } = useAuth();
+  const { signInWithEmail, signInWithGoogle, sendPasswordReset } = useAuth();
+  const { toast } = useToast();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetError, setResetError] = useState('');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,6 +53,31 @@ export function LoginForm() {
     await signInWithEmail(values.email, values.password);
   }
 
+  const handlePasswordReset = async () => {
+    try {
+        passwordResetSchema.parse({ resetEmail });
+        setResetError('');
+        await sendPasswordReset(resetEmail);
+        toast({
+            title: "Password Reset Email Sent",
+            description: `If an account exists for ${resetEmail}, you will receive a password reset link.`,
+        });
+        setIsResetDialogOpen(false);
+        setResetEmail('');
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            setResetError(error.errors[0].message);
+        } else {
+            console.error("Password reset error:", error);
+             toast({
+                title: "Error",
+                description: "Failed to send password reset email. Please try again.",
+                variant: "destructive",
+            });
+        }
+    }
+  }
+
   return (
     <div className="container relative grid h-full flex-col items-center justify-center lg:max-w-none lg:px-0">
         <div className="lg:p-8">
@@ -51,7 +85,7 @@ export function LoginForm() {
             <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">Sign In</h1>
             <p className="text-sm text-muted-foreground">
-                Enter your credentials to access your account
+                Enter your credentials to access your account. Your username is your email address.
             </p>
             </div>
             <Form {...form}>
@@ -74,15 +108,44 @@ export function LoginForm() {
                 name="password"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <div className="relative">
-                      <FormControl>
-                          <Input type={showPassword ? "text" : "password"} placeholder="Your password" {...field} />
-                      </FormControl>
-                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 flex items-center pr-3">
-                        {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
-                      </button>
-                    </div>
+                        <div className="flex justify-between items-center">
+                            <FormLabel>Password</FormLabel>
+                            <AlertDialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="link" type="button" className="p-0 h-auto text-xs">Forgot Password?</Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Reset Your Password</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Enter your email address below and we&apos;ll send you a link to reset your password.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="reset-email">Email</Label>
+                                        <Input 
+                                            id="reset-email" 
+                                            placeholder="name@example.com" 
+                                            value={resetEmail}
+                                            onChange={(e) => setResetEmail(e.target.value)}
+                                        />
+                                        {resetError && <p className="text-sm font-medium text-destructive">{resetError}</p>}
+                                    </div>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={handlePasswordReset}>Send Reset Link</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </div>
+                        <div className="relative">
+                          <FormControl>
+                              <Input type={showPassword ? "text" : "password"} placeholder="Your password" {...field} />
+                          </FormControl>
+                          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 flex items-center pr-3">
+                            {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
+                          </button>
+                        </div>
                     <FormMessage />
                     </FormItem>
                 )}
