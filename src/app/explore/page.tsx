@@ -46,7 +46,7 @@ export default function ExplorePage() {
                 return false;
             }
             for (const key in activeFilters) {
-                if (activeFilters[key] && species.attributes[key] !== activeFilters[key]) {
+                if (activeFilters[key] && activeFilters[key] !== 'all' && species.attributes[key] !== activeFilters[key]) {
                     return false;
                 }
             }
@@ -63,7 +63,7 @@ export default function ExplorePage() {
     const handleFilterChange = (filterKey: string, value: string) => {
         setActiveFilters(prev => ({
             ...prev,
-            [filterKey]: value === 'all' ? '' : value
+            [filterKey]: value
         }));
     };
 
@@ -102,7 +102,7 @@ export default function ExplorePage() {
                             {selectedCategory && Object.keys(availableFilters).map(filterKey => (
                                 <div key={filterKey}>
                                     <h3 className="font-semibold mb-2 capitalize">{filterKey.replace(/_/g, ' ')}</h3>
-                                    <Select onValueChange={(value) => handleFilterChange(filterKey, value)} value={activeFilters[filterKey] ?? ''}>
+                                    <Select onValueChange={(value) => handleFilterChange(filterKey, value)} value={activeFilters[filterKey] ?? 'all'}>
                                         <SelectTrigger>
                                             <SelectValue placeholder={`All ${filterKey.replace(/_/g, ' ')}s`} />
                                         </Trigger>
