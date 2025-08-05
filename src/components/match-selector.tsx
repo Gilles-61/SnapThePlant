@@ -107,10 +107,10 @@ export function MatchSelector({ image, matches, onSelect, onBack }: MatchSelecto
     }, [matches]);
 
     return (
-        <div className="w-full h-full text-white flex items-center justify-center p-4">
-            <div className="w-full max-w-6xl h-[95%] grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="w-full h-full text-white flex flex-col items-center justify-center p-4">
+            <div className="w-full max-w-6xl h-full flex flex-col md:grid md:grid-cols-2 gap-8">
                 {/* Left side: User's image */}
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 flex-shrink-0 md:flex-grow">
                      <div className="flex items-center justify-between">
                         <h2 className="text-2xl font-bold">Your Image</h2>
                         <Button variant="ghost" size="icon" onClick={onBack} className="text-white hover:bg-white/20">
@@ -118,7 +118,7 @@ export function MatchSelector({ image, matches, onSelect, onBack }: MatchSelecto
                            <span className="sr-only">Back</span>
                         </Button>
                     </div>
-                    <div className="relative flex-1 rounded-lg overflow-hidden border border-white/20 shadow-lg">
+                    <div className="relative flex-1 rounded-lg overflow-hidden border border-white/20 shadow-lg min-h-48">
                         <Image 
                             src={image}
                             alt="User upload for identification"
@@ -134,19 +134,19 @@ export function MatchSelector({ image, matches, onSelect, onBack }: MatchSelecto
                     <CardHeader>
                          <CardTitle>
                             {matches.length > 0
-                                ? `We found ${matches.length} matches!`
+                                ? `We found ${matches.length} possible matches`
                                 : `No Matches Found`}
                         </CardTitle>
                         <CardDescription>
                             {matches.length > 0
-                                ? `Select the one that looks most like your image.`
-                                : `We couldn't find any matches. Try adjusting your selections or starting over.`}
+                                ? `Select the one that looks most like your image, or start over.`
+                                : `We couldn't find any matches. Try taking another picture.`}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="flex-1 overflow-hidden">
                         {matches.length > 0 ? (
                             <ScrollArea className="h-full">
-                                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 pr-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pr-4">
                                     {matches.map(({ species, confidence }, index) => (
                                         <MatchCard 
                                             key={species.id}
@@ -168,6 +168,13 @@ export function MatchSelector({ image, matches, onSelect, onBack }: MatchSelecto
                             </div>
                         )}
                     </CardContent>
+                     {matches.length > 0 && (
+                        <CardFooter className="pt-4">
+                            <Button variant="outline" className="w-full" onClick={onBack}>
+                                Not these? Start Over
+                            </Button>
+                        </CardFooter>
+                     )}
                 </Card>
             </div>
         </div>

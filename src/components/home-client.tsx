@@ -241,13 +241,13 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   return (
     <div className="flex flex-col min-h-screen text-white">
       <SiteHeader />
-      <main className="flex-1 relative flex flex-col items-center justify-center overflow-hidden p-4">
+      <main className="flex-1 relative flex flex-col items-center justify-center overflow-auto p-4">
         
-        <div className="relative z-10 w-full max-w-2xl mx-auto flex flex-col items-center justify-center text-center">
+        <div className="w-full max-w-2xl mx-auto flex flex-col items-center justify-center text-center flex-grow">
             {view === 'capture' && !isCameraOpen && (
-                 <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-8 text-slate-800">
-                    <h1 className="text-4xl font-headline font-bold text-primary mb-2">Select a Category</h1>
-                    <p className="max-w-md mb-6 mx-auto text-lg">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
+                 <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-6 sm:p-8 text-slate-800">
+                    <h1 className="text-3xl sm:text-4xl font-headline font-bold text-primary mb-2">Select a Category</h1>
+                    <p className="max-w-md mb-6 mx-auto text-base sm:text-lg">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
                     <CategorySelector
                         selectedCategory={selectedCategory}
                         onSelectCategory={handleCategorySelect}
@@ -260,9 +260,52 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
             )}
         </div>
 
+        {/* Action Buttons */}
+        <div className="w-full flex-shrink-0 py-4">
+            {view === 'capture' && !isCameraOpen && (
+                <div className="flex flex-col sm:flex-row justify-center gap-3 w-full max-w-lg mx-auto">
+                    <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleCameraButtonClick}>
+                        <Camera className="mr-2"/>
+                        Use Camera
+                    </Button>
+                     <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleScanButtonClick}>
+                        <QrCode className="mr-2" />
+                        Scan Code
+                    </Button>
+                    <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleUploadButtonClick}>
+                        <Upload className="mr-2" />
+                        Upload
+                    </Button>
+                </div>
+            )}
+
+            {isCameraOpen && (
+                 <div className="flex flex-col items-center gap-4">
+                    <Button
+                        size="lg"
+                        className="rounded-full h-20 w-20 p-0 border-4 border-white/50 bg-primary/90 hover:bg-primary text-primary-foreground shadow-2xl disabled:opacity-50 transition-transform active:scale-95"
+                        onClick={handleCapture}
+                        disabled={isLoading}
+                        aria-label={t('capturePhotoLabel')}
+                    >
+                        <Camera className="h-8 w-8" />
+                    </Button>
+                     <Button
+                        variant="outline"
+                        className="bg-black/50 border-white/50 text-white hover:bg-black/70 hover:text-white rounded-full"
+                        onClick={handleReset}
+                     >
+                        <RotateCcw className="mr-2 h-4 w-4" />
+                        {t('startOver')}
+                     </Button>
+                 </div>
+            )}
+        </div>
+
+
         {/* Overlays */}
         {isCameraOpen && (
-           <div className="absolute inset-0 bg-black">
+           <div className="absolute inset-0 bg-black z-10">
               <CameraFeed ref={cameraRef} />
            </div>
         )}
@@ -275,15 +318,12 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         )}
         
         {view === 'matches' && capturedImage && (
-           <div className="absolute inset-0 bg-black/90">
-             
+           <div className="absolute inset-0 bg-black/90 z-10">
               <MatchSelector
                 image={capturedImage}
                 matches={possibleMatches} 
                 onSelect={handleMatchSelected} 
-                onBack={() => {
-                  handleReset();
-                }} 
+                onBack={handleReset} 
               />
             </div>
         )}
@@ -294,49 +334,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
             <p className="mt-4 text-white font-semibold">{t('identifying')}</p>
           </div>
         )}
-
-        <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col items-center p-6 space-y-4">
-          
-          {(view === 'capture' && !isCameraOpen) && (
-            <div className="flex justify-center gap-4 w-full max-w-lg">
-                <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleCameraButtonClick}>
-                    <Camera className="mr-2"/>
-                    Use Camera
-                </Button>
-                 <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleScanButtonClick}>
-                    <QrCode className="mr-2" />
-                    Scan Code
-                </Button>
-                <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleUploadButtonClick}>
-                    <Upload className="mr-2" />
-                    Upload
-                </Button>
-            </div>
-          )}
-
-          {isCameraOpen && (
-             <Button
-                size="lg"
-                className="rounded-full h-20 w-20 p-0 border-4 border-white/50 bg-primary/90 hover:bg-primary text-primary-foreground shadow-2xl disabled:opacity-50 transition-transform active:scale-95"
-                onClick={handleCapture}
-                disabled={isLoading}
-                aria-label={t('capturePhotoLabel')}
-              >
-                  <Camera className="h-8 w-8" />
-              </Button>
-          )}
-
-          {(view !== 'capture' || isCameraOpen) && (
-             <Button
-                variant="outline"
-                className="bg-black/50 border-white/50 text-white hover:bg-black/70 hover:text-white rounded-full"
-                onClick={handleReset}
-             >
-                <RotateCcw className="mr-2 h-4 w-4" />
-                {t('startOver')}
-             </Button>
-          )}
-        </div>
         
         <IdentificationResult
           open={isResultOpen}
