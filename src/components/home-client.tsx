@@ -44,8 +44,8 @@ export function HomeClient({ initialCategory }: { initialCategory?: any }) {
     )
   }
 
+  // This case handles free users while they are being redirected.
   if (subscriptionStatus === 'free') {
-    // This will be shown briefly during redirection
      return (
         <div className="flex flex-col min-h-screen bg-background">
             <SiteHeader />
