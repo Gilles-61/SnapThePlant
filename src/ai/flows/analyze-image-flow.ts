@@ -23,7 +23,6 @@ const AnalyzeImageInputSchema = z.object({
 export type AnalyzeImageInput = z.infer<typeof AnalyzeImageInputSchema>;
 
 const AnalyzeImageOutputSchema = z.object({
-  isClear: z.boolean().describe("Whether the image is clear and high-quality enough for accurate identification."),
   attributes: z
     .object({
       color: z.string().optional().describe("Primary color of the plant, flower, or insect."),
@@ -51,8 +50,6 @@ export async function analyzeImage(input: AnalyzeImageInput): Promise<AnalyzeIma
 
 const promptText = `
     You are an expert biologist and botanist. Your main goal is to analyze the provided image and extract its visual attributes.
-
-    As a secondary task, assess the image quality. **You must default to setting 'isClear' to true.** Only set the 'isClear' flag to 'false' if the image is so poor that a human expert would find it **impossible** to identify (e.g., it is completely black, hopelessly blurry, or the subject is a tiny, unrecognizable speck). For any image where the subject is even remotely discernible, you MUST set 'isClear' to true.
 
     Analyze the image of a {{category}} and determine its visual characteristics based on a predefined set of questions, as if you were answering a quiz.
     Focus on the most visually distinct features of the subject in the photo.

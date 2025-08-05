@@ -41,8 +41,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   const [view, setView] = useState<'capture' | 'matches'>('capture');
   const [possibleMatches, setPossibleMatches] = useState<ScoredSpecies[]>([]);
   const [action, setAction] = useState<'camera' | 'upload' | null>(null);
-  const [isQualityAlertOpen, setIsQualityAlertOpen] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState<AnalyzeImageOutput | null>(null);
   
   const handleReset = useCallback(() => {
     setCapturedImage(null);
@@ -55,8 +53,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setPossibleMatches([]);
     setSelectedCategory(null);
     setAction(null);
-    setAnalysisResult(null);
-    setIsQualityAlertOpen(false);
   }, []);
 
   const proceedWithAnalysis = (analysis: AnalyzeImageOutput) => {
@@ -95,14 +91,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         photoDataUri: imageDataUri,
         category: category,
       });
-
-      if (!analysis.isClear) {
-        setAnalysisResult(analysis);
-        setIsQualityAlertOpen(true);
-        setIsLoading(false);
-        return;
-      }
-
+      
       proceedWithAnalysis(analysis);
 
     } catch (error) {
@@ -114,9 +103,9 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
       });
       handleReset();
     } finally {
-      if (!isQualityAlertOpen) setIsLoading(false);
+      setIsLoading(false);
     }
-  }, [toast, handleReset, isQualityAlertOpen]);
+  }, [toast, handleReset]);
 
 
   const handleMatchSelected = useCallback((species: Species) => {
@@ -406,32 +395,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
           onConfirm={() => handleFeedback(true)}
           onReject={() => handleFeedback(false)}
         />
-
-        <AlertDialog open={isQualityAlertOpen} onOpenChange={setIsQualityAlertOpen}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle className="flex items-center gap-2">
-                <AlertCircle className="text-amber-500" />
-                Image Quality Warning
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                The uploaded image may be blurry or unclear. This could lead to inaccurate identification. Would you like to proceed anyway?
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={handleReset}>Try Again</AlertDialogCancel>
-              <AlertDialogAction onClick={() => {
-                setIsQualityAlertOpen(false);
-                setIsLoading(true);
-                proceedWithAnalysis(analysisResult!);
-                setIsLoading(false);
-              }}>
-                Continue Anyway
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-
 
         <input
             type="file"
