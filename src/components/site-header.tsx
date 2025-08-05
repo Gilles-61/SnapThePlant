@@ -13,14 +13,14 @@ export function SiteHeader() {
             <span className="text-2xl font-bold sm:inline-block font-headline text-slate-800">SnapThePlant</span>
           </Link>
           <nav className="flex items-center gap-2">
-            <Button variant="link" asChild>
-                <Link href="/explore" className="text-slate-600 hover:text-primary">Explore</Link>
+            <Button variant="link" asChild className="text-slate-600 hover:text-primary">
+                <Link href="/explore">Explore</Link>
             </Button>
-             <Button variant="link" asChild>
-                <Link href="/community" className="text-slate-600 hover:text-primary">Community</Link>
+             <Button variant="link" asChild className="text-slate-600 hover:text-primary">
+                <Link href="/community">Community</Link>
             </Button>
-            <Button variant="link" asChild>
-                <Link href="/pricing" className="text-slate-600 hover:text-primary">Pricing</Link>
+            <Button variant="link" asChild className="text-slate-600 hover:text-primary">
+                <Link href="/pricing">Pricing</Link>
             </Button>
           </nav>
         </div>
