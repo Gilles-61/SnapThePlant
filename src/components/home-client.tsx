@@ -84,11 +84,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   }, [processImage, toast, t]);
 
   const handleBrowseClick = () => {
-    if (selectedCategory) {
-        fileInputRef.current?.click();
-    } else {
-        setIsCategorySelectorOpen(true);
-    }
+      fileInputRef.current?.click();
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,7 +117,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   const handleCategorySelect = (category: Category) => {
     setSelectedCategory(category);
     setIsSourceSelectorOpen(true);
-    setIsCategorySelectorOpen(false);
   }
   
   const handleCameraButtonClick = () => {
@@ -131,6 +126,14 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         setIsCategorySelectorOpen(true);
     }
   };
+
+  const handleUploadButtonClick = () => {
+    if (selectedCategory) {
+        handleBrowseClick();
+    } else {
+        setIsCategorySelectorOpen(true);
+    }
+  }
 
 
   if (loading) {
@@ -170,15 +173,19 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
               data-ai-hint="nature landscape"
             />
             <div className="absolute inset-0 bg-black/60" />
-            <div className="relative z-10 p-8 text-white">
-              <ImageIcon className="w-24 h-24 mb-4 mx-auto" />
-              <p className="text-lg font-semibold mb-2">Select a category to begin</p>
-              <p className="max-w-md mb-6 mx-auto">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
-              <CategorySelector
-                    selectedCategory={selectedCategory}
-                    onSelectCategory={handleCategorySelect}
-                />
-            </div>
+
+             {/* This content is only visible initially */}
+            {view === 'capture' && !isCameraOpen && (
+                 <div className="relative z-10 p-8 text-white">
+                    <ImageIcon className="w-24 h-24 mb-4 mx-auto" />
+                    <p className="text-lg font-semibold mb-2">Select a category to begin</p>
+                    <p className="max-w-md mb-6 mx-auto">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
+                    <CategorySelector
+                            selectedCategory={selectedCategory}
+                            onSelectCategory={handleCategorySelect}
+                        />
+                </div>
+            )}
         </div>
 
         {/* Overlays */}
@@ -212,15 +219,15 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
           </div>
         )}
 
-        <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col items-center p-6 space-y-4">
+        <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col items-center p-6 space-y-4">
           
-          {(view === 'capture' && !isCameraOpen && !selectedCategory) && (
-            <div className="flex justify-center gap-4 w-full max-w-sm">
+          {(view === 'capture' && !isCameraOpen) && (
+            <div className="flex justify-center gap-4 w-full max-w-sm bg-background/80 backdrop-blur-sm p-4 rounded-xl">
                 <Button size="lg" className="flex-1" onClick={handleCameraButtonClick}>
                     <Camera className="mr-2"/>
                     Use Camera
                 </Button>
-                <Button size="lg" className="flex-1" variant="secondary" onClick={handleBrowseClick}>
+                <Button size="lg" className="flex-1" variant="secondary" onClick={handleUploadButtonClick}>
                     <Upload className="mr-2" />
                     Upload from Gallery
                 </Button>
@@ -273,7 +280,11 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
                 <div className="py-4">
                     <CategorySelector
                         selectedCategory={selectedCategory}
-                        onSelectCategory={handleCategorySelect}
+                        onSelectCategory={(category) => {
+                           setSelectedCategory(category);
+                           setIsCategorySelectorOpen(false); // Close this dialog
+                           setIsSourceSelectorOpen(true); // Open the next one
+                        }}
                     />
                 </div>
                 <AlertDialogFooter>
