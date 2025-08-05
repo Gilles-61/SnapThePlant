@@ -52,7 +52,7 @@ const promptText = `
     - Plant: "color", "shape", "size"
     - Tree: "bark", "leaf_shape", "has_fruit"
     - Weed: "flower_color", "location", "leaf_type"
-    - Insect: "color", "wings", "legs"
+    - Insect: "main_color", "has_wings", "number_of_legs"
     - Cactus: "shape", "flowers", "color"
     - Succulent: "color", "shape", "texture"
     

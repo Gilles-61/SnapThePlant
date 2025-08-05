@@ -166,35 +166,35 @@ export const database: Species[] = [
         keyInformation: 'A vital pollinator for many crops and wild plants. Social insects living in large colonies. Will sting if threatened.',
         furtherReading: 'https://en.wikipedia.org/wiki/Honey_bee',
         image: 'https://placehold.co/600x400.png',
-        attributes: { color: 'yellow', wings: 'yes', legs: '6' }
+        attributes: { main_color: 'yellow', has_wings: 'yes', number_of_legs: '6' }
     },
     {
         id: 10, category: 'Insect', name: 'Carpenter Ant', scientificName: 'Camponotus',
         keyInformation: 'A common pest that excavates wood to build nests, which can cause structural damage to homes. Does not eat wood.',
         furtherReading: 'https://en.wikipedia.org/wiki/Carpenter_ant',
         image: 'https://placehold.co/600x400.png',
-        attributes: { color: 'other', wings: 'no', legs: '6' }
+        attributes: { main_color: 'black', has_wings: 'no', number_of_legs: '6' }
     },
     {
         id: 11, category: 'Insect', name: 'Garden Spider', scientificName: 'Argiope aurantia',
         keyInformation: 'A common orb-weaver spider, harmless to humans. Known for building large, intricate, circular webs in gardens.',
         furtherReading: 'https://en.wikipedia.org/wiki/Argiope_aurantia',
         image: 'https://placehold.co/600x400.png',
-        attributes: { color: 'yellow', wings: 'no', legs: '8' }
+        attributes: { main_color: 'yellow', has_wings: 'no', number_of_legs: '8' }
     },
     {
         id: 16, category: 'Insect', name: 'Ladybug', scientificName: 'Coccinellidae',
         keyInformation: 'A well-known beetle, considered a beneficial insect as it preys on aphids and other garden pests. Many cultures consider it a sign of good luck.',
         furtherReading: 'https://en.wikipedia.org/wiki/Coccinellidae',
         image: 'https://placehold.co/600x400.png',
-        attributes: { color: 'red', wings: 'yes', legs: '6' }
+        attributes: { main_color: 'red', has_wings: 'yes', number_of_legs: '6' }
     },
     {
         id: 19, category: 'Insect', name: 'Monarch Butterfly', scientificName: 'Danaus plexippus',
         keyInformation: 'A famous migratory butterfly known for its striking orange and black wings. Its larvae feed exclusively on milkweed plants.',
         furtherReading: 'https://en.wikipedia.org/wiki/Monarch_butterfly',
         image: 'https://placehold.co/600x400.png',
-        attributes: { color: 'other', wings: 'yes', legs: '6' }
+        attributes: { main_color: 'orange', has_wings: 'yes', number_of_legs: '6' }
     },
     
     // --- CACTI ---
