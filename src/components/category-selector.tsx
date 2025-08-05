@@ -4,12 +4,13 @@ import { Leaf, TreeDeciduous, Sprout, Bug } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { useTranslation } from '@/hooks/use-language';
 
 export const categories = [
-  { name: 'Plant', icon: Leaf, hint: 'Identify a plant' },
-  { name: 'Tree', icon: TreeDeciduous, hint: 'Identify a tree' },
-  { name: 'Weed', icon: Sprout, hint: 'Identify a weed' },
-  { name: 'Insect', icon: Bug, hint: 'Identify an insect' },
+  { name: 'Plant', icon: Leaf, hintKey: 'categories.plantHint' },
+  { name: 'Tree', icon: TreeDeciduous, hintKey: 'categories.treeHint' },
+  { name: 'Weed', icon: Sprout, hintKey: 'categories.weedHint' },
+  { name: 'Insect', icon: Bug, hintKey: 'categories.insectHint' },
 ] as const;
 
 export type Category = typeof categories[number]['name'];
@@ -25,10 +26,12 @@ export function CategorySelector({
   onSelectCategory,
   className,
 }: CategorySelectorProps) {
+  const { t } = useTranslation();
+
   return (
     <TooltipProvider>
       <div className={cn("flex justify-center items-center gap-3 p-2 bg-black/30 backdrop-blur-md rounded-full", className)}>
-        {categories.map(({ name, icon: Icon, hint }) => (
+        {categories.map(({ name, icon: Icon, hintKey }) => (
           <Tooltip key={name}>
             <TooltipTrigger asChild>
               <Button
@@ -39,15 +42,15 @@ export function CategorySelector({
                   selectedCategory === name && "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground scale-110"
                 )}
                 onClick={() => onSelectCategory(name)}
-                aria-label={hint}
+                aria-label={t(hintKey)}
                 aria-pressed={selectedCategory === name}
               >
                 <Icon className="w-6 h-6" />
-                <span className="text-xs font-medium">{name}</span>
+                <span className="text-xs font-medium">{t(`categories.${name.toLowerCase()}`)}</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent side="top" className="bg-black/80 text-white border-0">
-              <p>{hint}</p>
+              <p>{t(hintKey)}</p>
             </TooltipContent>
           </Tooltip>
         ))}

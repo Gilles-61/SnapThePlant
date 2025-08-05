@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ExternalLink, CheckCircle, XCircle } from 'lucide-react';
 import type { EnhanceIdentificationContextOutput } from '@/ai/flows/enhance-identification-context';
+import { useTranslation } from '@/hooks/use-language';
 
 interface IdentificationResultProps {
   result: EnhanceIdentificationContextOutput | null;
@@ -28,6 +29,8 @@ export function IdentificationResult({
   onConfirm,
   onReject,
 }: IdentificationResultProps) {
+  const { t } = useTranslation();
+
   if (!result) return null;
 
   const confidencePercentage = Math.round(result.confidenceScore * 100);
@@ -39,7 +42,7 @@ export function IdentificationResult({
           <SheetTitle className="text-3xl font-bold font-headline">{result.speciesName}</SheetTitle>
           <SheetDescription asChild>
             <div className="pt-2">
-                <span className="text-sm font-medium text-foreground/80">Confidence Score</span>
+                <span className="text-sm font-medium text-foreground/80">{t('result.confidenceScore')}</span>
                 <div className="flex items-center gap-3 mt-1">
                     <Progress value={confidencePercentage} className="w-full h-2.5" />
                     <span className="text-base font-bold text-foreground whitespace-nowrap">{confidencePercentage}%</span>
@@ -49,32 +52,32 @@ export function IdentificationResult({
         </SheetHeader>
         <div className="flex-1 overflow-y-auto py-4 space-y-6">
           <div>
-            <h3 className="font-semibold text-lg mb-2 font-headline">Key Information</h3>
+            <h3 className="font-semibold text-lg mb-2 font-headline">{t('result.keyInformation')}</h3>
             <p className="text-foreground/80 leading-relaxed">{result.keyInformation}</p>
           </div>
           {result.furtherReading && (
             <div>
-              <h3 className="font-semibold text-lg mb-2 font-headline">Further Reading</h3>
+              <h3 className="font-semibold text-lg mb-2 font-headline">{t('result.furtherReading')}</h3>
               <a
-                href={result.furtherReading.startsWith('http') ? result.furtherReading : `https://${result.furtherReading}`}
+                href={result.furtherReading.startsWith('http') ? result.furtherReading : `https://www.bing.com/search?q=${encodeURIComponent(result.speciesName)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline flex items-center gap-1 transition-colors"
               >
-                Learn more on the web <ExternalLink className="w-4 h-4" />
+                {t('result.learnMore')} <ExternalLink className="w-4 h-4" />
               </a>
             </div>
           )}
         </div>
         <SheetFooter className="mt-auto py-4 border-t bg-background/95 sticky bottom-0">
           <div className="w-full">
-            <p className="text-center text-sm text-muted-foreground mb-3">Was this identification correct?</p>
+            <p className="text-center text-sm text-muted-foreground mb-3">{t('result.feedbackPrompt')}</p>
             <div className="flex gap-3 w-full">
               <Button variant="outline" size="lg" className="w-full" onClick={onReject}>
-                <XCircle className="mr-2 h-5 w-5" /> Incorrect
+                <XCircle className="mr-2 h-5 w-5" /> {t('result.incorrect')}
               </Button>
               <Button size="lg" className="w-full" onClick={onConfirm}>
-                <CheckCircle className="mr-2 h-5 w-5" /> Correct
+                <CheckCircle className="mr-2 h-5 w-5" /> {t('result.correct')}
               </Button>
             </div>
           </div>

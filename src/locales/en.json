@@ -1,0 +1,57 @@
+{
+    "aiDescription": "Identify this {category}. Provide details about it.",
+    "identifying": "Identifying...",
+    "browseImageLabel": "Browse for an image",
+    "retakePhotoLabel": "Retake photo",
+    "capturePhotoLabel": "Capture photo",
+    "placeholder": {
+        "useCameraOrUpload": "Use your camera or upload an image"
+    },
+    "toast": {
+        "identificationFailed": {
+            "title": "Identification Failed",
+            "description": "Could not identify the image. Please try again."
+        },
+        "captureFailed": {
+            "title": "Capture Failed",
+            "description": "Could not capture an image from the camera."
+        },
+        "feedback": {
+            "title": "Thank you!",
+            "description": "Your feedback helps us improve."
+        }
+    },
+    "camera": {
+        "notSupported": "Camera access is not supported by this browser.",
+        "accessError": "Could not access camera. Please check permissions and ensure you are using a secure (HTTPS) connection.",
+        "errorTitle": "Camera Error"
+    },
+    "categories": {
+        "plant": "Plant",
+        "plantHint": "Identify a plant",
+        "tree": "Tree",
+        "treeHint": "Identify a tree",
+        "weed": "Weed",
+        "weedHint": "Identify a weed",
+        "insect": "Insect",
+        "insectHint": "Identify an insect"
+    },
+    "result": {
+        "confidenceScore": "Confidence Score",
+        "keyInformation": "Key Information",
+        "furtherReading": "Further Reading",
+        "learnMore": "Learn more on the web",
+        "feedbackPrompt": "Was this identification correct?",
+        "correct": "Correct",
+        "incorrect": "Incorrect"
+    },
+    "userNav": {
+        "user": "User",
+        "userEmail": "user@example.com",
+        "profile": "Profile",
+        "billing": "Billing",
+        "settings": "Settings",
+        "language": "Language",
+        "logout": "Log out"
+    }
+}

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { Video, AlertTriangle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useTranslation } from '@/hooks/use-language';
 
 interface CameraFeedProps {}
 
@@ -11,6 +12,7 @@ export interface CameraFeedHandle {
 }
 
 const CameraFeed = forwardRef<CameraFeedHandle, CameraFeedProps>((props, ref) => {
+  const { t } = useTranslation();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
@@ -41,11 +43,11 @@ const CameraFeed = forwardRef<CameraFeedHandle, CameraFeedProps>((props, ref) =>
             };
           }
         } else {
-          setError('Camera access is not supported by this browser.');
+          setError(t('camera.notSupported'));
         }
       } catch (err) {
         console.error("Error accessing camera: ", err);
-        setError('Could not access camera. Please check permissions and ensure you are using a secure (HTTPS) connection.');
+        setError(t('camera.accessError'));
       }
     };
 
@@ -57,7 +59,7 @@ const CameraFeed = forwardRef<CameraFeedHandle, CameraFeedProps>((props, ref) =>
         stream.getTracks().forEach(track => track.stop());
       }
     };
-  }, []);
+  }, [t]);
 
   useImperativeHandle(ref, () => ({
     capture: () => {
@@ -80,7 +82,7 @@ const CameraFeed = forwardRef<CameraFeedHandle, CameraFeedProps>((props, ref) =>
     return (
       <div className="w-full h-full flex flex-col items-center justify-center bg-muted text-muted-foreground p-8 text-center">
         <AlertTriangle className="w-16 h-16 mb-4 text-destructive" />
-        <h2 className="text-xl font-semibold text-foreground mb-2">Camera Error</h2>
+        <h2 className="text-xl font-semibold text-foreground mb-2">{t('camera.errorTitle')}</h2>
         <p className="text-sm">{error}</p>
       </div>
     );

@@ -1,0 +1,57 @@
+{
+    "aiDescription": "Identifiez ce {category}. Fournissez des détails à ce sujet.",
+    "identifying": "Identification en cours...",
+    "browseImageLabel": "Parcourir pour une image",
+    "retakePhotoLabel": "Reprendre la photo",
+    "capturePhotoLabel": "Capturer la photo",
+    "placeholder": {
+        "useCameraOrUpload": "Utilisez votre appareil photo ou téléchargez une image"
+    },
+    "toast": {
+        "identificationFailed": {
+            "title": "Échec de l'identification",
+            "description": "Impossible d'identifier l'image. Veuillez réessayer."
+        },
+        "captureFailed": {
+            "title": "Échec de la capture",
+            "description": "Impossible de capturer une image depuis l'appareil photo."
+        },
+        "feedback": {
+            "title": "Merci !",
+            "description": "Vos commentaires nous aident à nous améliorer."
+        }
+    },
+    "camera": {
+        "notSupported": "L'accès à la caméra n'est pas pris en charge par ce navigateur.",
+        "accessError": "Impossible d'accéder à la caméra. Veuillez vérifier les autorisations et vous assurer que vous utilisez une connexion sécurisée (HTTPS).",
+        "errorTitle": "Erreur de caméra"
+    },
+    "categories": {
+        "plant": "Plante",
+        "plantHint": "Identifier une plante",
+        "tree": "Arbre",
+        "treeHint": "Identifier un arbre",
+        "weed": "Mauvaise herbe",
+        "weedHint": "Identifier une mauvaise herbe",
+        "insect": "Insecte",
+        "insectHint": "Identifier un insecte"
+    },
+    "result": {
+        "confidenceScore": "Score de confiance",
+        "keyInformation": "Informations clés",
+        "furtherReading": "Lectures complémentaires",
+        "learnMore": "En savoir plus sur le web",
+        "feedbackPrompt": "Cette identification était-elle correcte ?",
+        "correct": "Correct",
+        "incorrect": "Incorrect"
+    },
+    "userNav": {
+        "user": "Utilisateur",
+        "userEmail": "utilisateur@example.com",
+        "profile": "Profil",
+        "billing": "Facturation",
+        "settings": "Paramètres",
+        "language": "Langue",
+        "logout": "Déconnexion"
+    }
+}

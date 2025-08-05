@@ -1,0 +1,57 @@
+{
+    "aiDescription": "Identifiziere diesen {category}. Gib Details dazu an.",
+    "identifying": "Identifiziere...",
+    "browseImageLabel": "Bild durchsuchen",
+    "retakePhotoLabel": "Foto wiederholen",
+    "capturePhotoLabel": "Foto aufnehmen",
+    "placeholder": {
+        "useCameraOrUpload": "Verwende deine Kamera oder lade ein Bild hoch"
+    },
+    "toast": {
+        "identificationFailed": {
+            "title": "Identifizierung fehlgeschlagen",
+            "description": "Das Bild konnte nicht identifiziert werden. Bitte versuche es erneut."
+        },
+        "captureFailed": {
+            "title": "Aufnahme fehlgeschlagen",
+            "description": "Konnte kein Bild von der Kamera aufnehmen."
+        },
+        "feedback": {
+            "title": "Vielen Dank!",
+            "description": "Dein Feedback hilft uns, uns zu verbessern."
+        }
+    },
+    "camera": {
+        "notSupported": "Der Kamerazugriff wird von diesem Browser nicht unterstützt.",
+        "accessError": "Kamerazugriff nicht möglich. Bitte überprüfe die Berechtigungen und stelle sicher, dass du eine sichere (HTTPS) Verbindung verwendest.",
+        "errorTitle": "Kamerafehler"
+    },
+    "categories": {
+        "plant": "Pflanze",
+        "plantHint": "Eine Pflanze identifizieren",
+        "tree": "Baum",
+        "treeHint": "Einen Baum identifizieren",
+        "weed": "Unkraut",
+        "weedHint": "Ein Unkraut identifizieren",
+        "insect": "Insekt",
+        "insectHint": "Ein Insekt identifizieren"
+    },
+    "result": {
+        "confidenceScore": "Konfidenzwert",
+        "keyInformation": "Schlüsselinformationen",
+        "furtherReading": "Weiterführende Literatur",
+        "learnMore": "Mehr im Web erfahren",
+        "feedbackPrompt": "War diese Identifizierung korrekt?",
+        "correct": "Korrekt",
+        "incorrect": "Falsch"
+    },
+    "userNav": {
+        "user": "Benutzer",
+        "userEmail": "benutzer@example.com",
+        "profile": "Profil",
+        "billing": "Abrechnung",
+        "settings": "Einstellungen",
+        "language": "Sprache",
+        "logout": "Abmelden"
+    }
+}

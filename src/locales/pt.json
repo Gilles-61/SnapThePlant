@@ -1,0 +1,57 @@
+{
+    "aiDescription": "Identifique este {category}. Forneça detalhes sobre ele.",
+    "identifying": "Identificando...",
+    "browseImageLabel": "Procurar uma imagem",
+    "retakePhotoLabel": "Tirar foto novamente",
+    "capturePhotoLabel": "Capturar foto",
+    "placeholder": {
+        "useCameraOrUpload": "Use sua câmera ou carregue uma imagem"
+    },
+    "toast": {
+        "identificationFailed": {
+            "title": "Falha na Identificação",
+            "description": "Não foi possível identificar a imagem. Por favor, tente novamente."
+        },
+        "captureFailed": {
+            "title": "Falha na Captura",
+            "description": "Não foi possível capturar uma imagem da câmera."
+        },
+        "feedback": {
+            "title": "Obrigado!",
+            "description": "Seu feedback nos ajuda a melhorar."
+        }
+    },
+    "camera": {
+        "notSupported": "O acesso à câmera não é suportado por este navegador.",
+        "accessError": "Não foi possível acessar a câmera. Verifique as permissões e certifique-se de que está usando uma conexão segura (HTTPS).",
+        "errorTitle": "Erro na Câmera"
+    },
+    "categories": {
+        "plant": "Planta",
+        "plantHint": "Identificar uma planta",
+        "tree": "Árvore",
+        "treeHint": "Identificar uma árvore",
+        "weed": "Erva daninha",
+        "weedHint": "Identificar uma erva daninha",
+        "insect": "Inseto",
+        "insectHint": "Identificar um inseto"
+    },
+    "result": {
+        "confidenceScore": "Pontuação de Confiança",
+        "keyInformation": "Informações Chave",
+        "furtherReading": "Leitura Adicional",
+        "learnMore": "Saiba mais na web",
+        "feedbackPrompt": "Esta identificação estava correta?",
+        "correct": "Correto",
+        "incorrect": "Incorreto"
+    },
+    "userNav": {
+        "user": "Usuário",
+        "userEmail": "usuario@example.com",
+        "profile": "Perfil",
+        "billing": "Faturamento",
+        "settings": "Configurações",
+        "language": "Idioma",
+        "logout": "Sair"
+    }
+}

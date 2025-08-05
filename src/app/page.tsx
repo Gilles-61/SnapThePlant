@@ -12,8 +12,10 @@ import { SiteHeader } from '@/components/site-header';
 import { CategorySelector, categories, type Category } from '@/components/category-selector';
 import { IdentificationResult } from '@/components/identification-result';
 import CameraFeed, { type CameraFeedHandle } from '@/components/camera-feed';
+import { useTranslation } from '@/hooks/use-language';
 
 export default function HomePage() {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const cameraRef = useRef<CameraFeedHandle>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -31,22 +33,22 @@ export default function HomePage() {
     try {
       const aiResult = await enhanceIdentificationContext({
         photoDataUri: imageDataUri,
-        description: `Identify this ${selectedCategory.toLowerCase()}. Provide details about it.`,
+        description: t('aiDescription', { category: selectedCategory.toLowerCase() }),
       });
       setResult(aiResult);
       setIsResultOpen(true);
     } catch (error) {
       console.error("AI identification failed:", error);
       toast({
-        title: "Identification Failed",
-        description: "Could not identify the image. Please try again.",
+        title: t('toast.identificationFailed.title'),
+        description: t('toast.identificationFailed.description'),
         variant: "destructive",
       });
       handleReset();
     } finally {
       setIsLoading(false);
     }
-  }, [selectedCategory, toast]);
+  }, [selectedCategory, toast, t]);
 
 
   const handleCapture = useCallback(async () => {
@@ -59,12 +61,12 @@ export default function HomePage() {
       processImage(imageDataUri);
     } else {
       toast({
-        title: "Capture Failed",
-        description: "Could not capture an image from the camera.",
+        title: t('toast.captureFailed.title'),
+        description: t('toast.captureFailed.description'),
         variant: "destructive",
       });
     }
-  }, [processImage, toast, isCameraOpen]);
+  }, [processImage, toast, isCameraOpen, t]);
 
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
@@ -99,11 +101,11 @@ export default function HomePage() {
   const handleFeedback = useCallback(() => {
     // In a real app, this would send feedback to a backend
     toast({
-        title: "Thank you!",
-        description: "Your feedback helps us improve.",
+        title: t('toast.feedback.title'),
+        description: t('toast.feedback.description'),
     });
     handleReset();
-  }, [toast, handleReset]);
+  }, [toast, handleReset, t]);
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -124,7 +126,7 @@ export default function HomePage() {
           ) : (
             <div className="w-full h-full bg-muted flex flex-col items-center justify-center text-muted-foreground">
                 <ImageIcon className="w-24 h-24 mb-4" />
-                <p className="text-lg">Use your camera or upload an image</p>
+                <p className="text-lg">{t('placeholder.useCameraOrUpload')}</p>
             </div>
           )}
         </div>
@@ -132,7 +134,7 @@ export default function HomePage() {
         {isLoading && (
           <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-20 backdrop-blur-sm">
             <Loader className="h-12 w-12 animate-spin text-white" />
-            <p className="mt-4 text-white font-semibold">Identifying...</p>
+            <p className="mt-4 text-white font-semibold">{t('identifying')}</p>
           </div>
         )}
 
@@ -159,7 +161,7 @@ export default function HomePage() {
                     className="rounded-full h-16 w-16 p-0 text-white hover:bg-white/20"
                     onClick={handleBrowseClick}
                     disabled={isLoading}
-                    aria-label="Browse for an image"
+                    aria-label={t('browseImageLabel')}
                 >
                     <ImageIcon className="h-7 w-7" />
                 </Button>
@@ -170,7 +172,7 @@ export default function HomePage() {
               className="rounded-full h-20 w-20 p-0 border-4 border-white/50 bg-accent/90 hover:bg-accent text-accent-foreground shadow-2xl disabled:opacity-50 transition-transform active:scale-95"
               onClick={capturedImage ? handleReset : handleCapture}
               disabled={isLoading}
-              aria-label={capturedImage ? 'Retake photo' : 'Capture photo'}
+              aria-label={capturedImage ? t('retakePhotoLabel') : t('capturePhotoLabel')}
             >
               {capturedImage ? (
                 <RotateCcw className="h-8 w-8" />

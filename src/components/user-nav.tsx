@@ -22,9 +22,10 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
+import { useLanguage, languages } from "@/hooks/use-language"
   
   export function UserNav() {
-    const [language, setLanguage] = React.useState("en")
+    const { language, setLanguage, t } = useLanguage()
 
     return (
       <DropdownMenu>
@@ -39,44 +40,41 @@ import {
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">User</p>
+              <p className="text-sm font-medium leading-none">{t('userNav.user')}</p>
               <p className="text-xs leading-none text-muted-foreground">
-                user@example.com
+                {t('userNav.userEmail')}
               </p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
-              Profile
+              {t('userNav.profile')}
               <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              Billing
+              {t('userNav.billing')}
               <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              Settings
+              {t('userNav.settings')}
               <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
            <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Language</DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger>{t('userNav.language')}</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              <DropdownMenuRadioGroup value={language} onValueChange={setLanguage}>
-                <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="fr">French</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="es">Spanish</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="de">German</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="pt">Portuguese</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="zh">Mandarin</DropdownMenuRadioItem>
+              <DropdownMenuRadioGroup value={language} onValueChange={(value) => setLanguage(value as any)}>
+                {languages.map(lang => (
+                  <DropdownMenuRadioItem key={lang.code} value={lang.code}>{lang.name}</DropdownMenuRadioItem>
+                ))}
               </DropdownMenuRadioGroup>
             </DropdownMenuSubContent>
           </DropdownMenuSub>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            Log out
+            {t('userNav.logout')}
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuContent>

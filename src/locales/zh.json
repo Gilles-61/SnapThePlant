@@ -1,0 +1,57 @@
+{
+    "aiDescription": "识别这个{category}。提供有关它的详细信息。",
+    "identifying": "识别中...",
+    "browseImageLabel": "浏览图片",
+    "retakePhotoLabel": "重拍照片",
+    "capturePhotoLabel": "拍摄照片",
+    "placeholder": {
+        "useCameraOrUpload": "使用您的相机或上传图片"
+    },
+    "toast": {
+        "identificationFailed": {
+            "title": "识别失败",
+            "description": "无法识别图像。请再试一次。"
+        },
+        "captureFailed": {
+            "title": "拍摄失败",
+            "description": "无法从相机拍摄图像。"
+        },
+        "feedback": {
+            "title": "谢谢！",
+            "description": "您的反馈有助于我们改进。"
+        }
+    },
+    "camera": {
+        "notSupported": "此浏览器不支持相机访问。",
+        "accessError": "无法访问相机。请检查权限并确保您正在使用安全 (HTTPS) 连接。",
+        "errorTitle": "相机错误"
+    },
+    "categories": {
+        "plant": "植物",
+        "plantHint": "识别植物",
+        "tree": "树",
+        "treeHint": "识别树木",
+        "weed": "杂草",
+        "weedHint": "识别杂草",
+        "insect": "昆虫",
+        "insectHint": "识别昆虫"
+    },
+    "result": {
+        "confidenceScore": "置信度分数",
+        "keyInformation": "关键信息",
+        "furtherReading": "进一步阅读",
+        "learnMore": "在网络上了解更多",
+        "feedbackPrompt": "这次识别正确吗？",
+        "correct": "正确",
+        "incorrect": "不正确"
+    },
+    "userNav": {
+        "user": "用户",
+        "userEmail": "user@example.com",
+        "profile": "个人资料",
+        "billing": "账单",
+        "settings": "设置",
+        "language": "语言",
+        "logout": "登出"
+    }
+}

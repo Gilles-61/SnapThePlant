@@ -1,0 +1,57 @@
+{
+    "aiDescription": "Identifica este {category}. Proporciona detalles sobre ello.",
+    "identifying": "Identificando...",
+    "browseImageLabel": "Buscar una imagen",
+    "retakePhotoLabel": "Tomar foto de nuevo",
+    "capturePhotoLabel": "Capturar foto",
+    "placeholder": {
+        "useCameraOrUpload": "Usa tu cámara o sube una imagen"
+    },
+    "toast": {
+        "identificationFailed": {
+            "title": "Falló la identificación",
+            "description": "No se pudo identificar la imagen. Por favor, inténtalo de nuevo."
+        },
+        "captureFailed": {
+            "title": "Falló la captura",
+            "description": "No se pudo capturar una imagen de la cámara."
+        },
+        "feedback": {
+            "title": "¡Gracias!",
+            "description": "Tus comentarios nos ayudan a mejorar."
+        }
+    },
+    "camera": {
+        "notSupported": "El acceso a la cámara no es compatible con este navegador.",
+        "accessError": "No se pudo acceder a la cámara. Por favor, comprueba los permisos y asegúrate de que estás usando una conexión segura (HTTPS).",
+        "errorTitle": "Error de la cámara"
+    },
+    "categories": {
+        "plant": "Planta",
+        "plantHint": "Identificar una planta",
+        "tree": "Árbol",
+        "treeHint": "Identificar un árbol",
+        "weed": "Maleza",
+        "weedHint": "Identificar una maleza",
+        "insect": "Insecto",
+        "insectHint": "Identificar un insecto"
+    },
+    "result": {
+        "confidenceScore": "Puntuación de confianza",
+        "keyInformation": "Información clave",
+        "furtherReading": "Lectura adicional",
+        "learnMore": "Aprende más en la web",
+        "feedbackPrompt": "¿Fue correcta esta identificación?",
+        "correct": "Correcto",
+        "incorrect": "Incorrecto"
+    },
+    "userNav": {
+        "user": "Usuario",
+        "userEmail": "usuario@example.com",
+        "profile": "Perfil",
+        "billing": "Facturación",
+        "settings": "Configuración",
+        "language": "Idioma",
+        "logout": "Cerrar sesión"
+    }
+}
