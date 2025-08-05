@@ -25,7 +25,7 @@ const CameraFeed = forwardRef<CameraFeedHandle, CameraFeedProps>((props, ref) =>
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
           stream = await navigator.mediaDevices.getUserMedia({
             video: {
-              facingMode: 'environment', // prefer back camera
+              facingMode: { ideal: 'environment' },
               width: { ideal: 1920 },
               height: { ideal: 1080 },
             },
