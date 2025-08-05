@@ -84,6 +84,20 @@ export const database: Species[] = [
             { title: 'Extra Tips', description: 'Extremely durable and a great choice for beginners. Can be easily propagated by leaf cuttings.' }
         ]
     },
+    {
+        id: 22, category: 'Plant', name: 'Pothos', scientificName: 'Epipremnum aureum',
+        keyInformation: 'A popular and very hardy houseplant with heart-shaped, waxy leaves. It is a vine that can trail or climb. Toxic to pets if ingested.',
+        furtherReading: 'https://en.wikipedia.org/wiki/Epipremnum_aureum',
+        image: 'https://placehold.co/600x400.png',
+        attributes: { color: 'green', shape: 'simple', size: 'small' },
+        careTips: [
+            { title: 'Watering', description: 'Water every 1-2 weeks, allowing the soil to dry out between waterings. Tolerant of underwatering.' },
+            { title: 'Sunlight', description: 'Thrives in a wide range of lighting conditions, from low to bright indirect light. Avoid direct sun, which can scorch leaves.' },
+            { title: 'Soil', description: 'Use a standard, well-draining potting soil.' },
+            { title: 'Extra Tips', description: 'Known for its air-purifying abilities. Extremely easy to propagate from stem cuttings in water or soil.' }
+        ]
+    },
+
 
     // --- TREES ---
     {
@@ -210,6 +224,7 @@ export function filterDatabase(category: Category, attributes: Record<string, st
     const categorySpecies = database.filter(s => s.category === category);
     
     if (Object.keys(attributes).length === 0) {
+        // If no attributes, return all species in the category with a neutral score
         return categorySpecies.map(s => ({ species: s, score: 0, confidence: 0 }));
     }
 
@@ -218,18 +233,25 @@ export function filterDatabase(category: Category, attributes: Record<string, st
 
     const scoredSpecies = categorySpecies.map(species => {
         let score = 0;
-        for (const key in attributes) {
-            if (attributes[key] && species.attributes[key] && attributes[key].toLowerCase() === species.attributes[key].toLowerCase()) {
+        let maxScore = 0;
+        
+        for (const key in species.attributes) {
+            maxScore++; // Increment for every attribute the species has
+            if (attributes[key] && attributes[key].toLowerCase() === species.attributes[key].toLowerCase()) {
                 score++;
             }
         }
-        // Calculate confidence as a percentage of matching AI-provided attributes.
-        const confidence = Math.round((score / aiAttributeCount) * 100);
+
+        // Calculate confidence based on the number of matching attributes out of the total attributes for that species.
+        // This gives a more accurate representation of how well the AI's analysis matches the database entry.
+        const confidence = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
         return { species, score, confidence };
     });
 
+    // Filter out species that have a score of 0, as they are not relevant matches.
     const matchedSpecies = scoredSpecies.filter(item => item.score > 0);
 
+    // Sort by the highest score (most matches) first.
     matchedSpecies.sort((a, b) => b.score - a.score);
 
     return matchedSpecies;

@@ -50,6 +50,7 @@ export async function analyzeImage(input: AnalyzeImageInput): Promise<AnalyzeIma
 
 const promptText = `
     You are an expert biologist and botanist. Your task is to analyze the provided image of a {{category}} and determine its visual characteristics based on a predefined set of questions, as if you were answering a quiz.
+    Focus on the most visually distinct features of the subject in the photo.
 
     Based on the category "{{category}}", answer the following questions and provide the answer key for each.
     
