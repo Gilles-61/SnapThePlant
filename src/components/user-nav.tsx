@@ -71,15 +71,12 @@ import { Heart, LogIn } from "lucide-react"
           <DropdownMenuGroup>
             <DropdownMenuItem>
               {t('userNav.profile')}
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuItem>
               {t('userNav.billing')}
-              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuItem>
               {t('userNav.settings')}
-              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
@@ -109,4 +106,5 @@ import { Heart, LogIn } from "lucide-react"
       </DropdownMenu>
     )
   }
+
 
