@@ -4,11 +4,23 @@
 import { SiteHeader } from '@/components/site-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslation } from '@/hooks/use-language';
-import { MessageSquare, UploadCloud, Users } from 'lucide-react';
+import { Loader, MessageSquare, UploadCloud, Users } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function CommunityPage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!loading && !user) {
+        router.push('/login');
+    }
+  }, [user, loading, router]);
+
 
   const features = [
     {
@@ -30,6 +42,17 @@ export default function CommunityPage() {
         href: '/profile'
     }
   ]
+  
+  if (loading || !user) {
+    return (
+        <div className="flex flex-col min-h-screen bg-background">
+            <SiteHeader />
+            <main className="flex-1 flex items-center justify-center">
+                <Loader className="h-12 w-12 animate-spin" />
+            </main>
+        </div>
+    )
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">

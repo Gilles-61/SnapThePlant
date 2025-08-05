@@ -45,10 +45,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
+  const handleAuthSuccess = (user: User) => {
+    // In a real app, you'd fetch this from Firestore after login.
+    const currentSubscriptionStatus: SubscriptionStatus = 'beta'; // or 'paid'
+    setSubscriptionStatus(currentSubscriptionStatus);
+    
+    // For this example, we'll treat 'beta' as having access.
+    // If we implemented a real 'free' tier, we'd redirect.
+    if (currentSubscriptionStatus === 'free') {
+      router.push('/pricing');
+    } else {
+      router.push('/');
+    }
+  }
+
   const signInWithGoogle = async () => {
     try {
-      await signInWithGoogleFirebase();
-      router.push('/');
+      const userCredential = await signInWithGoogleFirebase();
+      handleAuthSuccess(userCredential.user);
     } catch (error) {
       console.error("Error signing in with Google: ", error);
       toast({
@@ -61,8 +75,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signUpWithEmail = async (email: string, pass: string) => {
     try {
-        await signUpWithEmailPassword(email, pass);
-        router.push('/');
+        const userCredential = await signUpWithEmailPassword(email, pass);
+        // On new sign-up, they are 'free' tier until they choose a plan
+        setSubscriptionStatus('free');
+        router.push('/pricing'); // Redirect to pricing page
     } catch (error: any) {
         console.error("Error signing up: ", error);
         toast({
@@ -75,8 +91,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signInWithEmail = async (email: string, pass: string) => {
     try {
-        await signInWithEmailPassword(email, pass);
-        router.push('/');
+        const userCredential = await signInWithEmailPassword(email, pass);
+        handleAuthSuccess(userCredential.user);
     } catch (error: any) {
         console.error("Error signing in: ", error);
         toast({

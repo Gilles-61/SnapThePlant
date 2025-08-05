@@ -7,16 +7,18 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader, Edit2, Trash2, Heart, ShieldCheck } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useTranslation } from '@/hooks/use-language';
 import { useCollection, type CollectionItem } from '@/hooks/use-collection';
 import type { Species } from '@/lib/mock-database';
 import Image from 'next/image';
 import { IdentificationResult } from '@/components/identification-result';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
   const { user, loading, subscriptionStatus } = useAuth();
+  const router = useRouter();
   const { t } = useTranslation();
   const { collection, removeItem } = useCollection();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -30,24 +32,19 @@ export default function ProfilePage() {
     free: { name: 'Free Plan', description: 'Upgrade to a paid plan for more features.' }
   }
 
-  if (loading) {
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
+
+
+  if (loading || !user) {
     return (
         <div className="flex flex-col min-h-screen bg-background text-foreground">
             <SiteHeader />
             <main className="flex-1 flex items-center justify-center bg-background">
                 <Loader className="h-12 w-12 animate-spin" />
-            </main>
-        </div>
-    )
-  }
-
-  if (!user) {
-    // This should ideally not be reached if page is protected
-    return (
-        <div className="flex flex-col min-h-screen bg-background text-foreground">
-            <SiteHeader />
-            <main className="flex-1 flex items-center justify-center bg-background">
-                <p>{t('profile.loginPrompt')}</p>
             </main>
         </div>
     )
@@ -128,6 +125,16 @@ export default function ProfilePage() {
                              <Link href="/pricing">
                                 {subscriptionStatus === 'paid' ? 'Manage Subscription' : 'View Plans'}
                             </Link>
+                        </Button>
+                    </div>
+                     <div className="space-y-2">
+                        <h3 className="text-xl font-semibold">Support the Project</h3>
+                        <p className="text-muted-foreground">If you enjoy SnapThePlant, please consider supporting its development. Your contribution helps us add new features and improve identification accuracy.</p>
+                         <Button asChild variant="secondary">
+                            <a href="https://buymeacoffee.com/snaptheplant" target="_blank" rel="noopener noreferrer">
+                                <Heart className="mr-2 h-4 w-4" />
+                                Support on Buy Me a Coffee
+                            </a>
                         </Button>
                     </div>
                 </CardContent>

@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { SiteHeader } from '@/components/site-header';
 import { useTranslation } from '@/hooks/use-language';
 import { database, type Species } from '@/lib/mock-database';
@@ -12,6 +12,9 @@ import { Button } from '@/components/ui/button';
 import { IdentificationResult } from '@/components/identification-result';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
+import { Loader } from 'lucide-react';
 
 const getAvailableFilters = (category: Category) => {
     const speciesInCategory = database.filter(s => s.category === category);
@@ -29,11 +32,20 @@ const getAvailableFilters = (category: Category) => {
 };
 
 export default function ExplorePage() {
+    const { user, loading } = useAuth();
+    const router = useRouter();
     const { t } = useTranslation();
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
     const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
     const [selectedSpecies, setSelectedSpecies] = useState<Species | null>(null);
     const [isResultOpen, setIsResultOpen] = useState(false);
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push('/login');
+        }
+    }, [user, loading, router]);
+
 
     const availableFilters = useMemo(() => {
         if (!selectedCategory) return {};
@@ -76,6 +88,17 @@ export default function ExplorePage() {
         setIsResultOpen(false);
         setTimeout(() => setSelectedSpecies(null), 300);
     };
+
+    if (loading || !user) {
+        return (
+            <div className="flex flex-col min-h-screen bg-background">
+                <SiteHeader />
+                <main className="flex-1 flex items-center justify-center">
+                    <Loader className="h-12 w-12 animate-spin" />
+                </main>
+            </div>
+        )
+    }
     
     return (
         <div className="flex flex-col min-h-screen bg-background text-foreground">
