@@ -23,7 +23,24 @@ const AnalyzeImageInputSchema = z.object({
 export type AnalyzeImageInput = z.infer<typeof AnalyzeImageInputSchema>;
 
 const AnalyzeImageOutputSchema = z.object({
-    attributes: z.record(z.string()).describe("The extracted visual attributes of the item in the photo, matching the quiz options."),
+  attributes: z
+    .object({
+      color: z.string().optional(),
+      shape: z.string().optional(),
+      size: z.string().optional(),
+      bark: z.string().optional(),
+      leaf_shape: z.string().optional(),
+      has_fruit: z.string().optional(),
+      flower_color: z.string().optional(),
+      location: z.string().optional(),
+      leaf_type: z.string().optional(),
+      wings: z.string().optional(),
+      legs: z.string().optional(),
+      flowers: z.string().optional(),
+    })
+    .describe(
+      'The extracted visual attributes of the item in the photo, matching the quiz options.'
+    ),
 });
 export type AnalyzeImageOutput = z.infer<typeof AnalyzeImageOutputSchema>;
 
