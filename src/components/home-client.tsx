@@ -168,14 +168,24 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     }
 
     return (
-      <div className="w-full h-full bg-background flex flex-col items-center justify-center text-muted-foreground p-8 text-center">
-          <ImageIcon className="w-24 h-24 mb-4" />
-          <p className="text-lg font-semibold text-foreground mb-2">Select a category to begin</p>
-          <p className="max-w-md mb-6">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
-           <CategorySelector
-                selectedCategory={selectedCategory}
-                onSelectCategory={handleCategorySelect}
-            />
+      <div className="w-full h-full relative flex flex-col items-center justify-center text-center">
+          <Image
+            src="https://placehold.co/1080x1920.png"
+            alt="A lush green landscape"
+            fill
+            className="object-cover"
+            data-ai-hint="nature landscape"
+          />
+          <div className="absolute inset-0 bg-black/60" />
+          <div className="relative z-10 p-8 text-white">
+            <ImageIcon className="w-24 h-24 mb-4 mx-auto" />
+            <p className="text-lg font-semibold mb-2">Select a category to begin</p>
+            <p className="max-w-md mb-6 mx-auto">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
+            <CategorySelector
+                  selectedCategory={selectedCategory}
+                  onSelectCategory={handleCategorySelect}
+              />
+          </div>
       </div>
     );
   }
@@ -219,7 +229,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col items-center p-6 space-y-4">
           
           {(view === 'capture' && !isCameraOpen && !selectedCategory) && (
-            <div className="flex justify-center gap-4 w-full">
+            <div className="flex justify-center gap-4 w-full max-w-sm">
                 <Button size="lg" className="flex-1" onClick={handleCameraButtonClick}>
                     <Camera className="mr-2"/>
                     Use Camera
@@ -319,3 +329,4 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
       </main>
     </div>
   );
+}
