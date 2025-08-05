@@ -27,37 +27,42 @@ interface GeneratedImage {
 }
 
 const MatchCard = memo(({ species, confidence, index, onSelect, generatedImage }: { species: Species, confidence: number, index: number, onSelect: (species: Species) => void, generatedImage: GeneratedImage | undefined }) => {
+    const showImage = index === 0;
+
     return (
         <Card 
             className={cn(
                 "overflow-hidden flex flex-col justify-between group transition-all",
-                index === 0 && "border-primary ring-2 ring-primary"
+                showImage && "border-primary ring-2 ring-primary"
             )}
         >
             <CardHeader className="p-0 relative">
-                <div className="relative aspect-[4/3] bg-muted">
-                    {generatedImage ? (
-                         <Image 
-                            src={generatedImage.imageDataUri}
-                            alt={species.name} 
-                            fill
-                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                            className="object-cover transition-transform group-hover:scale-105"
-                        />
+                <div className="relative aspect-[4/3] bg-muted flex items-center justify-center">
+                    {showImage ? (
+                        generatedImage ? (
+                            <Image 
+                                src={generatedImage.imageDataUri}
+                                alt={species.name} 
+                                fill
+                                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                                className="object-cover transition-transform group-hover:scale-105"
+                            />
+                        ) : (
+                            <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground">
+                               <Loader className="w-8 h-8 animate-spin"/>
+                               <p className="text-xs mt-2">Generating image...</p>
+                            </div>
+                        )
                     ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground">
-                           <Loader className="w-8 h-8 animate-spin"/>
-                           <p className="text-xs mt-2">Generating image...</p>
+                        <div className="flex flex-col items-center justify-center text-center text-muted-foreground p-2">
+                             <h4 className="text-2xl font-bold text-foreground">{confidence}%</h4>
+                             <p className="text-sm">Match</p>
                         </div>
                     )}
                 </div>
-                {index === 0 ? (
-                        <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground">
+                {showImage && (
+                    <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground">
                         Top Match
-                    </Badge>
-                ) : (
-                    <Badge variant="secondary" className="absolute top-2 right-2">
-                        {confidence}% Match
                     </Badge>
                 )}
             </CardHeader>
@@ -82,28 +87,25 @@ export function MatchSelector({ image, matches, onSelect, onBack }: MatchSelecto
     const [isLoading, setIsLoading] = useState(true);
     
     useEffect(() => {
-        const generateImages = async () => {
+        const generateTopImage = async () => {
+            if (matches.length === 0) {
+                setIsLoading(false);
+                return;
+            }
             setIsLoading(true);
-            const imagePromises = matches.map(async ({ species }) => {
-                try {
-                    const result = await generateImage({ name: species.name, category: species.category });
-                    return { id: species.id, imageDataUri: result.imageDataUri };
-                } catch (error) {
-                    console.error(`Failed to generate image for ${species.name}:`, error);
-                    return { id: species.id, imageDataUri: 'https://placehold.co/600x400.png' }; // Fallback
-                }
-            });
-
-            const results = await Promise.all(imagePromises);
-            setGeneratedImages(results);
-            setIsLoading(false);
+            try {
+                const { species } = matches[0];
+                const result = await generateImage({ name: species.name, category: species.category });
+                setGeneratedImages([{ id: species.id, imageDataUri: result.imageDataUri }]);
+            } catch (error) {
+                console.error(`Failed to generate image for ${matches[0].species.name}:`, error);
+                setGeneratedImages([{ id: matches[0].species.id, imageDataUri: 'https://placehold.co/600x400.png' }]); // Fallback
+            } finally {
+                setIsLoading(false);
+            }
         };
 
-        if (matches.length > 0) {
-            generateImages();
-        } else {
-            setIsLoading(false);
-        }
+        generateTopImage();
     }, [matches]);
 
     return (
