@@ -177,15 +177,11 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   }
 
   const handleScanButtonClick = () => {
-    toast({
-      title: "Coming Soon!",
-      description: "Barcode scanning is not yet implemented.",
-    });
-    //  if (selectedCategory) {
-    //     setIsScannerOpen(true);
-    // } else {
-    //     setIsCategorySelectorOpen(true);
-    // }
+    if (selectedCategory) {
+       setIsScannerOpen(true);
+   } else {
+       setIsCategorySelectorOpen(true);
+   }
   }
 
   const handleScanSuccess = (scanResult: string) => {
@@ -233,7 +229,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
                     <p className="max-w-md mb-6 mx-auto text-lg">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
                     <CategorySelector
                         selectedCategory={selectedCategory}
-                        onSelectCategory={(category) => setSelectedCategory(category)}
+                        onSelectCategory={handleCategorySelect}
                     />
                      <div className="mt-6 w-full max-w-md mx-auto">
                       <p className="text-center text-muted-foreground mb-2">Or search by name</p>
@@ -370,7 +366,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
                         You can use your camera, upload from your gallery, or scan a barcode.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
+                <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 py-4'>
                     <Button size="lg" onClick={() => { setIsCameraOpen(true); setIsSourceSelectorOpen(false); }}>
                         <Camera className="mr-2"/>
                         Camera
@@ -383,6 +379,9 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
                         <Upload className="mr-2" />
                         Upload
                     </Button>
+                </div>
+                 <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
