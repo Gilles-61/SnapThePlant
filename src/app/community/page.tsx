@@ -45,6 +45,7 @@ export default function CommunityPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
                 {features.map((feature, index) => {
                     const Icon = feature.icon;
+                    // Use a simple div wrapper if no href is present
                     const Wrapper = feature.href ? Link : 'div';
                     const props = feature.href ? { href: feature.href } : {};
 
