@@ -23,6 +23,7 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<Category>(categories[0].name);
   const [result, setResult] = useState<EnhanceIdentificationContextOutput | null>(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const processImage = useCallback(async (imageDataUri: string) => {
     setCapturedImage(imageDataUri);
@@ -49,6 +50,10 @@ export default function HomePage() {
 
 
   const handleCapture = useCallback(async () => {
+    if (!isCameraOpen) {
+      setIsCameraOpen(true);
+      return;
+    }
     const imageDataUri = cameraRef.current?.capture();
     if (imageDataUri) {
       processImage(imageDataUri);
@@ -59,7 +64,7 @@ export default function HomePage() {
         variant: "destructive",
       });
     }
-  }, [processImage, toast]);
+  }, [processImage, toast, isCameraOpen]);
 
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
@@ -88,6 +93,7 @@ export default function HomePage() {
     setResult(null);
     setIsResultOpen(false);
     setIsLoading(false);
+    setIsCameraOpen(false);
   }, []);
 
   const handleFeedback = useCallback(() => {
@@ -111,10 +117,15 @@ export default function HomePage() {
               fill
               className="object-contain"
             />
-          ) : (
+          ) : isCameraOpen ? (
             <Suspense fallback={<div className="w-full h-full bg-muted flex items-center justify-center"><Loader className="animate-spin" /></div>}>
               <CameraFeed ref={cameraRef} />
             </Suspense>
+          ) : (
+            <div className="w-full h-full bg-muted flex flex-col items-center justify-center text-muted-foreground">
+                <ImageIcon className="w-24 h-24 mb-4" />
+                <p className="text-lg">Use your camera or upload an image</p>
+            </div>
           )}
         </div>
 
