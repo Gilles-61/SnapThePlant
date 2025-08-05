@@ -288,42 +288,44 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
             )}
 
             {view === 'capture' && !isCameraOpen && selectedCategory && (
-              <Card className="w-full max-w-md bg-white/90 backdrop-blur-md text-slate-800">
-                <CardContent className="p-6">
-                  <button onClick={() => setSelectedCategory(null)} className="flex items-center text-sm font-semibold text-primary mb-4 hover:underline">
-                    <ArrowLeft className="mr-1 h-4 w-4"/>
-                    Back to categories
-                  </button>
-                  <h2 className="text-2xl font-bold mb-4">Identify a {selectedCategory}</h2>
-                   <div className="flex flex-col sm:flex-row justify-center gap-3 w-full max-w-lg mx-auto">
-                      <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleCameraButtonClick}>
-                          <Camera className="mr-2"/>
-                          Use Camera
-                      </Button>
-                      <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleUploadButtonClick}>
-                          <Upload className="mr-2" />
-                          Upload
-                      </Button>
-                  </div>
-                   <div className="relative my-4">
-                      <div className="absolute inset-0 flex items-center">
-                          <span className="w-full border-t" />
-                      </div>
-                      <div className="relative flex justify-center text-xs uppercase">
-                          <span className="bg-card px-2 text-muted-foreground">
-                              Or
-                          </span>
-                      </div>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                     <Button size="lg" className="w-full rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleScanButtonClick}>
-                          <QrCode className="mr-2" />
-                          Scan Barcode/QR
-                      </Button>
-                      <SearchInput onSearch={handleSearch} />
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="w-full max-w-md flex flex-col items-center gap-4">
+                <Button variant="ghost" onClick={() => setSelectedCategory(null)} className="self-start text-white hover:text-white hover:bg-white/20">
+                  <ArrowLeft className="mr-2 h-4 w-4"/>
+                  Back to categories
+                </Button>
+                <Card className="w-full bg-white/90 backdrop-blur-md text-slate-800">
+                  <CardContent className="p-6">
+                    <h2 className="text-2xl font-bold mb-4">Identify a {selectedCategory}</h2>
+                     <div className="flex flex-col sm:flex-row justify-center gap-3 w-full max-w-lg mx-auto">
+                        <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleCameraButtonClick}>
+                            <Camera className="mr-2"/>
+                            Use Camera
+                        </Button>
+                        <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleUploadButtonClick}>
+                            <Upload className="mr-2" />
+                            Upload
+                        </Button>
+                    </div>
+                     <div className="relative my-4">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-card px-2 text-muted-foreground">
+                                Or
+                            </span>
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                       <Button size="lg" className="w-full rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleScanButtonClick}>
+                            <QrCode className="mr-2" />
+                            Scan Barcode/QR
+                        </Button>
+                        <SearchInput onSearch={handleSearch} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             )}
         </div>
 
