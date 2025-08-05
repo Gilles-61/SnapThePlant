@@ -19,8 +19,8 @@
             "description": "Konnte kein Bild von der Kamera aufnehmen."
         },
         "feedback": {
-            "title": "Vielen Dank!",
-            "description": "Dein Feedback hilft uns, uns zu verbessern."
+            "title": "Notizen gespeichert!",
+            "description": "Deine persönlichen Notizen wurden gespeichert."
         }
     },
     "camera": {
@@ -45,7 +45,21 @@
         "learnMore": "Mehr im Web erfahren",
         "feedbackPrompt": "War diese Identifizierung korrekt?",
         "correct": "Korrekt",
-        "incorrect": "Falsch"
+        "incorrect": "Falsch",
+        "myNotes": "Meine Notizen",
+        "notesPlaceholder": "Füge hier deine persönlichen Notizen hinzu...",
+        "careTips": "Pflegetipps",
+        "noCareTips": "Für diese Art sind keine Pflegetipps verfügbar.",
+        "saveNotes": "Notizen speichern",
+        "close": "Schließen",
+        "care_titles": {
+            "watering": "Bewässerung",
+            "sunlight": "Sonnenlicht",
+            "soil": "Boden",
+            "fertilizer": "Dünger",
+            "environment": "Umgebung",
+            "extra_tips": "Extra-Tipps"
+        }
     },
     "userNav": {
         "user": "Benutzer",

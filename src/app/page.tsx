@@ -103,14 +103,14 @@ export default function HomePage() {
     }
   };
 
-  const handleFeedback = useCallback(() => {
+  const handleSaveNotes = useCallback(() => {
     // In a real app, this would send feedback to a backend
     toast({
         title: t('toast.feedback.title'),
         description: t('toast.feedback.description'),
     });
-    handleReset();
-  }, [toast, handleReset, t]);
+    // Don't reset immediately, let the sheet close handle it.
+  }, [toast, t]);
   
   const renderContent = () => {
     return (
@@ -245,7 +245,7 @@ export default function HomePage() {
             else setIsResultOpen(true);
           }}
           result={result}
-          onConfirm={handleFeedback}
+          onConfirm={handleSaveNotes}
           onReject={handleReset}
         />
       </main>

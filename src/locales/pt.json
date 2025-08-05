@@ -19,8 +19,8 @@
             "description": "Não foi possível capturar uma imagem da câmera."
         },
         "feedback": {
-            "title": "Obrigado!",
-            "description": "Seu feedback nos ajuda a melhorar."
+            "title": "Notas salvas!",
+            "description": "Suas notas pessoais foram salvas."
         }
     },
     "camera": {
@@ -45,7 +45,21 @@
         "learnMore": "Saiba mais na web",
         "feedbackPrompt": "Esta identificação estava correta?",
         "correct": "Correto",
-        "incorrect": "Incorreto"
+        "incorrect": "Incorreto",
+        "myNotes": "Minhas Notas",
+        "notesPlaceholder": "Adicione suas notas pessoais aqui...",
+        "careTips": "Dicas de Cuidado",
+        "noCareTips": "Nenhuma dica de cuidado disponível para esta espécie.",
+        "saveNotes": "Salvar Notas",
+        "close": "Fechar",
+        "care_titles": {
+            "watering": "Rega",
+            "sunlight": "Luz Solar",
+            "soil": "Solo",
+            "fertilizer": "Fertilizante",
+            "environment": "Ambiente",
+            "extra_tips": "Dicas Extras"
+        }
     },
     "userNav": {
         "user": "Usuário",

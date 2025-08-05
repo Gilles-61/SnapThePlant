@@ -19,8 +19,8 @@
             "description": "无法从相机拍摄图像。"
         },
         "feedback": {
-            "title": "谢谢！",
-            "description": "您的反馈有助于我们改进。"
+            "title": "笔记已保存！",
+            "description": "您的个人笔记已保存。"
         }
     },
     "camera": {
@@ -45,7 +45,21 @@
         "learnMore": "在网络上了解更多",
         "feedbackPrompt": "这次识别正确吗？",
         "correct": "正确",
-        "incorrect": "不正确"
+        "incorrect": "不正确",
+        "myNotes": "我的笔记",
+        "notesPlaceholder": "在此处添加您的个人笔记...",
+        "careTips": "养护技巧",
+        "noCareTips": "该物种没有可用的养护技巧。",
+        "saveNotes": "保存笔记",
+        "close": "关闭",
+        "care_titles": {
+            "watering": "浇水",
+            "sunlight": "阳光",
+            "soil": "土壤",
+            "fertilizer": "肥料",
+            "environment": "环境",
+            "extra_tips": "额外提示"
+        }
     },
     "userNav": {
         "user": "用户",

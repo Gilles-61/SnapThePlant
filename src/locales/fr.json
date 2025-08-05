@@ -19,8 +19,8 @@
             "description": "Impossible de capturer une image depuis l'appareil photo."
         },
         "feedback": {
-            "title": "Merci !",
-            "description": "Vos commentaires nous aident à nous améliorer."
+            "title": "Notes enregistrées !",
+            "description": "Vos notes personnelles ont été enregistrées."
         }
     },
     "camera": {
@@ -45,7 +45,21 @@
         "learnMore": "En savoir plus sur le web",
         "feedbackPrompt": "Cette identification était-elle correcte ?",
         "correct": "Correct",
-        "incorrect": "Incorrect"
+        "incorrect": "Incorrect",
+        "myNotes": "Mes Notes",
+        "notesPlaceholder": "Ajoutez vos notes personnelles ici...",
+        "careTips": "Conseils d'Entretien",
+        "noCareTips": "Aucun conseil d'entretien disponible pour cette espèce.",
+        "saveNotes": "Enregistrer les Notes",
+        "close": "Fermer",
+        "care_titles": {
+            "watering": "Arrosage",
+            "sunlight": "Lumière du Soleil",
+            "soil": "Sol",
+            "fertilizer": "Engrais",
+            "environment": "Environnement",
+            "extra_tips": "Conseils Supplémentaires"
+        }
     },
     "userNav": {
         "user": "Utilisateur",
