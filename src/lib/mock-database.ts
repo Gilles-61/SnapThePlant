@@ -21,6 +21,12 @@ export interface Species {
     careTips?: CareTip[];
 }
 
+export interface ScoredSpecies {
+    species: Species;
+    score: number;
+    confidence: number;
+}
+
 export const database: Species[] = [
     // --- PLANTS ---
     {
@@ -200,31 +206,31 @@ export const database: Species[] = [
     }
 ];
 
-export function filterDatabase(category: Category, attributes: Record<string, string>): Species[] {
+export function filterDatabase(category: Category, attributes: Record<string, string>): ScoredSpecies[] {
     const categorySpecies = database.filter(s => s.category === category);
-
-    // If no attributes are provided (e.g., for text search), return all species in the category.
+    
     if (Object.keys(attributes).length === 0) {
-        return categorySpecies;
+        return categorySpecies.map(s => ({ species: s, score: 0, confidence: 0 }));
     }
+
+    const aiAttributeCount = Object.keys(attributes).length;
+    if (aiAttributeCount === 0) return [];
 
     const scoredSpecies = categorySpecies.map(species => {
         let score = 0;
         for (const key in attributes) {
-            // Check if the attribute from the AI exists and matches the one in our database.
             if (attributes[key] && species.attributes[key] && attributes[key].toLowerCase() === species.attributes[key].toLowerCase()) {
                 score++;
             }
         }
-        return { species, score };
+        // Calculate confidence as a percentage of matching AI-provided attributes.
+        const confidence = Math.round((score / aiAttributeCount) * 100);
+        return { species, score, confidence };
     });
 
-    // Filter out species with a score of 0, as they have no matching attributes.
     const matchedSpecies = scoredSpecies.filter(item => item.score > 0);
 
-    // Sort by the highest score first.
     matchedSpecies.sort((a, b) => b.score - a.score);
 
-    // Return the sorted list of species objects.
-    return matchedSpecies.map(item => item.species);
+    return matchedSpecies;
 }

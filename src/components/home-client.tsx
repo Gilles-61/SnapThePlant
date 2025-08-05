@@ -13,7 +13,7 @@ import { IdentificationResult } from '@/components/identification-result';
 import CameraFeed, { type CameraFeedHandle } from '@/components/camera-feed';
 import { useTranslation } from '@/hooks/use-language';
 import { MatchSelector } from '@/components/match-selector';
-import { filterDatabase, type Species, database } from '@/lib/mock-database';
+import { filterDatabase, type Species, database, type ScoredSpecies } from '@/lib/mock-database';
 import { useAuth } from '@/hooks/use-auth';
 import { AuthGate } from '@/components/auth-gate';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -38,7 +38,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [view, setView] = useState<'capture' | 'matches'>('capture');
-  const [possibleMatches, setPossibleMatches] = useState<Species[]>([]);
+  const [possibleMatches, setPossibleMatches] = useState<ScoredSpecies[]>([]);
   const [isCategorySelectorOpen, setIsCategorySelectorOpen] = useState(false);
 
 
@@ -103,7 +103,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     let matches: Species[];
     if (selectedCategory) {
       // If a category is selected, filter within that category
-      matches = filterDatabase(selectedCategory, {}).filter(s => 
+      matches = filterDatabase(selectedCategory, {}).map(s => s.species).filter(s => 
           s.name.toLowerCase().includes(query.toLowerCase()) || 
           s.id.toString() === query
       );
@@ -115,9 +115,15 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
           s.id.toString() === query
       );
     }
+    
+    const scoredMatches: ScoredSpecies[] = matches.map((m, i) => ({
+      species: m,
+      score: 1, // Full confidence for direct search
+      confidence: 100,
+    }));
 
-    if (matches.length > 0) {
-        setPossibleMatches(matches);
+    if (scoredMatches.length > 0) {
+        setPossibleMatches(scoredMatches);
         setView('matches');
         setCapturedImage('https://placehold.co/600x400.png'); // Use a placeholder for search results
     } else {

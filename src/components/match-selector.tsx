@@ -6,12 +6,14 @@ import { useTranslation } from '@/hooks/use-language';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ArrowLeft } from 'lucide-react';
-import type { Species } from '@/lib/mock-database';
+import { ArrowLeft, CheckCircle } from 'lucide-react';
+import type { ScoredSpecies, Species } from '@/lib/mock-database';
+import { cn } from '@/lib/utils';
+import { Badge } from './ui/badge';
 
 interface MatchSelectorProps {
     image: string;
-    matches: Species[];
+    matches: ScoredSpecies[];
     onSelect: (species: Species) => void;
     onBack: () => void;
 }
@@ -60,9 +62,15 @@ export function MatchSelector({ image, matches, onSelect, onBack }: MatchSelecto
                         {matches.length > 0 ? (
                             <ScrollArea className="h-full">
                                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 pr-4">
-                                    {matches.map((species) => (
-                                        <Card key={species.id} className="overflow-hidden flex flex-col justify-between group">
-                                            <CardHeader className="p-0">
+                                    {matches.map(({ species, confidence }, index) => (
+                                        <Card 
+                                            key={species.id} 
+                                            className={cn(
+                                                "overflow-hidden flex flex-col justify-between group transition-all",
+                                                index === 0 && "border-primary ring-2 ring-primary"
+                                            )}
+                                        >
+                                            <CardHeader className="p-0 relative">
                                                 <div className="relative aspect-[4/3]">
                                                     <Image 
                                                         src={species.image} 
@@ -73,6 +81,15 @@ export function MatchSelector({ image, matches, onSelect, onBack }: MatchSelecto
                                                         data-ai-hint={species.name}
                                                     />
                                                 </div>
+                                                {index === 0 ? (
+                                                     <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground">
+                                                        Top Match
+                                                    </Badge>
+                                                ) : (
+                                                    <Badge variant="secondary" className="absolute top-2 right-2">
+                                                        {confidence}% Match
+                                                    </Badge>
+                                                )}
                                             </CardHeader>
                                             <CardContent className="p-3 flex-1">
                                                 <h3 className="font-bold truncate">{species.name}</h3>
@@ -80,6 +97,7 @@ export function MatchSelector({ image, matches, onSelect, onBack }: MatchSelecto
                                             </CardContent>
                                             <CardFooter className="p-2 pt-0">
                                                 <Button className="w-full" onClick={() => onSelect(species)}>
+                                                    <CheckCircle className="mr-2 h-4 w-4" />
                                                     {t('quiz.selectMatch')}
                                                 </Button>
                                             </CardFooter>
