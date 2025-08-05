@@ -3,7 +3,7 @@
 
 import { useState, useRef, useCallback, Suspense } from 'react';
 import Image from 'next/image';
-import { Loader, Camera, RotateCcw, Image as ImageIcon } from 'lucide-react';
+import { Loader, Camera, RotateCcw, Image as ImageIcon, Upload } from 'lucide-react';
 
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,7 @@ import { MatchSelector } from '@/components/match-selector';
 import { filterDatabase, type Species } from '@/lib/mock-database';
 import { useAuth } from '@/hooks/use-auth';
 import { AuthGate } from '@/components/auth-gate';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 
 export default function HomePage() {
@@ -28,12 +29,13 @@ export default function HomePage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<Category>(categories[0].name);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [result, setResult] = useState<Species | null>(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [view, setView] = useState<'capture' | 'quiz' | 'matches'>('capture');
   const [possibleMatches, setPossibleMatches] = useState<Species[]>([]);
+  const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false);
 
   const handleReset = useCallback(() => {
     setCapturedImage(null);
@@ -43,6 +45,7 @@ export default function HomePage() {
     setIsCameraOpen(false);
     setView('capture');
     setPossibleMatches([]);
+    setSelectedCategory(null);
   }, []);
 
   const processImage = useCallback(async (imageDataUri: string) => {
@@ -51,6 +54,7 @@ export default function HomePage() {
   }, []);
 
   const handleQuizComplete = useCallback((answers: Answers) => {
+    if (!selectedCategory) return;
     setIsLoading(true);
     const matches = filterDatabase(selectedCategory, answers);
     setPossibleMatches(matches);
@@ -65,10 +69,6 @@ export default function HomePage() {
 
 
   const handleCapture = useCallback(async () => {
-    if (!isCameraOpen) {
-      setIsCameraOpen(true);
-      return;
-    }
     const imageDataUri = cameraRef.current?.capture();
     if (imageDataUri) {
       processImage(imageDataUri);
@@ -79,7 +79,7 @@ export default function HomePage() {
         variant: "destructive",
       });
     }
-  }, [processImage, toast, isCameraOpen, t]);
+  }, [processImage, toast, t]);
 
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
@@ -111,34 +111,48 @@ export default function HomePage() {
     });
     // Don't reset immediately, let the sheet close handle it.
   }, [toast, t]);
-  
+
+  const handleCategorySelect = (category: Category) => {
+    setSelectedCategory(category);
+    setIsSourceSelectorOpen(true);
+  }
+
   const renderContent = () => {
-    return (
-        <div className="absolute inset-0 bg-black">
-        {capturedImage ? (
+    // In quiz or matches view, show the image
+    if (view !== 'capture' && capturedImage) {
+      return (
+         <div className="absolute inset-0 bg-black">
           <Image
             src={capturedImage}
             alt="Captured for identification"
             fill
             className="object-contain"
           />
-        ) : isCameraOpen ? (
-          <Suspense fallback={<div className="w-full h-full bg-muted flex items-center justify-center"><Loader className="animate-spin" /></div>}>
+           {view === 'quiz' && selectedCategory && (
+              <IdentificationQuiz category={selectedCategory} onComplete={handleQuizComplete} />
+          )}
+          {view === 'matches' && (
+              <MatchSelector matches={possibleMatches} onSelect={handleMatchSelected} onBack={() => setView('quiz')} />
+          )}
+        </div>
+      )
+    }
+
+    if (isCameraOpen) {
+      return (
+        <div className="absolute inset-0 bg-black">
+           <Suspense fallback={<div className="w-full h-full bg-muted flex items-center justify-center"><Loader className="animate-spin" /></div>}>
             <CameraFeed ref={cameraRef} />
           </Suspense>
-        ) : (
-          <div className="w-full h-full bg-muted flex flex-col items-center justify-center text-muted-foreground">
-              <ImageIcon className="w-24 h-24 mb-4" />
-              <p className="text-lg">{t('placeholder.useCameraOrUpload')}</p>
-          </div>
-        )}
-        
-        {view === 'quiz' && (
-            <IdentificationQuiz category={selectedCategory} onComplete={handleQuizComplete} />
-        )}
-        {view === 'matches' && (
-            <MatchSelector matches={possibleMatches} onSelect={handleMatchSelected} onBack={() => setView('quiz')} />
-        )}
+        </div>
+      )
+    }
+
+    return (
+      <div className="w-full h-full bg-muted flex flex-col items-center justify-center text-muted-foreground p-8 text-center">
+          <ImageIcon className="w-24 h-24 mb-4" />
+          <p className="text-lg font-semibold text-foreground mb-2">Select a category to begin</p>
+          <p className="max-w-md">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
       </div>
     );
   }
@@ -180,53 +194,27 @@ export default function HomePage() {
         )}
 
         <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col items-center p-6 space-y-4">
-          {view === 'capture' && !capturedImage && !isLoading && (
+          
+          {(view === 'capture' && !isCameraOpen) && (
             <CategorySelector
               selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
+              onSelectCategory={handleCategorySelect}
             />
           )}
 
-          {view === 'capture' && <div className="flex items-center justify-center gap-4">
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
-              accept="image/*"
-            />
-            {!capturedImage && (
-                 <Button
-                    size="lg"
-                    variant="ghost"
-                    className="rounded-full h-16 w-16 p-0 text-white hover:bg-white/20"
-                    onClick={handleBrowseClick}
-                    disabled={isLoading}
-                    aria-label={t('browseImageLabel')}
-                >
-                    <ImageIcon className="h-7 w-7" />
-                </Button>
-            )}
-           
-            <Button
-              size="lg"
-              className="rounded-full h-20 w-20 p-0 border-4 border-white/50 bg-accent/90 hover:bg-accent text-accent-foreground shadow-2xl disabled:opacity-50 transition-transform active:scale-95"
-              onClick={capturedImage ? handleReset : handleCapture}
-              disabled={isLoading}
-              aria-label={capturedImage ? t('retakePhotoLabel') : t('capturePhotoLabel')}
-            >
-              {capturedImage ? (
-                <RotateCcw className="h-8 w-8" />
-              ) : (
-                <Camera className="h-8 w-8" />
-              )}
-            </Button>
+          {isCameraOpen && (
+             <Button
+                size="lg"
+                className="rounded-full h-20 w-20 p-0 border-4 border-white/50 bg-accent/90 hover:bg-accent text-accent-foreground shadow-2xl disabled:opacity-50 transition-transform active:scale-95"
+                onClick={handleCapture}
+                disabled={isLoading}
+                aria-label={t('capturePhotoLabel')}
+              >
+                  <Camera className="h-8 w-8" />
+              </Button>
+          )}
 
-            {/* Placeholder to balance the layout */}
-            {!capturedImage && <div className="w-16 h-16" />}
-          </div>}
-
-          {view !== 'capture' && (
+          {(view !== 'capture' || isCameraOpen) && (
              <Button
                 variant="outline"
                 className="bg-black/50 border-white/50 text-white hover:bg-black/70 hover:text-white"
@@ -248,6 +236,36 @@ export default function HomePage() {
           onConfirm={handleSaveNotes}
           onReject={handleReset}
         />
+
+        <AlertDialog open={isSourceSelectorOpen} onOpenChange={setIsSourceSelectorOpen}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Choose Image Source</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        How would you like to provide an image for identification?
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                    <Button size="lg" onClick={() => { setIsCameraOpen(true); setIsSourceSelectorOpen(false); }}>
+                        <Camera className="mr-2"/>
+                        Use Camera
+                    </Button>
+                     <Button size="lg" onClick={() => { handleBrowseClick(); setIsSourceSelectorOpen(false); }}>
+                        <Upload className="mr-2" />
+                        Upload Image
+                    </Button>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+
+        <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+            accept="image/*"
+        />
+
       </main>
     </div>
   );
