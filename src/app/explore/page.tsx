@@ -105,7 +105,7 @@ export default function ExplorePage() {
                                     <Select onValueChange={(value) => handleFilterChange(filterKey, value)} value={activeFilters[filterKey] ?? 'all'}>
                                         <SelectTrigger>
                                             <SelectValue placeholder={`All ${filterKey.replace(/_/g, ' ')}s`} />
-                                        </Trigger>
+                                        </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="all">All</SelectItem>
                                             {availableFilters[filterKey].map(option => (
