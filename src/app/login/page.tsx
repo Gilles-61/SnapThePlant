@@ -1,0 +1,15 @@
+'use client';
+
+import { LoginForm } from '@/components/login-form';
+import { SiteHeader } from '@/components/site-header';
+
+export default function LoginPage() {
+  return (
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
+      <SiteHeader />
+      <main className="flex-1">
+        <LoginForm />
+      </main>
+    </div>
+  );
+}

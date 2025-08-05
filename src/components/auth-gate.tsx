@@ -3,12 +3,12 @@
 
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "./ui/button";
-import { LogIn, FileText } from "lucide-react";
-import Image from "next/image";
+import { FileText, Leaf, LogIn } from "lucide-react";
+import Link from "next/link";
 
-export function LoginPage() {
-    const { signIn } = useAuth();
-    // Later, you can replace this with the actual link you mentioned.
+
+export function AuthGate() {
+    const { signInWithGoogle } = useAuth();
     const googleFormLink = "https://docs.google.com/forms/d/e/1FAIpQLSfmHONQYVgZumuAEx1t6VHULp7fDIWjeu8iNtYxpz6EYsngGg/viewform?pli=1";
 
     return (
@@ -16,18 +16,7 @@ export function LoginPage() {
             <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
                 <div className="absolute inset-0 bg-zinc-900" />
                 <div className="relative z-20 flex items-center text-lg font-medium">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="mr-2 h-6 w-6"
-                >
-                    <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
-                </svg>
+                    <Leaf className="mr-2 h-6 w-6" />
                     SnapThePlant
                 </div>
                 <div className="relative z-20 mt-auto">
@@ -43,15 +32,22 @@ export function LoginPage() {
                 <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
                     <div className="flex flex-col space-y-2 text-center">
                         <h1 className="text-2xl font-semibold tracking-tight">
-                            Access Your Account
+                            Welcome to SnapThePlant
                         </h1>
                         <p className="text-sm text-muted-foreground">
-                            Sign in to start identifying plants, insects, and more.
+                            Sign in or create an account to start identifying plants, insects, and more.
                         </p>
                     </div>
                     
-                    <Button onClick={signIn}>
-                        <LogIn className="mr-2 h-4 w-4" />
+                    <Button asChild>
+                        <Link href="/login">
+                          <LogIn className="mr-2 h-4 w-4" />
+                          Sign In with Email
+                        </Link>
+                    </Button>
+
+                    <Button variant="outline" onClick={signInWithGoogle}>
+                        <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 21.2 172.9 65.6l-58.2 58.2C336.7 97.2 296.4 80 248 80c-82.8 0-150.5 67.7-150.5 150.5S165.2 401 248 401c94.2 0 125.3-72.3 129.5-110.2h-129.5v-79.6h243.1c1.5 13.8 3.5 29.5 3.5 46.7z"></path></svg>
                         Sign in with Google
                     </Button>
                     
@@ -61,39 +57,26 @@ export function LoginPage() {
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
                             <span className="bg-background px-2 text-muted-foreground">
-                            Or join the beta
+                                Or join the beta
                             </span>
                         </div>
                     </div>
 
+                     <Button asChild>
+                        <Link href="/signup">Create an Account</Link>
+                    </Button>
+
                     <p className="px-8 text-center text-sm text-muted-foreground">
-                        This app is currently in a closed beta. To get access, please fill out our beta tester application form.
+                        This app is currently in a closed beta. To get priority access, please fill out our beta tester application form.
                     </p>
 
-                    <Button variant="outline" asChild>
+                    <Button variant="secondary" asChild>
                         <a href={googleFormLink} target="_blank" rel="noopener noreferrer">
                             <FileText className="mr-2 h-4 w-4" />
                             Apply for Beta Access
                         </a>
                     </Button>
 
-                    <p className="px-8 text-center text-sm text-muted-foreground">
-                        By signing in, you agree to our{" "}
-                        <a
-                            href="/terms"
-                            className="underline underline-offset-4 hover:text-primary"
-                        >
-                            Terms of Service
-                        </a>{" "}
-                        and{" "}
-                        <a
-                            href="/privacy"
-                            className="underline underline-offset-4 hover:text-primary"
-                        >
-                            Privacy Policy
-                        </a>
-                        .
-                    </p>
                 </div>
             </div>
         </div>

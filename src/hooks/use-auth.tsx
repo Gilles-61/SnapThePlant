@@ -3,14 +3,17 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth, signInWithGoogle, signOutFromGoogle } from '@/lib/firebase';
+import { auth, signInWithGoogle as signInWithGoogleFirebase, signOutFromGoogle, signUpWithEmailPassword, signInWithEmailPassword } from '@/lib/firebase';
 import { useToast } from './use-toast';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signIn: () => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
+  signUpWithEmail: (email: string, pass: string) => Promise<void>;
+  signInWithEmail: (email: string, pass: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,18 +22,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
+      if (user) {
+        router.push('/');
+      }
     });
     return () => unsubscribe();
-  }, []);
+  }, [router]);
 
-  const signIn = async () => {
+  const signInWithGoogle = async () => {
     try {
-      await signInWithGoogle();
+      await signInWithGoogleFirebase();
     } catch (error) {
       console.error("Error signing in with Google: ", error);
       toast({
@@ -41,9 +48,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const signUpWithEmail = async (email: string, pass: string) => {
+    try {
+        await signUpWithEmailPassword(email, pass);
+    } catch (error: any) {
+        console.error("Error signing up: ", error);
+        toast({
+            title: "Sign-up Failed",
+            description: error.message || "Could not create an account. Please try again.",
+            variant: "destructive",
+        })
+    }
+  }
+
+  const signInWithEmail = async (email: string, pass: string) => {
+    try {
+        await signInWithEmailPassword(email, pass);
+    } catch (error: any) {
+        console.error("Error signing in: ", error);
+        toast({
+            title: "Sign-in Failed",
+            description: error.message || "Could not sign in. Please check your credentials.",
+            variant: "destructive",
+        })
+    }
+  }
+
   const signOut = async () => {
     try {
       await signOutFromGoogle();
+      router.push('/login');
     } catch (error) {
         console.error("Error signing out: ", error);
         toast({
@@ -55,7 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOut, signUpWithEmail, signInWithEmail }}>
       {children}
     </AuthContext.Provider>
   );

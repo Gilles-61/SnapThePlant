@@ -16,7 +16,7 @@ import { IdentificationQuiz, type Answers } from '@/components/identification-qu
 import { MatchSelector } from '@/components/match-selector';
 import { filterDatabase, type Species } from '@/lib/mock-database';
 import { useAuth } from '@/hooks/use-auth';
-import { LoginPage } from '@/components/login-page';
+import { AuthGate } from '@/components/auth-gate';
 
 
 export default function HomePage() {
@@ -159,7 +159,7 @@ export default function HomePage() {
         <div className="flex flex-col min-h-screen bg-background text-foreground">
             <SiteHeader />
             <main className="flex-1">
-                <LoginPage />
+                <AuthGate />
             </main>
         </div>
     )

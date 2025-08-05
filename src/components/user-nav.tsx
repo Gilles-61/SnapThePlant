@@ -2,6 +2,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link";
 import {
     Avatar,
     AvatarFallback,
@@ -29,7 +30,7 @@ import { LogIn } from "lucide-react"
   
   export function UserNav() {
     const { language, setLanguage, t } = useLanguage()
-    const { user, loading, signIn, signOut } = useAuth();
+    const { user, loading, signOut } = useAuth();
 
     if (loading) {
       return <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" disabled><Avatar className="h-8 w-8" /></Button>
@@ -37,9 +38,11 @@ import { LogIn } from "lucide-react"
 
     if (!user) {
       return (
-        <Button onClick={signIn}>
-          <LogIn className="mr-2 h-4 w-4" />
-          Login with Google
+        <Button asChild>
+          <Link href="/login">
+            <LogIn className="mr-2 h-4 w-4" />
+            Sign In
+          </Link>
         </Button>
       )
     }
