@@ -201,26 +201,30 @@ export const database: Species[] = [
 ];
 
 export function filterDatabase(category: Category, attributes: Record<string, string>): Species[] {
-    return database.filter(species => {
-        if (species.category !== category) {
-            return false;
-        }
+    const categorySpecies = database.filter(s => s.category === category);
 
-        // If no attributes are provided, return all species in the category (for text search).
-        if (Object.keys(attributes).length === 0) {
-            return true;
-        }
+    // If no attributes are provided (e.g., for text search), return all species in the category.
+    if (Object.keys(attributes).length === 0) {
+        return categorySpecies;
+    }
 
-        // Check if all provided attributes match the species' attributes.
+    const scoredSpecies = categorySpecies.map(species => {
+        let score = 0;
         for (const key in attributes) {
-            const speciesAttribute = species.attributes[key];
-            const requiredAttribute = attributes[key];
-
-            if (speciesAttribute && requiredAttribute && speciesAttribute.toLowerCase() !== requiredAttribute.toLowerCase()) {
-                return false; // Mismatch found
+            // Check if the attribute from the AI exists and matches the one in our database.
+            if (attributes[key] && species.attributes[key] && attributes[key].toLowerCase() === species.attributes[key].toLowerCase()) {
+                score++;
             }
         }
-
-        return true; // All attributes matched
+        return { species, score };
     });
+
+    // Filter out species with a score of 0, as they have no matching attributes.
+    const matchedSpecies = scoredSpecies.filter(item => item.score > 0);
+
+    // Sort by the highest score first.
+    matchedSpecies.sort((a, b) => b.score - a.score);
+
+    // Return the sorted list of species objects.
+    return matchedSpecies.map(item => item.species);
 }
