@@ -21,7 +21,7 @@ import { SearchInput } from './search-input';
 import { identifySpecies, type IdentifySpeciesOutput } from '@/ai/flows/identify-species-flow';
 import type { Category } from '@/lib/categories';
 import { BarcodeScanner } from './barcode-scanner';
-import { Card, CardContent } from './ui/card';
+import { Card, CardContent, CardDescription } from './ui/card';
 import { generateImage } from '@/ai/flows/generate-image-flow';
 
 
@@ -289,15 +289,21 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
                 <Card className="w-full bg-white/90 backdrop-blur-md text-slate-800">
                   <CardContent className="p-6">
                     <h2 className="text-2xl font-bold mb-4">Identify a {selectedCategory}</h2>
-                     <div className="flex flex-col sm:flex-row justify-center gap-3 w-full max-w-lg mx-auto">
-                        <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleCameraButtonClick}>
-                            <Camera className="mr-2"/>
-                            Use Camera
-                        </Button>
-                        <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleUploadButtonClick}>
-                            <Upload className="mr-2" />
-                            Upload
-                        </Button>
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-2">
+                            <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleCameraButtonClick}>
+                                <Camera className="mr-2"/>
+                                Use Camera
+                            </Button>
+                            <CardDescription className="text-xs px-4">Capture a live photo for identification.</CardDescription>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleUploadButtonClick}>
+                                <Upload className="mr-2" />
+                                Upload
+                            </Button>
+                            <CardDescription className="text-xs px-4">Choose an image from your device.</CardDescription>
+                        </div>
                     </div>
                      <div className="relative my-4">
                         <div className="absolute inset-0 flex items-center">
