@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { cn } from '@/lib/utils';
 import { LanguageProvider } from '@/hooks/use-language';
 import { AuthProvider } from '@/hooks/use-auth';
-import { Poppins, Open_Sans } from 'next/font/google';
+import { PT_Sans } from 'next/font/google';
 import { SiteFooter } from '@/components/site-footer';
 
 export const metadata: Metadata = {
@@ -14,16 +14,10 @@ export const metadata: Metadata = {
   icons: null,
 };
 
-const poppins = Poppins({
+const ptSans = PT_Sans({
   subsets: ['latin'],
-  weight: ['700'],
-  variable: '--font-poppins',
-});
-
-const openSans = Open_Sans({
-  subsets: ['latin'],
-  weight: ['400', '600'],
-  variable: '--font-open-sans',
+  weight: ['400', '700'],
+  variable: '--font-pt-sans',
 });
 
 export default function RootLayout({
@@ -37,7 +31,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={cn("font-body antialiased flex flex-col min-h-screen", poppins.variable, openSans.variable)}>
+      <body className={cn("font-body antialiased flex flex-col min-h-screen", ptSans.variable)}>
         <AuthProvider>
           <LanguageProvider>
             <div className="flex-1 flex flex-col">
