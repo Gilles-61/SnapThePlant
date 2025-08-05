@@ -15,11 +15,14 @@ import { useTranslation } from '@/hooks/use-language';
 import { IdentificationQuiz, type Answers } from '@/components/identification-quiz';
 import { MatchSelector } from '@/components/match-selector';
 import { filterDatabase, type Species } from '@/lib/mock-database';
+import { useAuth } from '@/hooks/use-auth';
+import { LoginPage } from '@/components/login-page';
 
 
 export default function HomePage() {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { user, loading } = useAuth();
   const cameraRef = useRef<CameraFeedHandle>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -138,6 +141,28 @@ export default function HomePage() {
         )}
       </div>
     );
+  }
+
+  if (loading) {
+    return (
+        <div className="flex flex-col min-h-screen bg-background text-foreground">
+            <SiteHeader />
+            <main className="flex-1 flex items-center justify-center">
+                <Loader className="h-12 w-12 animate-spin" />
+            </main>
+        </div>
+    )
+  }
+
+  if (!user) {
+    return (
+        <div className="flex flex-col min-h-screen bg-background text-foreground">
+            <SiteHeader />
+            <main className="flex-1">
+                <LoginPage />
+            </main>
+        </div>
+    )
   }
 
   return (
