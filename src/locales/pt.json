@@ -73,7 +73,8 @@
         "settings": "Configurações",
         "language": "Idioma",
         "logout": "Sair",
-        "becomeMember": "Torne-se um membro"
+        "becomeMember": "Torne-se um membro",
+        "reportIssue": "Reportar um problema"
     },
     "profile": {
         "valuedUser": "Usuário Valioso",

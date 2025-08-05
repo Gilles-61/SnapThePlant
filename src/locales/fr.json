@@ -73,7 +73,8 @@
         "settings": "Paramètres",
         "language": "Langue",
         "logout": "Déconnexion",
-        "becomeMember": "Devenir membre"
+        "becomeMember": "Devenir membre",
+        "reportIssue": "Signaler un problème"
     },
     "profile": {
         "valuedUser": "Utilisateur apprécié",

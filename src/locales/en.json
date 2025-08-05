@@ -73,7 +73,8 @@
         "settings": "Settings",
         "language": "Language",
         "logout": "Log out",
-        "becomeMember": "Become a Member"
+        "becomeMember": "Become a Member",
+        "reportIssue": "Report an Issue"
     },
     "profile": {
         "valuedUser": "Valued User",

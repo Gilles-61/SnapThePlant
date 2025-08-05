@@ -73,7 +73,8 @@
         "settings": "设置",
         "language": "语言",
         "logout": "登出",
-        "becomeMember": "成为会员"
+        "becomeMember": "成为会员",
+        "reportIssue": "报告问题"
     },
     "profile": {
         "valuedUser": "尊贵的用户",

@@ -73,7 +73,8 @@
         "settings": "Configuración",
         "language": "Idioma",
         "logout": "Cerrar sesión",
-        "becomeMember": "Hacerse miembro"
+        "becomeMember": "Hacerse miembro",
+        "reportIssue": "Reportar un problema"
     },
     "profile": {
         "valuedUser": "Usuario Valorado",

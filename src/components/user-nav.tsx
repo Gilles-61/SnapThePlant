@@ -26,7 +26,7 @@ import {
   } from "@/components/ui/dropdown-menu"
 import { useLanguage, languages } from "@/hooks/use-language"
 import { useAuth } from "@/hooks/use-auth"
-import { Languages, Heart, LogIn } from "lucide-react"
+import { Languages, Heart, LogIn, LifeBuoy } from "lucide-react"
   
   export function UserNav() {
     const { language, setLanguage, t } = useLanguage()
@@ -71,6 +71,12 @@ import { Languages, Heart, LogIn } from "lucide-react"
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
               <Link href="/profile">{t('userNav.profile')}</Link>
+            </DropdownMenuItem>
+             <DropdownMenuItem asChild>
+              <a href="mailto:feedback@snaptheplant.com?subject=Beta Feedback for SnapThePlant">
+                <LifeBuoy className="mr-2 h-4 w-4" />
+                <span>{t('userNav.reportIssue')}</span>
+              </a>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
