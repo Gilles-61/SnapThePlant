@@ -133,58 +133,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   };
 
 
-  const renderContent = () => {
-    // In quiz or matches view, show the image
-    if (view !== 'capture' && capturedImage) {
-      return (
-         <div className="absolute inset-0 bg-black">
-          <Image
-            src={capturedImage}
-            alt="Captured for identification"
-            fill
-            className="object-contain"
-          />
-           {view === 'quiz' && selectedCategory && (
-              <IdentificationQuiz category={selectedCategory} onComplete={handleQuizComplete} />
-          )}
-          {view === 'matches' && (
-              <MatchSelector matches={possibleMatches} onSelect={handleMatchSelected} onBack={() => setView('quiz')} />
-          )}
-        </div>
-      )
-    }
-
-    if (isCameraOpen) {
-      return (
-        <div className="absolute inset-0 bg-black">
-          <CameraFeed ref={cameraRef} />
-        </div>
-      )
-    }
-
-    return (
-      <div className="w-full h-full relative flex flex-col items-center justify-center text-center">
-          <Image
-            src="https://placehold.co/1080x1920.png"
-            alt="A lush green landscape"
-            fill
-            className="object-cover"
-            data-ai-hint="nature landscape"
-          />
-          <div className="absolute inset-0 bg-black/60" />
-          <div className="relative z-10 p-8 text-white">
-            <ImageIcon className="w-24 h-24 mb-4 mx-auto" />
-            <p className="text-lg font-semibold mb-2">Select a category to begin</p>
-            <p className="max-w-md mb-6 mx-auto">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
-            <CategorySelector
-                  selectedCategory={selectedCategory}
-                  onSelectCategory={handleCategorySelect}
-              />
-          </div>
-      </div>
-    );
-  }
-
   if (loading) {
     return (
         <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -212,7 +160,50 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
       <SiteHeader />
       <main className="flex-1 relative flex flex-col items-center justify-center overflow-hidden">
         
-        {renderContent()}
+        {/* Base background and initial UI */}
+        <div className="w-full h-full relative flex flex-col items-center justify-center text-center">
+            <Image
+              src="https://placehold.co/1080x1920.png"
+              alt="A lush green landscape"
+              fill
+              className="object-cover"
+              data-ai-hint="nature landscape"
+            />
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="relative z-10 p-8 text-white">
+              <ImageIcon className="w-24 h-24 mb-4 mx-auto" />
+              <p className="text-lg font-semibold mb-2">Select a category to begin</p>
+              <p className="max-w-md mb-6 mx-auto">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
+              <CategorySelector
+                    selectedCategory={selectedCategory}
+                    onSelectCategory={handleCategorySelect}
+                />
+            </div>
+        </div>
+
+        {/* Overlays */}
+        {isCameraOpen && (
+           <div className="absolute inset-0 bg-black">
+              <CameraFeed ref={cameraRef} />
+           </div>
+        )}
+
+        {view !== 'capture' && capturedImage && (
+           <div className="absolute inset-0 bg-black">
+              <Image
+                src={capturedImage}
+                alt="Captured for identification"
+                fill
+                className="object-contain"
+              />
+               {view === 'quiz' && selectedCategory && (
+                  <IdentificationQuiz category={selectedCategory} onComplete={handleQuizComplete} />
+              )}
+              {view === 'matches' && (
+                  <MatchSelector matches={possibleMatches} onSelect={handleMatchSelected} onBack={() => setView('quiz')} />
+              )}
+            </div>
+        )}
 
         {isLoading && (
           <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-20 backdrop-blur-sm">
@@ -325,5 +316,3 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     </div>
   );
 }
-
-    
