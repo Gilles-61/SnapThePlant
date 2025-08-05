@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "./ui/button";
 import { FileText, Leaf, LogIn } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 
 export function AuthGate() {
@@ -14,7 +15,14 @@ export function AuthGate() {
     return (
         <div className="container relative h-full flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
             <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-                <div className="absolute inset-0 bg-zinc-900" />
+                <Image
+                    src="https://placehold.co/1080x1920.png"
+                    alt="A beautiful collection of flowers"
+                    fill
+                    className="object-cover"
+                    data-ai-hint="flowers exterior"
+                />
+                <div className="absolute inset-0 bg-zinc-900/60" />
                 <div className="relative z-20 flex items-center text-lg font-medium">
                     <Leaf className="mr-2 h-6 w-6" />
                     SnapThePlant
