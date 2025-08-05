@@ -10,7 +10,6 @@ import Image from "next/image";
 
 export function AuthGate() {
     const { signInWithGoogle } = useAuth();
-    const googleFormLink = "https://docs.google.com/forms/d/e/1FAIpQLSfmHONQYVgZumuAEx1t6VHULp7fDIWjeu8iNtYxpz6EYsngGg/viewform?pli=1";
 
     return (
         <div className="container relative h-full flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
@@ -41,10 +40,10 @@ export function AuthGate() {
                 <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
                     <div className="flex flex-col space-y-2 text-center">
                         <h1 className="text-2xl font-semibold tracking-tight">
-                            Welcome to SnapThePlant
+                            Welcome to the SnapThePlant Beta
                         </h1>
                         <p className="text-sm text-muted-foreground">
-                            Sign in or create an account to start identifying plants, insects, and more.
+                            Sign in or create an account to get early access.
                         </p>
                     </div>
                     
@@ -66,25 +65,18 @@ export function AuthGate() {
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
                             <span className="bg-background px-2 text-muted-foreground">
-                                Or join the beta
+                                Or
                             </span>
                         </div>
                     </div>
 
-                     <Button asChild>
+                     <Button asChild variant="secondary">
                         <Link href="/signup">Create an Account</Link>
                     </Button>
 
                     <p className="px-8 text-center text-sm text-muted-foreground">
-                        This app is currently in a closed beta. To get priority access, please fill out our beta tester application form.
+                        By signing up, you agree to participate in the beta program and provide feedback.
                     </p>
-
-                    <Button variant="secondary" asChild>
-                        <a href={googleFormLink} target="_blank" rel="noopener noreferrer">
-                            <FileText className="mr-2 h-4 w-4" />
-                            Apply for Beta Access
-                        </a>
-                    </Button>
 
                 </div>
             </div>

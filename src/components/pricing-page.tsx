@@ -5,9 +5,9 @@ import { CheckCircle, Gift } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export function PricingPage() {
-    const betaTesterLink = "https://docs.google.com/forms/d/e/1FAIpQLSfmHONQYVgZumuAEx1t6VHULp7fDIWjeu8iNtYxpz6EYsngGg/viewform?pli=1";
     const buyMeACoffeeLink = "https://buymeacoffee.com/snaptheplant";
 
     const tiers = [
@@ -19,9 +19,9 @@ export function PricingPage() {
             features: [
                 "Provide valuable feedback and get full access during the beta period.",
             ],
-            buttonText: "Apply Now",
+            buttonText: "Sign Up Now",
             buttonVariant: "default" as const,
-            href: betaTesterLink,
+            href: "/signup",
         },
         {
             name: "Monthly",
@@ -104,10 +104,16 @@ export function PricingPage() {
                             </CardContent>
                             <CardFooter>
                                 <Button asChild className="w-full" variant={tier.buttonVariant}>
-                                    <a href={tier.href} target="_blank" rel="noopener noreferrer">
-                                        {tier.name === "Donation" && <Gift className="mr-2 h-4 w-4" />}
-                                        {tier.buttonText}
-                                    </a>
+                                     {tier.href.startsWith('/') ? (
+                                        <Link href={tier.href}>
+                                            {tier.buttonText}
+                                        </Link>
+                                    ) : (
+                                        <a href={tier.href} target="_blank" rel="noopener noreferrer">
+                                            {tier.name === "Donation" && <Gift className="mr-2 h-4 w-4" />}
+                                            {tier.buttonText}
+                                        </a>
+                                    )}
                                 </Button>
                             </CardFooter>
                         </Card>
