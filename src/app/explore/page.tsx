@@ -26,7 +26,7 @@ const getAvailableFilters = (category: Category) => {
         filters[key] = [...new Set(allValues)];
     });
     return filters;
-}
+};
 
 export default function ExplorePage() {
     const { t } = useTranslation();
