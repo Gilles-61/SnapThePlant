@@ -1,4 +1,5 @@
 import { Leaf } from 'lucide-react';
+import { UserNav } from './user-nav';
 
 export function SiteHeader() {
   return (
@@ -9,6 +10,9 @@ export function SiteHeader() {
             <Leaf className="h-6 w-6 text-primary" />
             <span className="font-bold sm:inline-block font-headline">SnapThePlant</span>
           </a>
+        </div>
+        <div className="flex flex-1 items-center justify-end">
+            <UserNav />
         </div>
       </div>
     </header>
