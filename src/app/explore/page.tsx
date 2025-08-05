@@ -139,6 +139,7 @@ export default function ExplorePage() {
                                     <CardContent className="p-4 flex-1 flex flex-col">
                                         <h3 className="font-bold">{species.name}</h3>
                                         <p className="text-sm text-muted-foreground italic">{species.scientificName}</p>
+
                                         <p className="text-sm text-muted-foreground mt-2 line-clamp-3 flex-1">{species.keyInformation}</p>
                                     </CardContent>
                                     <CardFooter className="pt-2">
