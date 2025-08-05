@@ -66,52 +66,43 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         handleReset();
         return;
     }
-
-    let topMatch = findSpeciesByName(analysis.name);
+  
     setCapturedImage(imageUri);
-
-    if (topMatch) {
-      topMatch = { ...topMatch, isPoisonous: analysis.isPoisonous };
-      setResult(topMatch);
+    let match = findSpeciesByName(analysis.name);
+  
+    if (match && !analysis.isNew) {
+      // It's a known species, show its data
+      const resultData: Species = {
+        ...match,
+        isPoisonous: analysis.isPoisonous, // Use AI's poison check
+      };
+      setResult(resultData);
       setIsResultOpen(true);
     } else {
+      // It's a new species, create a temporary entry to display
       toast({
         title: "New Species Identified!",
-        description: `We've identified a "${analysis.name}". Generating details...`,
-        variant: "default",
+        description: `We've identified "${analysis.name}".`,
       });
-      try {
-        // Since we already have the user's image, we can use that directly
-        // for new species instead of generating one.
-        const newSpecies: Species = {
-          id: -1, // Temporary ID for new species
-          name: analysis.name,
-          scientificName: analysis.scientificName,
-          isPoisonous: analysis.isPoisonous,
-          category: selectedCategory!,
-          image: imageUri, // Use the captured/uploaded image
-          keyInformation: `This is an AI-generated entry for ${analysis.name}. Details are based on general knowledge.`,
-          furtherReading: `https://www.google.com/search?q=${encodeURIComponent(analysis.scientificName)}`,
-          attributes: {},
-        };
-        setResult(newSpecies);
-        setIsResultOpen(true);
-
-      } catch (genError) {
-        console.error("Error handling new species", genError);
-        toast({
-            title: "Could Not Display New Species",
-            description: "An error occurred while preparing details for the new species.",
-            variant: "destructive"
-        })
-        handleReset();
-      }
+      const newSpecies: Species = {
+        id: -1, // Temporary ID
+        name: analysis.name,
+        scientificName: analysis.scientificName,
+        isPoisonous: analysis.isPoisonous,
+        category: selectedCategory!,
+        image: imageUri, // CRITICAL: Use the user's uploaded image
+        keyInformation: `This appears to be a ${analysis.name}, which is new to our database. Details are based on general knowledge.`,
+        furtherReading: `https://www.google.com/search?q=${encodeURIComponent(analysis.scientificName)}`,
+        attributes: {},
+        careTips: [],
+      };
+      setResult(newSpecies);
+      setIsResultOpen(true);
     }
   }
 
   const findMatches = useCallback(async (imageDataUri: string, category: Category) => {
     setIsLoading(true);
-    // Don't set captured image here yet, wait for analysis
     
     try {
       const analysis = await identifySpecies({

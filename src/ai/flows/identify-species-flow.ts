@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI flow to identify a species from an image.
@@ -9,12 +10,13 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
+import { database } from '@/lib/mock-database';
 
 const IdentifySpeciesInputSchema = z.object({
   photoDataUri: z
     .string()
     .describe(
-      "A photo of a plant, tree, weed, or insect as a data URI. It must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+      "A photo of a plant, tree, weed, or insect as a data URI. It must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'"
     ),
   category: z.string().describe("The category of the item in the photo (e.g., 'Plant', 'Insect')."),
 });
@@ -25,6 +27,7 @@ const IdentifySpeciesOutputSchema = z.object({
   name: z.string().describe('The common name of the identified species (e.g., "Monstera Deliciosa", "Honey Bee").'),
   scientificName: z.string().describe('The scientific name of the identified species (e.g., "Monstera deliciosa", "Apis mellifera").'),
   isPoisonous: z.boolean().describe('Whether the species is known to be poisonous, venomous, or otherwise harmful to humans or common pets.'),
+  isNew: z.boolean().describe('Whether the identified species is new and not present in the database.')
 });
 export type IdentifySpeciesOutput = z.infer<typeof IdentifySpeciesOutputSchema>;
 
@@ -33,16 +36,22 @@ export async function identifySpecies(input: IdentifySpeciesInput): Promise<Iden
   return identifySpeciesFlow(input);
 }
 
+const knownSpeciesNames = database.map(s => s.name).join(', ');
+
 const promptText = `
-    You are an expert biologist and botanist. Your main goal is to identify the species in the provided image and determine if it is poisonous.
+    You are an expert biologist and botanist. Your main goal is to identify the species in the provided image.
 
     Analyze the image of a {{category}} and identify its common name and scientific name.
     
-    Also, determine if the species is known to be poisonous, venomous, or otherwise harmful to humans or common pets (like cats and dogs). If you are unsure, default to 'false'.
+    Determine if the species is known to be poisonous, venomous, or otherwise harmful to humans or common pets (like cats and dogs). If you are unsure, default to 'false'.
 
-    Your output MUST be a JSON object containing the "name", "scientificName", and "isPoisonous" keys.
+    Finally, check if the identified common name exists in the following list of known species:
+    Known Species: ${knownSpeciesNames}
+    Set the 'isNew' flag to 'true' if the identified species name is NOT in the list. Otherwise, set it to 'false'.
 
-    For example: { "name": "Monarch Butterfly", "scientificName": "Danaus plexippus", "isPoisonous": true }
+    Your output MUST be a JSON object containing the "name", "scientificName", "isPoisonous", and "isNew" keys.
+
+    For example: { "name": "Monarch Butterfly", "scientificName": "Danaus plexippus", "isPoisonous": true, "isNew": false }
 
     Do not guess. Only return a species you can confidently identify from the image. If the image is unclear or you cannot make a confident identification, return an empty object.
 
