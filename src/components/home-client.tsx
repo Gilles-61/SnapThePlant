@@ -40,6 +40,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [view, setView] = useState<'capture' | 'matches'>('capture');
   const [possibleMatches, setPossibleMatches] = useState<ScoredSpecies[]>([]);
+  const [action, setAction] = useState<'camera' | 'upload' | null>(null);
   
   const handleReset = useCallback(() => {
     setCapturedImage(null);
@@ -51,6 +52,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setView('capture');
     setPossibleMatches([]);
     setSelectedCategory(null);
+    setAction(null);
   }, []);
 
   const findMatches = useCallback(async (imageDataUri: string, category: Category) => {
@@ -125,7 +127,9 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     if (scoredMatches.length > 0) {
         setPossibleMatches(scoredMatches);
         setView('matches');
-        setCapturedImage('https://placehold.co/600x400.png'); 
+        if (typeof document !== 'undefined') {
+            setCapturedImage('https://placehold.co/600x400.png'); 
+        }
     } else {
       toast({
         title: "No Results",
@@ -183,17 +187,28 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
   const handleCategorySelect = (category: Category) => {
     setSelectedCategory(category);
+    if (action === 'camera') {
+        setIsCameraOpen(true);
+    } else if (action === 'upload') {
+        handleBrowseClick();
+    }
   }
   
   const handleCameraButtonClick = () => {
     if (selectedCategory) {
         setIsCameraOpen(true);
+    } else {
+        setAction('camera');
+        toast({ title: "Please select a category first."});
     }
   };
 
   const handleUploadButtonClick = () => {
     if (selectedCategory) {
         handleBrowseClick();
+    } else {
+        setAction('upload');
+        toast({ title: "Please select a category first."});
     }
   }
 
@@ -209,6 +224,13 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     });
     handleSearch(scanResult);
   }
+
+  useEffect(() => {
+    if (action && selectedCategory) {
+        if (action === 'camera') setIsCameraOpen(true);
+        if (action === 'upload') handleBrowseClick();
+    }
+  }, [selectedCategory, action]);
 
   if (loading) {
     return (
