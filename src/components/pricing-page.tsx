@@ -59,10 +59,8 @@ export function PricingPage() {
         {
             name: "Donation",
             price: "Any Amount",
-            description: "Support the project.",
-            features: [
-                "Help us improve and maintain the app for everyone."
-            ],
+            description: "Support the project's growth.",
+            features: [], // Removed features to be handled differently
             buttonText: "Donate",
             buttonVariant: "outline" as const,
             href: buyMeACoffeeLink,
@@ -89,14 +87,20 @@ export function PricingPage() {
                                 </div>
                             </CardHeader>
                             <CardContent className="flex-1">
-                                <ul className="space-y-4">
-                                {tier.features.map((feature) => (
-                                    <li key={feature} className="flex items-start">
-                                        <CheckCircle className="h-6 w-6 text-green-500 mr-2 shrink-0" />
-                                        <span className="text-muted-foreground">{feature}</span>
-                                    </li>
-                                ))}
-                                </ul>
+                                {tier.name === 'Donation' ? (
+                                    <p className="text-muted-foreground">
+                                        Your support helps us improve and maintain the app for everyone. Thank you for considering a donation!
+                                    </p>
+                                ) : (
+                                    <ul className="space-y-4">
+                                    {tier.features.map((feature) => (
+                                        <li key={feature} className="flex items-start">
+                                            <CheckCircle className="h-6 w-6 text-green-500 mr-2 shrink-0" />
+                                            <span className="text-muted-foreground">{feature}</span>
+                                        </li>
+                                    ))}
+                                    </ul>
+                                )}
                             </CardContent>
                             <CardFooter>
                                 <Button asChild className="w-full" variant={tier.buttonVariant}>
