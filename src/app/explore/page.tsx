@@ -131,16 +131,16 @@ export default function ExplorePage() {
                                                 alt={species.name} 
                                                 fill
                                                 className="object-cover"
-                                                data-ai-hint="nature"
+                                                data-ai-hint={species.name}
                                             />
                                         </div>
                                     </CardHeader>
-                                    <CardContent className="p-4 flex-1">
+                                    <CardContent className="p-4 flex-1 flex flex-col">
                                         <h3 className="font-bold">{species.name}</h3>
                                         <p className="text-sm text-muted-foreground italic">{species.scientificName}</p>
-                                        <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{species.keyInformation}</p>
+                                        <p className="text-sm text-muted-foreground mt-2 line-clamp-3 flex-1">{species.keyInformation}</p>
                                     </CardContent>
-                                    <CardFooter>
+                                    <CardFooter className="pt-2">
                                         <Button className="w-full" onClick={() => handleSpeciesSelect(species)}>View Details</Button>
                                     </CardFooter>
                                 </Card>
