@@ -19,7 +19,6 @@ export default function ProfilePage() {
   const { user, loading, subscriptionStatus } = useAuth();
   const { t } = useTranslation();
   const { collection, removeItem } = useCollection();
-  const buyMeACoffeeLink = "https://buymeacoffee.com/snaptheplant";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<CollectionItem | null>(null);
