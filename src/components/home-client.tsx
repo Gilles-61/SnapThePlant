@@ -163,18 +163,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
       <SiteHeader />
       <main className="flex-1 relative flex flex-col items-center justify-center overflow-hidden p-4">
         
-        {/* Base background and initial UI */}
-        <div className="w-full h-full absolute inset-0">
-            <Image
-              src="https://placehold.co/1200x800.png"
-              alt="A lush green forest background"
-              fill
-              className="object-cover blur-sm"
-              data-ai-hint="forest background"
-            />
-            <div className="absolute inset-0 bg-black/50" />
-        </div>
-
         <div className="relative z-10 w-full max-w-2xl mx-auto flex flex-col items-center justify-center text-center">
             {view === 'capture' && !isCameraOpen && (
                  <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-8 text-slate-800">
