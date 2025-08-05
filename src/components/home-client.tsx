@@ -162,11 +162,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
       )
     }
 
-    // Hide placeholder content if a dialog is open
-    if (isCategorySelectorOpen || isSourceSelectorOpen) {
-        return <div className="w-full h-full bg-background" />;
-    }
-
     return (
       <div className="w-full h-full relative flex flex-col items-center justify-center text-center">
           <Image
@@ -330,3 +325,5 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     </div>
   );
 }
+
+    
