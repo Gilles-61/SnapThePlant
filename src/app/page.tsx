@@ -1,8 +1,9 @@
+
 "use client";
 
 import { useState, useRef, useCallback, Suspense } from 'react';
 import Image from 'next/image';
-import { Loader, Camera, RotateCcw } from 'lucide-react';
+import { Loader, Camera, RotateCcw, Image as ImageIcon } from 'lucide-react';
 
 import { enhanceIdentificationContext, type EnhanceIdentificationContextOutput } from '@/ai/flows/enhance-identification-context';
 import { useToast } from '@/hooks/use-toast';
@@ -15,6 +16,7 @@ import CameraFeed, { type CameraFeedHandle } from '@/components/camera-feed';
 export default function HomePage() {
   const { toast } = useToast();
   const cameraRef = useRef<CameraFeedHandle>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -22,29 +24,34 @@ export default function HomePage() {
   const [result, setResult] = useState<EnhanceIdentificationContextOutput | null>(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
 
+  const processImage = useCallback(async (imageDataUri: string) => {
+    setCapturedImage(imageDataUri);
+    setIsLoading(true);
+    try {
+      const aiResult = await enhanceIdentificationContext({
+        photoDataUri: imageDataUri,
+        description: `Identify this ${selectedCategory.toLowerCase()}. Provide details about it.`,
+      });
+      setResult(aiResult);
+      setIsResultOpen(true);
+    } catch (error) {
+      console.error("AI identification failed:", error);
+      toast({
+        title: "Identification Failed",
+        description: "Could not identify the image. Please try again.",
+        variant: "destructive",
+      });
+      handleReset();
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedCategory, toast]);
+
+
   const handleCapture = useCallback(async () => {
     const imageDataUri = cameraRef.current?.capture();
     if (imageDataUri) {
-      setCapturedImage(imageDataUri);
-      setIsLoading(true);
-      try {
-        const aiResult = await enhanceIdentificationContext({
-          photoDataUri: imageDataUri,
-          description: `Identify this ${selectedCategory.toLowerCase()}. Provide details about it.`,
-        });
-        setResult(aiResult);
-        setIsResultOpen(true);
-      } catch (error) {
-        console.error("AI identification failed:", error);
-        toast({
-          title: "Identification Failed",
-          description: "Could not identify the image. Please try again with a clearer picture.",
-          variant: "destructive",
-        });
-        handleReset();
-      } finally {
-        setIsLoading(false);
-      }
+      processImage(imageDataUri);
     } else {
       toast({
         title: "Capture Failed",
@@ -52,7 +59,29 @@ export default function HomePage() {
         variant: "destructive",
       });
     }
-  }, [selectedCategory, toast]);
+  }, [processImage, toast]);
+
+  const handleBrowseClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageDataUri = e.target?.result as string;
+        if (imageDataUri) {
+          processImage(imageDataUri);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+    // Reset file input to allow selecting the same file again
+    if(event.target) {
+        event.target.value = "";
+    }
+  };
 
   const handleReset = useCallback(() => {
     setCapturedImage(null);
@@ -104,7 +133,27 @@ export default function HomePage() {
             />
           )}
 
-          <div className="flex justify-center">
+          <div className="flex items-center justify-center gap-4">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              className="hidden"
+              accept="image/*"
+            />
+            {!capturedImage && (
+                 <Button
+                    size="lg"
+                    variant="ghost"
+                    className="rounded-full h-16 w-16 p-0 text-white hover:bg-white/20"
+                    onClick={handleBrowseClick}
+                    disabled={isLoading}
+                    aria-label="Browse for an image"
+                >
+                    <ImageIcon className="h-7 w-7" />
+                </Button>
+            )}
+           
             <Button
               size="lg"
               className="rounded-full h-20 w-20 p-0 border-4 border-white/50 bg-accent/90 hover:bg-accent text-accent-foreground shadow-2xl disabled:opacity-50 transition-transform active:scale-95"
@@ -118,6 +167,9 @@ export default function HomePage() {
                 <Camera className="h-8 w-8" />
               )}
             </Button>
+
+            {/* Placeholder to balance the layout */}
+            {!capturedImage && <div className="w-16 h-16" />}
           </div>
         </div>
         
