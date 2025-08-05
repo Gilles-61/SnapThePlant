@@ -58,14 +58,14 @@ export default function ExplorePage() {
         const category = categories.find(c => c.name === categoryName) || null;
         setSelectedCategory(category?.name ?? null);
         setActiveFilters({});
-    }
+    };
     
     const handleFilterChange = (filterKey: string, value: string) => {
         setActiveFilters(prev => ({
             ...prev,
             [filterKey]: value === 'all' ? '' : value
         }));
-    }
+    };
 
     const handleSpeciesSelect = (species: Species) => {
         setSelectedSpecies(species);
@@ -75,7 +75,7 @@ export default function ExplorePage() {
     const handleResultClose = () => {
         setIsResultOpen(false);
         setTimeout(() => setSelectedSpecies(null), 300);
-    }
+    };
     
     return (
         <div className="flex flex-col min-h-screen bg-background text-foreground">
