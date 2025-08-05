@@ -12,7 +12,10 @@ export function SiteHeader() {
             <Leaf className="h-8 w-8 text-primary" />
             <span className="text-2xl font-bold sm:inline-block font-headline text-slate-800">SnapThePlant</span>
           </Link>
-          <nav>
+          <nav className="flex items-center gap-2">
+            <Button variant="link" asChild>
+                <Link href="/explore" className="text-slate-600 hover:text-primary">Explore</Link>
+            </Button>
             <Button variant="link" asChild>
                 <Link href="/pricing" className="text-slate-600 hover:text-primary">Pricing</Link>
             </Button>
