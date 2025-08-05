@@ -3,7 +3,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import Image from 'next/image';
-import { Loader, Camera, RotateCcw, Image as ImageIcon, Upload, QrCode } from 'lucide-react';
+import { Loader, Camera, RotateCcw, Image as ImageIcon, Upload, QrCode, ArrowLeft } from 'lucide-react';
 
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,7 @@ import { SearchInput } from './search-input';
 import { analyzeImage, type AnalyzeImageOutput } from '@/ai/flows/analyze-image-flow';
 import type { Category } from '@/lib/categories';
 import { BarcodeScanner } from './barcode-scanner';
+import { Card, CardContent } from './ui/card';
 
 
 export function HomeClient({ initialCategory }: { initialCategory?: Category }) {
@@ -39,10 +40,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [view, setView] = useState<'capture' | 'matches'>('capture');
   const [possibleMatches, setPossibleMatches] = useState<ScoredSpecies[]>([]);
-  const [isCategorySelectorOpen, setIsCategorySelectorOpen] = useState(false);
-  const [pendingAction, setPendingAction] = useState<'camera' | 'upload' | null>(null);
-
-
+  
   const handleReset = useCallback(() => {
     setCapturedImage(null);
     setResult(null);
@@ -131,7 +129,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     } else {
       toast({
         title: "No Results",
-        description: `No items found matching "${query}".`,
+        description: `No items found for "${query}".`,
         variant: "default",
       });
     }
@@ -185,24 +183,17 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
   const handleCategorySelect = (category: Category) => {
     setSelectedCategory(category);
-    setIsCategorySelectorOpen(false);
   }
   
   const handleCameraButtonClick = () => {
     if (selectedCategory) {
         setIsCameraOpen(true);
-    } else {
-        setPendingAction('camera');
-        setIsCategorySelectorOpen(true);
     }
   };
 
   const handleUploadButtonClick = () => {
     if (selectedCategory) {
         handleBrowseClick();
-    } else {
-        setPendingAction('upload');
-        setIsCategorySelectorOpen(true);
     }
   }
 
@@ -218,18 +209,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     });
     handleSearch(scanResult);
   }
-
-  useEffect(() => {
-    if (selectedCategory && pendingAction) {
-        if (pendingAction === 'camera') {
-            setIsCameraOpen(true);
-        } else if (pendingAction === 'upload') {
-            handleBrowseClick();
-        }
-        setPendingAction(null);
-    }
-  }, [selectedCategory, pendingAction]);
-
 
   if (loading) {
     return (
@@ -259,7 +238,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
       <main className="flex-1 relative flex flex-col items-center justify-center overflow-auto p-4">
         
         <div className="w-full max-w-2xl mx-auto flex flex-col items-center justify-center text-center flex-grow">
-            {view === 'capture' && !isCameraOpen && (
+            {view === 'capture' && !isCameraOpen && !selectedCategory && (
                  <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-6 sm:p-8 text-slate-800">
                     <h1 className="text-3xl sm:text-4xl font-headline font-bold text-primary mb-2">Select a Category</h1>
                     <p className="max-w-md mb-6 mx-auto text-base sm:text-lg">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
@@ -273,27 +252,49 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
                     </div>
                 </div>
             )}
+
+            {view === 'capture' && !isCameraOpen && selectedCategory && (
+              <Card className="w-full max-w-md bg-white/90 backdrop-blur-md text-slate-800">
+                <CardContent className="p-6">
+                  <button onClick={() => setSelectedCategory(null)} className="flex items-center text-sm font-semibold text-primary mb-4 hover:underline">
+                    <ArrowLeft className="mr-1 h-4 w-4"/>
+                    Back to categories
+                  </button>
+                  <h2 className="text-2xl font-bold mb-4">Identify a {selectedCategory}</h2>
+                   <div className="flex flex-col sm:flex-row justify-center gap-3 w-full max-w-lg mx-auto">
+                      <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleCameraButtonClick}>
+                          <Camera className="mr-2"/>
+                          Use Camera
+                      </Button>
+                      <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleUploadButtonClick}>
+                          <Upload className="mr-2" />
+                          Upload
+                      </Button>
+                  </div>
+                   <div className="relative my-4">
+                      <div className="absolute inset-0 flex items-center">
+                          <span className="w-full border-t" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                          <span className="bg-card px-2 text-muted-foreground">
+                              Or
+                          </span>
+                      </div>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                     <Button size="lg" className="w-full rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleScanButtonClick}>
+                          <QrCode className="mr-2" />
+                          Scan Barcode/QR
+                      </Button>
+                      <SearchInput onSearch={handleSearch} />
+                  </div>
+                </CardContent>
+              </Card>
+            )}
         </div>
 
-        {/* Action Buttons */}
-        <div className="w-full flex-shrink-0 py-4">
-            {view === 'capture' && !isCameraOpen && (
-                <div className="flex flex-col sm:flex-row justify-center gap-3 w-full max-w-lg mx-auto">
-                    <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleCameraButtonClick}>
-                        <Camera className="mr-2"/>
-                        Use Camera
-                    </Button>
-                     <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleScanButtonClick}>
-                        <QrCode className="mr-2" />
-                        Scan Code
-                    </Button>
-                    <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleUploadButtonClick}>
-                        <Upload className="mr-2" />
-                        Upload
-                    </Button>
-                </div>
-            )}
-
+        {/* Action Buttons for camera view */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-full flex-shrink-0 py-4 z-20">
             {isCameraOpen && (
                  <div className="flex flex-col items-center gap-4">
                     <Button
@@ -360,26 +361,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
           onConfirm={() => handleFeedback(true)}
           onReject={() => handleFeedback(false)}
         />
-
-        <AlertDialog open={isCategorySelectorOpen} onOpenChange={setIsCategorySelectorOpen}>
-             <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>First, select a category</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        This helps us narrow down the possibilities.
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <div className="py-4">
-                    <CategorySelector
-                        selectedCategory={selectedCategory}
-                        onSelectCategory={handleCategorySelect}
-                    />
-                </div>
-                <AlertDialogFooter>
-                    <AlertDialogCancel onClick={() => setPendingAction(null)}>Cancel</AlertDialogCancel>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
 
         <input
             type="file"
