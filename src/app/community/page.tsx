@@ -15,7 +15,7 @@ export default function CommunityPage() {
         icon: MessageSquare,
         title: t('pages.community.features.forums.title'),
         description: t('pages.community.features.forums.description'),
-        href: "/community"
+        href: null
     },
     {
         icon: UploadCloud,
@@ -45,15 +45,20 @@ export default function CommunityPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
                 {features.map((feature, index) => {
                     const Icon = feature.icon;
-                    // Use a simple div wrapper if no href is present
                     const Wrapper = feature.href ? Link : 'div';
-                    const props = feature.href ? { href: feature.href } : {};
+                    const props: any = feature.href ? { href: feature.href } : {};
+                    const isLink = !!feature.href;
 
                     return (
-                         <Wrapper key={index} {...props} className="flex flex-col items-center text-center p-4 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors group">
+                         <Wrapper key={index} {...props} className={`flex flex-col items-center text-center p-4 rounded-lg border ${isLink ? 'hover:bg-accent hover:text-accent-foreground transition-colors group cursor-pointer' : 'opacity-70'}`}>
                             <Icon className="h-12 w-12 text-primary mb-4" />
                             <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
                             <p className="text-muted-foreground group-hover:text-accent-foreground">{feature.description}</p>
+                             {!isLink && (
+                                <div className="mt-2 text-xs font-semibold uppercase text-primary">
+                                    {t('pages.community.comingSoon.title')}
+                                </div>
+                            )}
                         </Wrapper>
                     )
                 })}
