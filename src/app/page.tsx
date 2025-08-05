@@ -36,6 +36,8 @@ export default function HomePage() {
   const [view, setView] = useState<'capture' | 'quiz' | 'matches'>('capture');
   const [possibleMatches, setPossibleMatches] = useState<Species[]>([]);
   const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false);
+  const [isCategorySelectorOpen, setIsCategorySelectorOpen] = useState(false);
+
 
   const handleReset = useCallback(() => {
     setCapturedImage(null);
@@ -115,7 +117,17 @@ export default function HomePage() {
   const handleCategorySelect = (category: Category) => {
     setSelectedCategory(category);
     setIsSourceSelectorOpen(true);
+    setIsCategorySelectorOpen(false);
   }
+  
+  const handleCameraButtonClick = () => {
+    if (selectedCategory) {
+        setIsCameraOpen(true);
+    } else {
+        setIsCategorySelectorOpen(true);
+    }
+  };
+
 
   const renderContent = () => {
     // In quiz or matches view, show the image
@@ -152,7 +164,11 @@ export default function HomePage() {
       <div className="w-full h-full bg-muted flex flex-col items-center justify-center text-muted-foreground p-8 text-center">
           <ImageIcon className="w-24 h-24 mb-4" />
           <p className="text-lg font-semibold text-foreground mb-2">Select a category to begin</p>
-          <p className="max-w-md">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
+          <p className="max-w-md mb-6">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
+           <Button size="lg" onClick={handleCameraButtonClick}>
+                <Camera className="mr-2"/>
+                Use Camera
+            </Button>
       </div>
     );
   }
@@ -196,10 +212,10 @@ export default function HomePage() {
         <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col items-center p-6 space-y-4">
           
           {(view === 'capture' && !isCameraOpen) && (
-            <CategorySelector
-              selectedCategory={selectedCategory}
-              onSelectCategory={handleCategorySelect}
-            />
+             <Button size="lg" onClick={() => { handleBrowseClick(); }}>
+                <Upload className="mr-2" />
+                Upload from Gallery
+            </Button>
           )}
 
           {isCameraOpen && (
@@ -237,12 +253,33 @@ export default function HomePage() {
           onReject={handleReset}
         />
 
+        <AlertDialog open={isCategorySelectorOpen} onOpenChange={setIsCategorySelectorOpen}>
+             <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>First, select a category</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        This helps us narrow down the possibilities.
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <div className="py-4">
+                    <CategorySelector
+                        selectedCategory={selectedCategory}
+                        onSelectCategory={handleCategorySelect}
+                    />
+                </div>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+
+
         <AlertDialog open={isSourceSelectorOpen} onOpenChange={setIsSourceSelectorOpen}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Choose Image Source</AlertDialogTitle>
+                    <AlertDialogTitle>Now, provide an image</AlertDialogTitle>
                     <AlertDialogDescription>
-                        How would you like to provide an image for identification?
+                        You can use your camera or upload from your gallery.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
