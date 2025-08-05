@@ -8,17 +8,18 @@ import { Loader, Camera, RotateCcw, Image as ImageIcon, Upload, QrCode } from 'l
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { SiteHeader } from '@/components/site-header';
-import { CategorySelector, categories, type Category } from '@/components/category-selector';
+import { CategorySelector } from '@/components/category-selector';
 import { IdentificationResult } from '@/components/identification-result';
 import CameraFeed, { type CameraFeedHandle } from '@/components/camera-feed';
 import { useTranslation } from '@/hooks/use-language';
-import { IdentificationQuiz, type Answers } from '@/components/identification-quiz';
 import { MatchSelector } from '@/components/match-selector';
 import { filterDatabase, type Species } from '@/lib/mock-database';
 import { useAuth } from '@/hooks/use-auth';
 import { AuthGate } from '@/components/auth-gate';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { SearchInput } from './search-input';
+import { analyzeImage, type AnalyzeImageOutput } from '@/ai/flows/analyze-image-flow';
+import type { Category } from '@/lib/categories';
 
 
 export function HomeClient({ initialCategory }: { initialCategory?: Category }) {
@@ -34,7 +35,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   const [result, setResult] = useState<Species | null>(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [view, setView] = useState<'capture' | 'quiz' | 'matches'>('capture');
+  const [view, setView] = useState<'capture' | 'matches'>('capture');
   const [possibleMatches, setPossibleMatches] = useState<Species[]>([]);
   const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false);
   const [isCategorySelectorOpen, setIsCategorySelectorOpen] = useState(false);
@@ -51,19 +52,32 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setSelectedCategory(null);
   }, []);
 
-  const processImage = useCallback(async (imageDataUri: string) => {
+  const findMatches = useCallback(async (imageDataUri: string, category: Category) => {
     setCapturedImage(imageDataUri);
-    setView('quiz');
-  }, []);
-
-  const handleQuizComplete = useCallback((answers: Answers) => {
-    if (!selectedCategory) return;
     setIsLoading(true);
-    const matches = filterDatabase(selectedCategory, answers);
-    setPossibleMatches(matches);
     setView('matches');
-    setIsLoading(false);
-  }, [selectedCategory]);
+
+    try {
+      const analysis: AnalyzeImageOutput = await analyzeImage({
+        photoDataUri: imageDataUri,
+        category: category,
+      });
+
+      const matches = filterDatabase(category, analysis.attributes);
+      setPossibleMatches(matches);
+    } catch (error) {
+      console.error("Error analyzing image:", error);
+      toast({
+        title: "Analysis Failed",
+        description: "There was an error analyzing the image. Please try again.",
+        variant: "destructive"
+      });
+      handleReset(); // Reset on failure
+    } finally {
+      setIsLoading(false);
+    }
+  }, [toast, handleReset]);
+
 
   const handleMatchSelected = useCallback((species: Species) => {
     setResult(species);
@@ -89,9 +103,10 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
 
   const handleCapture = useCallback(async () => {
+    if (!selectedCategory) return;
     const imageDataUri = cameraRef.current?.capture();
     if (imageDataUri) {
-      processImage(imageDataUri);
+      findMatches(imageDataUri, selectedCategory);
     } else {
       toast({
         title: t('toast.captureFailed.title'),
@@ -99,20 +114,21 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         variant: "destructive",
       });
     }
-  }, [processImage, toast, t]);
+  }, [selectedCategory, findMatches, toast, t]);
 
   const handleBrowseClick = () => {
       fileInputRef.current?.click();
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!selectedCategory) return;
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const imageDataUri = e.target?.result as string;
         if (imageDataUri) {
-          processImage(imageDataUri);
+          findMatches(imageDataUri, selectedCategory);
         }
       };
       reader.readAsDataURL(file);
@@ -205,7 +221,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
            </div>
         )}
 
-        {view !== 'capture' && capturedImage && (
+        {view === 'matches' && capturedImage && (
            <div className="absolute inset-0 bg-black">
               <Image
                 src={capturedImage}
@@ -213,12 +229,14 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
                 fill
                 className="object-contain"
               />
-               {view === 'quiz' && selectedCategory && (
-                  <IdentificationQuiz category={selectedCategory} onComplete={handleQuizComplete} />
-              )}
-              {view === 'matches' && (
-                  <MatchSelector matches={possibleMatches} onSelect={handleMatchSelected} onBack={() => setView('quiz')} />
-              )}
+              <MatchSelector 
+                matches={possibleMatches} 
+                onSelect={handleMatchSelected} 
+                onBack={() => {
+                  handleReset(); 
+                  if(selectedCategory) setIsSourceSelectorOpen(true);
+                }} 
+              />
             </div>
         )}
 
@@ -239,7 +257,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
                 </Button>
                  <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={() => {
                   toast({title: "Coming Soon!", description: "Barcode scanning will be available in a future update."});
-                  handleCameraButtonClick();
                  }}>
                     <QrCode className="mr-2" />
                     Scan Code

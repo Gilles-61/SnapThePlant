@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import type { Category } from '@/components/category-selector';
+import type { Category } from '@/lib/categories';
 import { HomeClient } from '@/components/home-client';
 
 // This is the parent Server Component that correctly handles searchParams

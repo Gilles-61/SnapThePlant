@@ -1,6 +1,8 @@
 
-import type { Category } from "@/components/category-selector";
-import type { Answers } from "@/components/identification-quiz";
+import type { Category } from "@/lib/categories";
+
+// This is now just a type alias, the logic is in the component.
+export type Answers = Record<string, string>;
 
 export interface CareTip {
     title: 'Watering' | 'Sunlight' | 'Soil' | 'Fertilizer' | 'Environment' | 'Extra Tips';
@@ -155,26 +157,27 @@ const database: Species[] = [
     }
 ];
 
-export function filterDatabase(category: Category, answers: Answers): Species[] {
+export function filterDatabase(category: Category, attributes: Record<string, string>): Species[] {
     return database.filter(species => {
         if (species.category !== category) {
             return false;
         }
 
-        // If no answers are provided, return all species in the category.
-        if (Object.keys(answers).length === 0) {
+        // If no attributes are provided, return all species in the category (for text search).
+        if (Object.keys(attributes).length === 0) {
             return true;
         }
 
-        for (const key in answers) {
-            const userAnswer = answers[key];
+        // Check if all provided attributes match the species' attributes.
+        for (const key in attributes) {
             const speciesAttribute = species.attributes[key];
+            const requiredAttribute = attributes[key];
 
-            if (userAnswer && speciesAttribute && userAnswer !== speciesAttribute) {
-                return false;
+            if (speciesAttribute && requiredAttribute && speciesAttribute.toLowerCase() !== requiredAttribute.toLowerCase()) {
+                return false; // Mismatch found
             }
         }
 
-        return true;
+        return true; // All attributes matched
     });
 }
