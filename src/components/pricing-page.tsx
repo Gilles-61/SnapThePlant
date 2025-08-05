@@ -106,7 +106,7 @@ export function PricingPage() {
                                 <Button asChild className="w-full" variant={tier.buttonVariant}>
                                      {tier.href.startsWith('/') ? (
                                         <Link href={tier.href}>
-                                            {tier.buttonText}
+                                            <a>{tier.buttonText}</a>
                                         </Link>
                                     ) : (
                                         <a href={tier.href} target="_blank" rel="noopener noreferrer">
