@@ -25,15 +25,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    // This line ensures that authentication requests are associated with your project's authorized domain.
-    auth.tenantId = firebaseConfig.authDomain;
-    
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
+      if (user) {
+        // If user is logged in, and they are on a public page, redirect to home
+        if (['/login', '/signup'].includes(window.location.pathname)) {
+          router.push('/');
+        }
+      }
     });
     return () => unsubscribe();
-  }, []);
+  }, [router]);
 
   const signInWithGoogle = async () => {
     try {
