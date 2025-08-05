@@ -37,15 +37,15 @@ export function CategorySelector({
             <TooltipTrigger asChild>
               <button
                 className={cn(
-                  "rounded-lg w-32 h-32 flex flex-col items-center justify-center gap-2 text-lg font-semibold shadow-md transition-all duration-200 ease-in-out hover:transform hover:scale-105 hover:shadow-lg",
+                  "rounded-lg w-28 h-28 flex flex-col items-center justify-center gap-2 text-base font-semibold shadow-md transition-all duration-200 ease-in-out hover:transform hover:scale-105 hover:shadow-lg",
                   colorClass,
-                  selectedCategory === name && "ring-4 ring-offset-2 ring-white transform scale-105 shadow-xl"
+                  selectedCategory === name && "ring-4 ring-offset-2 ring-primary transform scale-105 shadow-xl"
                 )}
                 onClick={() => onSelectCategory(name)}
                 aria-label={t(hintKey)}
                 aria-pressed={selectedCategory === name}
               >
-                <Icon className="w-10 h-10" />
+                <Icon className="w-8 h-8" />
                 <span>{t(`categories.${name.toLowerCase()}`)}</span>
               </button>
             </TooltipTrigger>

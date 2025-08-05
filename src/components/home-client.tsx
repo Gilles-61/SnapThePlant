@@ -3,7 +3,7 @@
 
 import { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import { Loader, Camera, RotateCcw, Image as ImageIcon, Upload } from 'lucide-react';
+import { Loader, Camera, RotateCcw, Image as ImageIcon, Upload, QrCode } from 'lucide-react';
 
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,7 @@ import { filterDatabase, type Species } from '@/lib/mock-database';
 import { useAuth } from '@/hooks/use-auth';
 import { AuthGate } from '@/components/auth-gate';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { SearchInput } from './search-input';
 
 
 export function HomeClient({ initialCategory }: { initialCategory?: Category }) {
@@ -68,6 +69,23 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setResult(species);
     setIsResultOpen(true);
   }, []);
+
+  const handleSearch = useCallback((query: string) => {
+    if (!selectedCategory) {
+      toast({
+        title: "Please select a category first",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsLoading(true);
+    // This is a simplified search. In a real app, you'd likely use a more sophisticated search algorithm or an API endpoint.
+    const matches = filterDatabase(selectedCategory, {}).filter(s => s.name.toLowerCase().includes(query.toLowerCase()));
+    setPossibleMatches(matches);
+    setView('matches');
+    setCapturedImage('https://placehold.co/600x400.png'); // Use a placeholder for search results
+    setIsLoading(false);
+  }, [selectedCategory, toast]);
 
 
   const handleCapture = useCallback(async () => {
@@ -170,8 +188,12 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
                     <p className="max-w-md mb-6 mx-auto text-lg">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
                     <CategorySelector
                         selectedCategory={selectedCategory}
-                        onSelectCategory={handleCategorySelect}
+                        onSelectCategory={(category) => setSelectedCategory(category)}
                     />
+                     <div className="mt-6 w-full max-w-md mx-auto">
+                      <p className="text-center text-muted-foreground mb-2">Or search by name</p>
+                      <SearchInput onSearch={handleSearch} />
+                    </div>
                 </div>
             )}
         </div>
@@ -210,10 +232,17 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
         <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col items-center p-6 space-y-4">
           
           {(view === 'capture' && !isCameraOpen) && (
-            <div className="flex justify-center gap-4 w-full max-w-sm">
+            <div className="flex justify-center gap-4 w-full max-w-lg">
                 <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleCameraButtonClick}>
                     <Camera className="mr-2"/>
                     Use Camera
+                </Button>
+                 <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={() => {
+                  toast({title: "Coming Soon!", description: "Barcode scanning will be available in a future update."});
+                  handleCameraButtonClick();
+                 }}>
+                    <QrCode className="mr-2" />
+                    Scan Code
                 </Button>
                 <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg" variant="secondary" onClick={handleUploadButtonClick}>
                     <Upload className="mr-2" />
