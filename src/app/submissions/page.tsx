@@ -12,7 +12,10 @@ export default function SubmissionsPage() {
 
   const handleCategorySelect = (category: Category) => {
     // Redirect to the main identification flow with the selected category
-    router.push(`/?category=${category}`);
+    // Using window.location.href to ensure a full navigation, which can help break out of component state loops
+    const homeUrl = new URL('/', window.location.origin);
+    homeUrl.searchParams.set('category', category);
+    window.location.href = homeUrl.toString();
   };
 
   return (
