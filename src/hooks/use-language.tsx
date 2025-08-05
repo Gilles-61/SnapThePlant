@@ -45,7 +45,7 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
 
         if (options) {
             Object.keys(options).forEach(optKey => {
-                const regex = new RegExp(`\\{${optKey}\\}`, 'g');
+                const regex = new RegExp(`{${optKey}}`, 'g');
                 translation = translation.replace(regex, String(options[optKey]));
             });
         }
