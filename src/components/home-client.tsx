@@ -20,7 +20,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { SearchInput } from './search-input';
 import { analyzeImage, type AnalyzeImageOutput } from '@/ai/flows/analyze-image-flow';
 import type { Category } from '@/lib/categories';
-import { BarcodeScanner } from './barcode-scanner';
 
 
 export function HomeClient({ initialCategory }: { initialCategory?: Category }) {
@@ -36,7 +35,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   const [result, setResult] = useState<Species | null>(null);
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [view, setView] = useState<'capture' | 'matches'>('capture');
   const [possibleMatches, setPossibleMatches] = useState<Species[]>([]);
   const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false);
@@ -49,7 +47,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
     setIsResultOpen(false);
     setIsLoading(false);
     setIsCameraOpen(false);
-    setIsScannerOpen(false);
     setView('capture');
     setPossibleMatches([]);
     setSelectedCategory(null);
@@ -177,15 +174,13 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
   }
 
   const handleScanButtonClick = () => {
-    if (selectedCategory) {
-       setIsScannerOpen(true);
-   } else {
-       setIsCategorySelectorOpen(true);
-   }
+   toast({
+    title: "Coming Soon!",
+    description: "Barcode scanning will be available in a future update."
+   })
   }
 
   const handleScanSuccess = (scanResult: string) => {
-    setIsScannerOpen(false);
     toast({
         title: "Scan Successful",
         description: `Found code: ${scanResult}`
@@ -223,7 +218,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
       <main className="flex-1 relative flex flex-col items-center justify-center overflow-hidden p-4">
         
         <div className="relative z-10 w-full max-w-2xl mx-auto flex flex-col items-center justify-center text-center">
-            {view === 'capture' && !isCameraOpen && !isScannerOpen &&(
+            {view === 'capture' && !isCameraOpen && (
                  <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-8 text-slate-800">
                     <h1 className="text-4xl font-headline font-bold text-primary mb-2">Select a Category</h1>
                     <p className="max-w-md mb-6 mx-auto text-lg">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
@@ -246,13 +241,6 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
            </div>
         )}
         
-        {isScannerOpen && (
-             <BarcodeScanner
-                onScanSuccess={handleScanSuccess}
-                onClose={() => setIsScannerOpen(false)}
-            />
-        )}
-
         {view === 'matches' && capturedImage && (
            <div className="absolute inset-0 bg-black">
               <Image
@@ -281,7 +269,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
 
         <div className="absolute bottom-0 left-0 right-0 z-20 flex flex-col items-center p-6 space-y-4">
           
-          {(view === 'capture' && !isCameraOpen && !isScannerOpen) && (
+          {(view === 'capture' && !isCameraOpen) && (
             <div className="flex justify-center gap-4 w-full max-w-lg">
                 <Button size="lg" className="flex-1 rounded-full text-lg py-6 shadow-lg bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleCameraButtonClick}>
                     <Camera className="mr-2"/>
@@ -310,7 +298,7 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
               </Button>
           )}
 
-          {(view !== 'capture' || isCameraOpen || isScannerOpen) && (
+          {(view !== 'capture' || isCameraOpen) && (
              <Button
                 variant="outline"
                 className="bg-black/50 border-white/50 text-white hover:bg-black/70 hover:text-white rounded-full"
@@ -371,7 +359,10 @@ export function HomeClient({ initialCategory }: { initialCategory?: Category }) 
                         <Camera className="mr-2"/>
                         Camera
                     </Button>
-                    <Button size="lg" onClick={() => { setIsScannerOpen(true); setIsSourceSelectorOpen(false); }}>
+                    <Button size="lg" onClick={() => { 
+                      setIsSourceSelectorOpen(false);
+                      handleScanButtonClick();
+                    }}>
                         <QrCode className="mr-2"/>
                         Scan Code
                     </Button>
