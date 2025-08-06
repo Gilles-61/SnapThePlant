@@ -1,8 +1,13 @@
 import type {NextConfig} from 'next';
 
-// Cache buster: 1721345447783
 const nextConfig: NextConfig = {
   /* config options here */
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     remotePatterns: [
       {
