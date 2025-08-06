@@ -1,5 +1,6 @@
 import type {NextConfig} from 'next';
 
+// Cache buster: 1722384668341
 const nextConfig: NextConfig = {
   /* config options here */
   typescript: {
