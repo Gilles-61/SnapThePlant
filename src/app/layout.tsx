@@ -12,7 +12,6 @@ import { ThemeProvider } from '@/components/theme-provider';
 export const metadata: Metadata = {
   title: 'SnapThePlant',
   description: 'Identify plants, insects, and more with your camera.',
-  icons: null,
 };
 
 const ptSans = PT_Sans({

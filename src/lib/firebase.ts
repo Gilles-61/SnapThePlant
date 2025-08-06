@@ -1,7 +1,7 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp, type FirebaseOptions } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, connectAuthEmulator } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 
 export const firebaseConfig: FirebaseOptions = {
   "projectId": "snaptheplant-2qivc",
@@ -18,18 +18,6 @@ export const firebaseConfig: FirebaseOptions = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-
-// Connect to emulator if in a development environment
-if (process.env.NODE_ENV === 'development') {
-    // Point to the auth emulator
-    try {
-        connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
-        console.log("Firebase Auth emulator connected.");
-    } catch (e) {
-        console.warn("Could not connect to Firebase Auth emulator.", e);
-    }
-}
-
 
 const signInWithGoogle = () => signInWithPopup(auth, provider);
 
