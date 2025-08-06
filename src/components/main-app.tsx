@@ -21,11 +21,13 @@ import type { Category } from '@/lib/categories';
 import { BarcodeScanner } from './barcode-scanner';
 import { Card, CardContent, CardDescription } from './ui/card';
 import { generateImage } from '@/ai/flows/generate-image-flow';
+import { useApiRateLimiter } from '@/hooks/use-api-rate-limiter';
 
 
 export function MainApp({ initialCategory }: { initialCategory?: Category }) {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { canCallApi, recordApiCall } = useApiRateLimiter();
   const cameraRef = useRef<CameraFeedHandle>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -101,10 +103,20 @@ export function MainApp({ initialCategory }: { initialCategory?: Category }) {
   }
 
   const findMatches = useCallback(async (imageDataUri: string, category: Category) => {
+    if (!canCallApi()) {
+      toast({
+        title: "Daily Limit Reached",
+        description: "You have used all your free identifications for today. Please try again tomorrow.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsLoading(true);
     setCapturedImage(imageDataUri);
     
     try {
+      recordApiCall(); // Record the call
       const analysis = await identifySpecies({
           photoDataUri: imageDataUri,
           category: category,
@@ -122,7 +134,7 @@ export function MainApp({ initialCategory }: { initialCategory?: Category }) {
     } finally {
         setIsLoading(false);
     }
-  }, [toast, handleReset, selectedCategory]);
+  }, [toast, handleReset, selectedCategory, canCallApi, recordApiCall]);
 
 
   const handleSearch = useCallback((query: string) => {
