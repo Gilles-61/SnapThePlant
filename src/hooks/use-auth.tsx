@@ -64,7 +64,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const userCredential = await signInWithGoogleFirebase();
       handleAuthSuccess(userCredential.user);
-    } catch (error) {
+    } catch (error: any) {
+      // Don't show an error toast if the user simply closes the popup.
+      if (error?.code === 'auth/popup-closed-by-user') {
+        console.log("Sign-in popup closed by user.");
+        return;
+      }
+
       console.error("Error signing in with Google: ", error);
       toast({
         title: "Sign-in Failed",
