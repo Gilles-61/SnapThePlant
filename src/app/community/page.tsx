@@ -31,7 +31,7 @@ export default function CommunityPage() {
         icon: MessageSquare,
         title: t('pages.community.features.forums.title'),
         description: t('pages.community.features.forums.description'),
-        href: null
+        href: 'mailto:feedback@snaptheplant.com?subject=Community Feedback for SnapThePlant'
     },
     {
         icon: UploadCloud,
@@ -73,7 +73,7 @@ export default function CommunityPage() {
                 {features.map((feature, index) => {
                     const Icon = feature.icon;
                     const Wrapper = feature.href ? Link : 'div';
-                    const props: any = feature.href ? { href: feature.href, ...(feature.href.startsWith('http') && { target: '_blank', rel: 'noopener noreferrer' }) } : {};
+                    const props: any = feature.href ? { href: feature.href, ...(feature.href.startsWith('http') || feature.href.startsWith('mailto')) && { target: '_blank', rel: 'noopener noreferrer' } } : {};
                     const isLink = !!feature.href;
 
                     return (
