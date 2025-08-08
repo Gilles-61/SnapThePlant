@@ -4,11 +4,12 @@
 import { SiteHeader } from '@/components/site-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslation } from '@/hooks/use-language';
-import { Loader, MessageSquare, UploadCloud, Users } from 'lucide-react';
+import { MessageSquare, UploadCloud, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { FaDiscord } from 'react-icons/fa';
 
 export default function CommunityPage() {
   const { user, loading, subscriptionStatus } = useAuth();
@@ -30,8 +31,8 @@ export default function CommunityPage() {
     {
         icon: MessageSquare,
         title: t('pages.community.features.forums.title'),
-        description: t('pages.community.features.forums.description'),
-        href: null
+        description: "Join our Discord server to chat with other testers, ask questions, and share feedback directly with the development team.",
+        href: "https://discord.gg/snaptheplant" // Placeholder link
     },
     {
         icon: UploadCloud,
@@ -52,7 +53,7 @@ export default function CommunityPage() {
         <div className="flex flex-col min-h-screen bg-background">
             <SiteHeader />
             <main className="flex-1 flex items-center justify-center">
-                <Loader className="h-12 w-12 animate-spin" />
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent" />
             </main>
         </div>
     )
@@ -73,7 +74,7 @@ export default function CommunityPage() {
                 {features.map((feature, index) => {
                     const Icon = feature.icon;
                     const Wrapper = feature.href ? Link : 'div';
-                    const props: any = feature.href ? { href: feature.href } : {};
+                    const props: any = feature.href ? { href: feature.href, ...(feature.href.startsWith('http') && { target: '_blank', rel: 'noopener noreferrer' }) } : {};
                     const isLink = !!feature.href;
 
                     return (
