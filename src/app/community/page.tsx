@@ -9,7 +9,6 @@ import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { FaDiscord } from 'react-icons/fa';
 
 export default function CommunityPage() {
   const { user, loading, subscriptionStatus } = useAuth();
@@ -31,8 +30,8 @@ export default function CommunityPage() {
     {
         icon: MessageSquare,
         title: t('pages.community.features.forums.title'),
-        description: "Join our Discord server to chat with other testers, ask questions, and share feedback directly with the development team.",
-        href: "https://discord.gg/snaptheplant" // Placeholder link
+        description: t('pages.community.features.forums.description'),
+        href: null
     },
     {
         icon: UploadCloud,
