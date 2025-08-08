@@ -28,7 +28,7 @@ export default function ProfilePage() {
   const [isResultOpen, setIsResultOpen] = useState(false);
 
   const planDetails = {
-    beta: { name: 'Beta Tester', description: 'You have full access during the beta period.' },
+    beta: { name: 'Beta Tester', description: 'You have full access during the beta period. Your feedback is invaluable!' },
     paid: { name: 'Paid Subscriber', description: 'Thank you for your support! You have full access.' },
     free: { name: 'Free Plan', description: 'Upgrade to a paid plan for more features.' }
   }
