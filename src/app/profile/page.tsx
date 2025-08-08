@@ -34,17 +34,13 @@ export default function ProfilePage() {
   }
 
   useEffect(() => {
-    if (!loading) {
-        if (!user) {
-            router.push('/login');
-        } else if (subscriptionStatus === 'free') {
-            router.push('/pricing');
-        }
+    if (!loading && !user) {
+        router.push('/login');
     }
-  }, [user, loading, subscriptionStatus, router]);
+  }, [user, loading, router]);
 
 
-  if (loading || !user || subscriptionStatus === 'free') {
+  if (loading || !user) {
     return (
         <div className="flex flex-col min-h-screen bg-background">
             <SiteHeader />
@@ -210,5 +206,3 @@ export default function ProfilePage() {
     </div>
   );
 }
-
-    
