@@ -121,7 +121,7 @@ export function PricingPage() {
                                     asChild={tier.id !== 'beta'}
                                     className="w-full" 
                                     variant={subscriptionStatus === tier.id ? 'outline' : 'default'}
-                                    disabled={subscriptionStatus === tier.id}
+                                    disabled={subscriptionStatus === tier.id && tier.id !== 'paid'}
                                 >
                                      {tier.id === 'beta' ? (
                                         <span>{tier.buttonText}</span>
