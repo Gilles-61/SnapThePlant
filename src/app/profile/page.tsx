@@ -6,7 +6,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader, Edit2, Trash2, Heart, ShieldCheck } from 'lucide-react';
+import { Loader, Edit2, Trash2, Heart, ShieldCheck, Bug } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
 import { useTranslation } from '@/hooks/use-language';
 import { useCollection, type CollectionItem } from '@/hooks/use-collection';
@@ -15,6 +15,7 @@ import Image from 'next/image';
 import { IdentificationResult } from '@/components/identification-result';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Separator } from '@/components/ui/separator';
 
 export default function ProfilePage() {
   const { user, loading, subscriptionStatus } = useAuth();
@@ -131,6 +132,18 @@ export default function ProfilePage() {
                             </Link>
                         </Button>
                     </div>
+                    <Separator />
+                     <div className="space-y-2">
+                        <h3 className="text-xl font-semibold">Feedback & Bug Reports</h3>
+                        <p className="text-muted-foreground">As a beta tester, your feedback is crucial. If you find an issue or have a suggestion, please let us know.</p>
+                         <Button asChild variant="secondary">
+                            <a href="mailto:feedback@snaptheplant.com?subject=Beta Feedback for SnapThePlant">
+                                <Bug className="mr-2 h-4 w-4" />
+                                Report an Issue
+                            </a>
+                        </Button>
+                    </div>
+                     <Separator />
                      <div className="space-y-2">
                         <h3 className="text-xl font-semibold">Support the Project</h3>
                         <p className="text-muted-foreground">If you enjoy SnapThePlant, please consider supporting its development. Your contribution helps us add new features and improve identification accuracy.</p>
@@ -197,3 +210,5 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+    
