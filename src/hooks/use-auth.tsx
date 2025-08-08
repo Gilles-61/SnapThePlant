@@ -83,9 +83,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signUpWithEmail = async (email: string, pass: string) => {
     try {
         const userCredential = await signUpWithEmailPassword(email, pass);
-        // On new sign-up, they are 'free' tier until they choose a plan
-        setSubscriptionStatus('free');
-        router.push('/pricing'); // Redirect to pricing page
+        // On new sign-up, they are immediately a 'beta' tester.
+        setSubscriptionStatus('beta');
+        router.push('/'); // Redirect to the main app page
     } catch (error: any) {
         console.error("Error signing up: ", error);
         toast({
