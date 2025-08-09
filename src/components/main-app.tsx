@@ -247,6 +247,15 @@ export function MainApp({ initialCategory }: { initialCategory?: Category }) {
         if (action === 'upload') handleBrowseClick();
     }
   }, [selectedCategory, action]);
+  
+  useEffect(() => {
+    try {
+      // @ts-ignore
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -315,6 +324,15 @@ export function MainApp({ initialCategory }: { initialCategory?: Category }) {
                 </Card>
               </div>
             )}
+            
+            <div className="mt-8 w-full max-w-4xl">
+              <ins className="adsbygoogle"
+                  style={{ display: 'block' }}
+                  data-ad-client="ca-pub-9237103555121420"
+                  data-ad-slot="5124493333"
+                  data-ad-format="auto"
+                  data-full-width-responsive="true"></ins>
+            </div>
         </div>
 
         {/* Action Buttons for camera view */}
