@@ -18,15 +18,6 @@ export function SiteFooter() {
         { href: 'mailto:support@snaptheplant.com', text: t('footer.support'), icon: Mail },
     ]
 
-    useEffect(() => {
-      try {
-        // @ts-ignore
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      } catch (err) {
-        console.error(err);
-      }
-    }, []);
-
     return (
         <footer className="w-full border-t border-black/10 bg-white/80 backdrop-blur-lg shadow-inner mt-auto">
             <div className="container flex flex-col sm:flex-row items-center justify-between h-auto sm:h-20 max-w-screen-2xl px-4 sm:px-6 py-4 sm:py-0 gap-4">
@@ -44,14 +35,6 @@ export function SiteFooter() {
                         {t('footer.donate')}
                     </a>
                 </Button>
-            </div>
-             <div className="py-4">
-                <ins className="adsbygoogle"
-                     style={{ display: 'block' }}
-                     data-ad-client="ca-pub-9237103555121420"
-                     data-ad-slot="5124493333"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
             </div>
         </footer>
     )
