@@ -38,16 +38,6 @@ export default function ProfilePage() {
         router.push('/login');
     }
   }, [user, loading, router]);
-  
-  useEffect(() => {
-    try {
-      // @ts-ignore
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
-
 
   if (loading || !user) {
     return (
@@ -161,16 +151,6 @@ export default function ProfilePage() {
                     </div>
                 </CardContent>
             </Card>
-
-            <div className="w-full">
-               <ins className="adsbygoogle"
-                  style={{ display: 'block' }}
-                  data-ad-client="ca-pub-9237103555121420"
-                  data-ad-slot="5124493333"
-                  data-ad-format="auto"
-                  data-full-width-responsive="true"></ins>
-            </div>
-
 
             <Card>
                 <CardHeader>

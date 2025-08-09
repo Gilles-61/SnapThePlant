@@ -5,6 +5,7 @@ import { useTranslation } from "@/hooks/use-language";
 import { Button } from "./ui/button";
 import { Heart, Info, Mail, ShieldAlert, Lock } from "lucide-react";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export function SiteFooter() {
     const { t } = useTranslation();
@@ -16,6 +17,15 @@ export function SiteFooter() {
         { href: '/privacy', text: t('footer.privacy'), icon: Lock },
         { href: 'mailto:support@snaptheplant.com', text: t('footer.support'), icon: Mail },
     ]
+
+    useEffect(() => {
+      try {
+        // @ts-ignore
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (err) {
+        console.error(err);
+      }
+    }, []);
 
     return (
         <footer className="w-full border-t border-black/10 bg-white/80 backdrop-blur-lg shadow-inner mt-auto">
@@ -34,6 +44,14 @@ export function SiteFooter() {
                         {t('footer.donate')}
                     </a>
                 </Button>
+            </div>
+             <div className="py-4">
+                <ins className="adsbygoogle"
+                     style={{ display: 'block' }}
+                     data-ad-client="ca-pub-9237103555121420"
+                     data-ad-slot="5124493333"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
             </div>
         </footer>
     )
