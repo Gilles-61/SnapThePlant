@@ -13,6 +13,9 @@ import Script from 'next/script';
 export const metadata: Metadata = {
   title: 'SnapThePlant',
   description: 'Identify plants, insects, and more with your camera.',
+  other: {
+    "google-adsense-account": "ca-pub-9237103555121420",
+  },
 };
 
 const ptSans = PT_Sans({
