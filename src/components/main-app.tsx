@@ -72,15 +72,16 @@ export function MainApp({ initialCategory }: { initialCategory?: Category }) {
     let match = findSpeciesByName(analysis.name);
   
     if (match && !analysis.isNew) {
-      // It's a known species, show its data
+      // It's a known species, show its data, but override poison check with AI's result
       const resultData: Species = {
         ...match,
-        isPoisonous: analysis.isPoisonous, // Use AI's poison check
+        isPoisonous: analysis.isPoisonous,
+        toxicityWarning: analysis.toxicityWarning,
       };
       setResult(resultData);
       setIsResultOpen(true);
     } else {
-      // It's a new species, create a temporary entry to display
+      // It's a new species, use the AI's generated data
       toast({
         title: "New Species Identified!",
         description: `We've identified "${analysis.name}".`,
@@ -90,12 +91,13 @@ export function MainApp({ initialCategory }: { initialCategory?: Category }) {
         name: analysis.name,
         scientificName: analysis.scientificName,
         isPoisonous: analysis.isPoisonous,
+        toxicityWarning: analysis.toxicityWarning,
         category: selectedCategory!,
         image: imageUri, // CRITICAL: Use the user's uploaded image
-        keyInformation: `This appears to be a ${analysis.name}, which is new to our database. Details are based on general knowledge.`,
+        keyInformation: analysis.keyInformation,
         furtherReading: `https://www.google.com/search?q=${encodeURIComponent(analysis.scientificName)}`,
         attributes: {},
-        careTips: [],
+        careTips: analysis.careTips,
       };
       setResult(newSpecies);
       setIsResultOpen(true);

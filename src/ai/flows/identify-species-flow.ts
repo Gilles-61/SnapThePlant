@@ -27,7 +27,13 @@ const IdentifySpeciesOutputSchema = z.object({
   name: z.string().describe('The common name of the identified species (e.g., "Monstera Deliciosa", "Honey Bee").'),
   scientificName: z.string().describe('The scientific name of the identified species (e.g., "Monstera deliciosa", "Apis mellifera").'),
   isPoisonous: z.boolean().describe('Whether the species is known to be poisonous, venomous, or otherwise harmful to humans or common pets.'),
-  isNew: z.boolean().describe('Whether the identified species is new and not present in the database.')
+  isNew: z.boolean().describe('Whether the identified species is new and not present in the database.'),
+  keyInformation: z.string().describe("A brief, interesting paragraph about the identified species."),
+  toxicityWarning: z.string().optional().describe("If the species is poisonous, a brief warning about its toxic effects. Null if not applicable."),
+  careTips: z.array(z.object({
+    title: z.string().describe("The type of care tip, e.g., 'Watering', 'Sunlight', 'Soil', 'Fertilizer', 'Environment', 'Extra Tips'."),
+    description: z.string().describe("The detailed care tip description."),
+  })).optional().describe("An array of care tips for the plant or species. This should be empty for insects.")
 });
 export type IdentifySpeciesOutput = z.infer<typeof IdentifySpeciesOutputSchema>;
 
@@ -43,15 +49,16 @@ const promptText = `
 
     Analyze the image of a {{category}} and identify its common name and scientific name.
     
+    Also provide a brief, interesting paragraph of 'keyInformation' about the species.
+
     Determine if the species is known to be poisonous, venomous, or otherwise harmful to humans or common pets (like cats and dogs). If you are unsure, default to 'false'.
+    If it IS poisonous, provide a brief 'toxicityWarning'. Otherwise, leave it null.
+
+    If the category is a Plant, Tree, Weed, Cactus, or Succulent, provide a list of 'careTips'. The titles for the tips should be standard, such as 'Watering', 'Sunlight', and 'Soil'. If the category is 'Insect', provide an empty array for careTips.
 
     Finally, check if the identified common name exists in the following list of known species:
     Known Species: ${knownSpeciesNames}
     Set the 'isNew' flag to 'true' if the identified species name is NOT in the list. Otherwise, set it to 'false'.
-
-    Your output MUST be a JSON object containing the "name", "scientificName", "isPoisonous", and "isNew" keys.
-
-    For example: { "name": "Monarch Butterfly", "scientificName": "Danaus plexippus", "isPoisonous": true, "isNew": false }
 
     Do not guess. Only return a species you can confidently identify from the image. If the image is unclear or you cannot make a confident identification, return an empty object.
 
