@@ -10,7 +10,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { database } from '@/lib/mock-database';
+import { findSpeciesByName } from '@/lib/mock-database';
 
 const IdentifySpeciesInputSchema = z.object({
   photoDataUri: z
@@ -42,7 +42,9 @@ export async function identifySpecies(input: IdentifySpeciesInput): Promise<Iden
   return identifySpeciesFlow(input);
 }
 
-const knownSpeciesNames = database.map(s => s.name).join(', ');
+const AISchema = IdentifySpeciesOutputSchema.omit({ isNew: true });
+type AIOutputType = z.infer<typeof AISchema>;
+
 
 const promptText = `
     You are an expert biologist and botanist. Your main goal is to identify the species in the provided image.
@@ -56,10 +58,6 @@ const promptText = `
 
     If the category is a Plant, Tree, Weed, Cactus, or Succulent, provide a list of 'careTips'. The titles for the tips should be standard, such as 'Watering', 'Sunlight', and 'Soil'. If the category is 'Insect', provide an empty array for careTips.
 
-    Finally, check if the identified common name exists in the following list of known species:
-    Known Species: ${knownSpeciesNames}
-    Set the 'isNew' flag to 'true' if the identified species name is NOT in the list. Otherwise, set it to 'false'.
-
     Do not guess. Only return a species you can confidently identify from the image. If the image is unclear or you cannot make a confident identification, return an empty object.
 
     Photo: {{media url=photoDataUri}}
@@ -69,7 +67,7 @@ const promptText = `
 const identifySpeciesPrompt = ai.definePrompt({
   name: 'identifySpeciesPrompt',
   input: { schema: IdentifySpeciesInputSchema },
-  output: { schema: IdentifySpeciesOutputSchema },
+  output: { schema: AISchema },
   prompt: promptText,
 });
 
@@ -84,6 +82,13 @@ const identifySpeciesFlow = ai.defineFlow(
     if (!output) {
       throw new Error("The AI model failed to return a valid identification.");
     }
-    return output;
+
+    const match = findSpeciesByName(output.name);
+    const isNew = !match;
+
+    return {
+        ...output,
+        isNew,
+    };
   }
 );

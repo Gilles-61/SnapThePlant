@@ -82,10 +82,12 @@ export function MainApp({ initialCategory }: { initialCategory?: Category }) {
       setIsResultOpen(true);
     } else {
       // It's a new species, use the AI's generated data
-      toast({
-        title: "New Species Identified!",
-        description: `We've identified "${analysis.name}".`,
-      });
+      if (analysis.isNew) {
+        toast({
+          title: "New Species Identified!",
+          description: `We've identified "${analysis.name}".`,
+        });
+      }
       const newSpecies: Species = {
         id: -1, // Temporary ID
         name: analysis.name,
