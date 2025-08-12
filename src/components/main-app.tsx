@@ -364,7 +364,10 @@ export function MainApp({ initialCategory }: { initialCategory?: Category }) {
               <MatchSelector
                 image={capturedImage}
                 matches={possibleMatches} 
-                onSelect={() => {}} 
+                onSelect={(species) => {
+                    setResult(species);
+                    setIsResultOpen(true);
+                }} 
                 onBack={handleReset} 
               />
             </div>
