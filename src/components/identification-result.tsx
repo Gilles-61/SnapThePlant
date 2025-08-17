@@ -125,18 +125,13 @@ export function IdentificationResult({
                         <p className="text-destructive/90 mt-2">{result.toxicityWarning}</p>
                     </div>
                 )}
-                <div>
-                    <h3 className="text-xl font-semibold mb-2 font-headline">{t('result.myNotes')}</h3>
-                    <Textarea 
-                        placeholder={t('result.notesPlaceholder')} 
-                        className="min-h-[150px]"
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                    />
+                 <div>
+                    <h3 className="text-xl font-semibold mb-2 font-headline">{t('result.keyInformation')}</h3>
+                    <p className="text-muted-foreground">{result.keyInformation}</p>
                 </div>
             </div>
             {/* Right Column */}
-            <div className="flex flex-col">
+            <div className="flex flex-col space-y-6">
                 <div className="flex-1">
                     <h3 className="text-xl font-semibold mb-2 font-headline">{t('result.careTips')}</h3>
                     {result.careTips && result.careTips.length > 0 ? (
@@ -163,7 +158,17 @@ export function IdentificationResult({
                     )}
                 </div>
                 
-                 <div className="mt-6">
+                 <div>
+                    <h3 className="text-xl font-semibold mb-2 font-headline">{t('result.myNotes')}</h3>
+                    <Textarea 
+                        placeholder={t('result.notesPlaceholder')} 
+                        className="min-h-[100px]"
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                    />
+                </div>
+                
+                 <div className="mt-auto">
                     <Separator />
                     <div className="pt-4 text-center">
                         <p className="text-sm font-semibold text-muted-foreground mb-3">{t('result.feedbackPrompt')}</p>
