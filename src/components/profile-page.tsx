@@ -154,7 +154,7 @@ export function ProfilePageContent() {
                                     <Button
                                         variant="destructive"
                                         size="icon"
-                                        className="absolute top-1 right-1 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        className="absolute top-1 right-1 h-7 w-7 transition-opacity"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             removeItem(item);
