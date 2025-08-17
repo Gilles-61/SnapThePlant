@@ -13,10 +13,11 @@ import { IdentificationResult } from '@/components/identification-result';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AuthGuard } from '@/components/auth-guard';
-import { AlertTriangle, Camera, Droplets, Sun, Telescope } from 'lucide-react';
+import { AlertTriangle, Camera, Droplets, Sun, Telescope, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SearchInput } from '@/components/search-input';
 import Link from 'next/link';
+import { useToast } from '@/hooks/use-toast';
 
 const getAvailableFilters = (category: Category) => {
     const speciesInCategory = database.filter(s => s.category === category);
@@ -36,11 +37,13 @@ const getAvailableFilters = (category: Category) => {
 
 export default function ExplorePage() {
     const { t } = useTranslation();
+    const { toast } = useToast();
     const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
     const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
     const [selectedSpecies, setSelectedSpecies] = useState<Species | null>(null);
     const [isResultOpen, setIsResultOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [deletedItems, setDeletedItems] = useState<number[]>([]);
 
     const availableFilters = useMemo(() => {
         if (selectedCategory === 'all') return {};
@@ -49,6 +52,9 @@ export default function ExplorePage() {
 
     const filteredData = useMemo(() => {
         return database.filter(species => {
+            if (deletedItems.includes(species.id)) {
+                return false;
+            }
             if (selectedCategory !== 'all' && species.category !== selectedCategory) {
                 return false;
             }
@@ -62,7 +68,7 @@ export default function ExplorePage() {
             }
             return true;
         });
-    }, [selectedCategory, activeFilters, searchQuery]);
+    }, [selectedCategory, activeFilters, searchQuery, deletedItems]);
 
     const handleCategoryChange = (categoryName: Category | 'all') => {
         setSelectedCategory(categoryName);
@@ -84,6 +90,14 @@ export default function ExplorePage() {
     const handleResultClose = () => {
         setIsResultOpen(false);
         setTimeout(() => setSelectedSpecies(null), 300);
+    };
+    
+    const handleDeleteItem = (speciesId: number) => {
+        setDeletedItems(prev => [...prev, speciesId]);
+        toast({
+            title: "Item Hidden",
+            description: "The item has been hidden from your view. Refresh the page to see it again.",
+        });
     };
 
     return (
@@ -153,7 +167,19 @@ export default function ExplorePage() {
                         <ScrollArea className="h-full">
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                                 {filteredData.map(species => (
-                                    <Card key={species.id} className="overflow-hidden flex flex-col group transition-shadow hover:shadow-lg">
+                                    <Card key={species.id} className="overflow-hidden flex flex-col group transition-shadow hover:shadow-lg relative">
+                                        <Button
+                                            variant="destructive"
+                                            size="icon"
+                                            className="absolute top-2 right-2 z-10 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleDeleteItem(species.id);
+                                            }}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                            <span className="sr-only">Delete</span>
+                                        </Button>
                                         <CardHeader className="p-0">
                                             <div className="relative aspect-video">
                                                 <Image 
