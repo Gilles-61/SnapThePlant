@@ -69,7 +69,7 @@
 
 /* Custom styles for category tiles */
 .category-tile-plant {
-    background-color: #4CAF50;
+    background-color: #4CAF50; /* Vibrant Green */
     color: white;
 }
 .category-tile-plant:hover {
@@ -77,7 +77,7 @@
 }
 
 .category-tile-tree {
-    background-color: #8D6E63;
+    background-color: #8D6E63; /* Earthy Brown */
     color: white;
 }
 .category-tile-tree:hover {
@@ -85,23 +85,23 @@
 }
 
 .category-tile-weed {
-    background-color: #CDDC39;
+    background-color: #A5D6A7; /* Muted Green */
     color: #333;
 }
 .category-tile-weed:hover {
-    background-color: #C0CA33;
+    background-color: #81C784;
 }
 
 .category-tile-insect {
-    background-color: #FF9800;
-    color: white;
+    background-color: #FFB74D; /* Soft Orange */
+    color: #333;
 }
 .category-tile-insect:hover {
-    background-color: #FB8C00;
+    background-color: #FFA726;
 }
 
 .category-tile-cactus {
-    background-color: #2E7D32; /* A deep green */
+    background-color: #2E7D32; /* Deep Green */
     color: white;
 }
 .category-tile-cactus:hover {
@@ -109,9 +109,9 @@
 }
 
 .category-tile-succulent {
-    background-color: #607D8B; /* Blue grey */
-    color: white;
+    background-color: #80CBC4; /* Tealish Green */
+    color: #333;
 }
 .category-tile-succulent:hover {
-    background-color: #546E7A;
+    background-color: #4DB6AC;
 }

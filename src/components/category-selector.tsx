@@ -24,7 +24,7 @@ export function CategorySelector({
 
   return (
     <TooltipProvider>
-      <div className={cn("flex justify-center items-center flex-wrap gap-4 p-2", className)}>
+      <div className={cn("grid grid-cols-2 sm:grid-cols-3 gap-4 p-2", className)}>
         {categories.map(({ name, icon: Icon, hintKey, colorClass }) => (
           <Tooltip key={name} delayDuration={300}>
             <TooltipTrigger asChild>

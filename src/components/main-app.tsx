@@ -138,7 +138,7 @@ export function MainApp({ initialCategory }: { initialCategory?: Category }) {
     } finally {
         setIsLoading(false);
     }
-  }, [toast, handleReset, selectedCategory, canCallApi, recordApiCall]);
+  }, [toast, handleReset, selectedCategory, canCallApi, recordApiCall, proceedWithAnalysis]);
 
 
   const handleSearch = useCallback((query: string) => {
@@ -262,7 +262,7 @@ export function MainApp({ initialCategory }: { initialCategory?: Category }) {
             {view === 'capture' && !isCameraOpen && !selectedCategory && (
                  <div className="bg-background/90 backdrop-blur-md rounded-xl shadow-2xl p-6 sm:p-8">
                     <h1 className="text-3xl sm:text-4xl font-headline font-bold text-primary mb-2">Select a Category</h1>
-                    <p className="max-w-md mb-6 mx-auto text-base sm:text-lg">Choose whether you want to identify a plant, tree, weed, or insect to get started.</p>
+                    <p className="max-w-md mb-6 mx-auto text-base sm:text-lg">Choose a category to begin your identification.</p>
                     <CategorySelector
                         selectedCategory={selectedCategory}
                         onSelectCategory={handleCategorySelect}
