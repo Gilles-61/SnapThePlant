@@ -38,12 +38,12 @@ const getAvailableFilters = (category: Category) => {
 export default function ExplorePage() {
     const { t } = useTranslation();
     const { toast } = useToast();
+    const [allSpecies, setAllSpecies] = useState<Species[]>(database);
     const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
     const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
     const [selectedSpecies, setSelectedSpecies] = useState<Species | null>(null);
     const [isResultOpen, setIsResultOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [hiddenItems, setHiddenItems] = useState<number[]>([]);
 
     const availableFilters = useMemo(() => {
         if (selectedCategory === 'all') return {};
@@ -51,7 +51,7 @@ export default function ExplorePage() {
     }, [selectedCategory]);
 
     const filteredData = useMemo(() => {
-        let data = database;
+        let data = allSpecies;
 
         if (selectedCategory !== 'all') {
             data = data.filter(species => species.category === selectedCategory);
@@ -69,11 +69,10 @@ export default function ExplorePage() {
                 data = data.filter(species => species.attributes[key] === activeFilters[key]);
             }
         }
+        
+        return data;
 
-        // Filter out hidden items at the very end
-        return data.filter(species => !hiddenItems.includes(species.id));
-
-    }, [selectedCategory, activeFilters, searchQuery, hiddenItems]);
+    }, [allSpecies, selectedCategory, activeFilters, searchQuery]);
 
     const handleCategoryChange = (categoryName: Category | 'all') => {
         setSelectedCategory(categoryName);
@@ -98,12 +97,12 @@ export default function ExplorePage() {
     };
     
     const handleHideItem = useCallback((speciesId: number) => {
-        setHiddenItems(prev => [...prev, speciesId]);
-        toast({
-            title: "Item Hidden",
-            description: "The item has been hidden from your view.",
-        });
-    }, [toast]);
+        setAllSpecies(currentSpecies => currentSpecies.filter(s => s.id !== speciesId));
+    }, []);
+
+    const generateAiImage = (hint: string) => {
+        return `https://placehold.co/600x400.png?text=${encodeURIComponent(hint)}`;
+    };
 
     return (
         <AuthGuard requirePaid={true}>
@@ -176,7 +175,7 @@ export default function ExplorePage() {
                                         <Button
                                             variant="destructive"
                                             size="icon"
-                                            className="absolute top-2 right-2 z-10 h-7 w-7 opacity-80 hover:opacity-100"
+                                            className="absolute top-2 right-2 z-10 h-7 w-7"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleHideItem(species.id);
@@ -188,7 +187,7 @@ export default function ExplorePage() {
                                         <CardHeader className="p-0">
                                             <div className="relative aspect-video">
                                                 <Image 
-                                                    src={species.image} 
+                                                    src={generateAiImage(species['data-ai-hint'] || species.name)}
                                                     alt={species.name} 
                                                     fill
                                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -242,5 +241,3 @@ export default function ExplorePage() {
         </AuthGuard>
     );
 }
-
-    
