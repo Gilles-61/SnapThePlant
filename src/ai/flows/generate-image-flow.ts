@@ -34,19 +34,30 @@ const generateImageFlow = ai.defineFlow(
   },
   async ({ name, category }) => {
     const prompt = `Generate a realistic, high-quality, vibrant, detailed photo of a ${name}, which is a type of ${category}. The subject should be clearly visible and centered. The background should be natural and slightly blurred.`;
+    
+    try {
+      const { media } = await ai.generate({
+        model: 'googleai/gemini-2.0-flash-preview-image-generation',
+        prompt,
+        config: {
+          responseModalities: ['TEXT', 'IMAGE'],
+        },
+      });
 
-    const { media } = await ai.generate({
-      model: 'googleai/gemini-2.0-flash-preview-image-generation',
-      prompt,
-      config: {
-        responseModalities: ['TEXT', 'IMAGE'],
-      },
-    });
+      if (!media?.url) {
+        throw new Error('Image generation failed to return a valid data URI.');
+      }
 
-    if (!media?.url) {
-      throw new Error('Image generation failed to return a valid data URI.');
+      return { imageDataUri: media.url };
+
+    } catch (error: any) {
+        console.error(`[Image Generation Error] Failed for species "${name}":`, error.message);
+        // Check if the error is a 500 internal server error
+        if (error.message && error.message.includes('500 Internal Server Error')) {
+            throw new Error(`The image generation service is temporarily unavailable. Please try again in a few moments.`);
+        }
+        // Throw a more generic error for other issues
+        throw new Error('An unexpected error occurred during image generation.');
     }
-
-    return { imageDataUri: media.url };
   }
 );
