@@ -38,6 +38,7 @@ export default function RootLayout({
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9237103555121420"
           crossOrigin="anonymous"
+          strategy="afterInteractive"
         />
       </head>
       <body className={cn("font-body antialiased flex flex-col min-h-screen", ptSans.variable)}>
