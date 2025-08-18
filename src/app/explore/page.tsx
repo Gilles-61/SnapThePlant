@@ -52,25 +52,54 @@ export default function ExplorePage() {
     const [imageUrls, setImageUrls] = useState<Record<number, string>>({});
     const [isGeneratingImages, setIsGeneratingImages] = useState<Record<number, boolean>>({});
 
-    const fetchSpeciesAndImages = useCallback(async () => {
-        setIsLoading(true);
-        const speciesFromDb = await getAllSpecies();
-        setAllSpecies(speciesFromDb);
+    const handleGenerateImage = useCallback(async (species: Species) => {
+        if (isGeneratingImages[species.id] || imageUrls[species.id]) return;
 
-        const urls: Record<number, string> = {};
-        for (const species of speciesFromDb) {
-            const cachedUrl = await getCachedImage(species.id);
-            if (cachedUrl) {
-                urls[species.id] = cachedUrl;
-            }
+        setIsGeneratingImages(prev => ({ ...prev, [species.id]: true }));
+        try {
+            const result = await generateImage({ name: species.name, category: species.category });
+            const newUrl = result.imageDataUri;
+            await cacheImage(species.id, newUrl);
+            setImageUrls(prev => ({ ...prev, [species.id]: newUrl }));
+        } catch (error) {
+            console.error(`Failed to generate image for ${species.name}:`, error);
+            toast({
+                title: "Image Generation Failed",
+                description: `Could not create an image for ${species.name}.`,
+                variant: "destructive"
+            });
+            // Set a placeholder on failure so we don't retry constantly
+            setImageUrls(prev => ({ ...prev, [species.id]: 'https://placehold.co/600x400.png' }));
+        } finally {
+            setIsGeneratingImages(prev => ({ ...prev, [species.id]: false }));
         }
-        setImageUrls(urls);
-        setIsLoading(false);
-    }, []);
+    }, [isGeneratingImages, imageUrls, toast]);
+
 
     useEffect(() => {
+        const fetchSpeciesAndImages = async () => {
+            setIsLoading(true);
+            const speciesFromDb = await getAllSpecies();
+            setAllSpecies(speciesFromDb);
+            setIsLoading(false); // <--- FIX: Stop loading after getting data
+
+            const urls: Record<number, string> = {};
+            const generationPromises: Promise<void>[] = [];
+
+            for (const species of speciesFromDb) {
+                const cachedUrl = await getCachedImage(species.id);
+                if (cachedUrl) {
+                    urls[species.id] = cachedUrl;
+                } else {
+                    // Kick off generation but don't wait for it
+                    handleGenerateImage(species);
+                }
+            }
+            setImageUrls(urls);
+        };
+        
         fetchSpeciesAndImages();
-    }, [fetchSpeciesAndImages]);
+    }, [handleGenerateImage]);
 
     const availableFilters = useMemo(() => {
         if (selectedCategory === 'all') return {};
@@ -101,34 +130,6 @@ export default function ExplorePage() {
 
     }, [allSpecies, selectedCategory, activeFilters, searchQuery]);
     
-    const handleGenerateImage = useCallback(async (species: Species) => {
-        if (isGeneratingImages[species.id] || imageUrls[species.id]) return;
-
-        setIsGeneratingImages(prev => ({ ...prev, [species.id]: true }));
-        try {
-            const result = await generateImage({ name: species.name, category: species.category });
-            const newUrl = result.imageDataUri;
-            await cacheImage(species.id, newUrl);
-            setImageUrls(prev => ({ ...prev, [species.id]: newUrl }));
-        } catch (error) {
-            console.error(`Failed to generate image for ${species.name}:`, error);
-            toast({
-                title: "Image Generation Failed",
-                description: `Could not create an image for ${species.name}.`,
-                variant: "destructive"
-            });
-        } finally {
-            setIsGeneratingImages(prev => ({ ...prev, [species.id]: false }));
-        }
-    }, [isGeneratingImages, imageUrls, toast]);
-
-    useEffect(() => {
-        filteredData.forEach(species => {
-            if (!imageUrls[species.id] && !isGeneratingImages[species.id]) {
-                handleGenerateImage(species);
-            }
-        });
-    }, [filteredData, imageUrls, isGeneratingImages, handleGenerateImage]);
 
     const handleCategoryChange = (categoryName: Category | 'all') => {
         setSelectedCategory(categoryName);
@@ -298,7 +299,7 @@ export default function ExplorePage() {
                                         </Card>
                                     ))}
                                 </div>
-                                {filteredData.length === 0 && (
+                                {filteredData.length === 0 && !isLoading && (
                                     <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
                                         <p className="text-lg font-semibold">No results found.</p>
                                         <p>Try adjusting your search or filters.</p>
