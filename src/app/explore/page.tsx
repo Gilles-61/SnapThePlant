@@ -101,7 +101,7 @@ export default function ExplorePage() {
         setHiddenItems(prev => [...prev, speciesId]);
         toast({
             title: "Item Hidden",
-            description: "The item has been hidden from your view. Refresh the page to see it again.",
+            description: "The item has been hidden from your view.",
         });
     }, [toast]);
 
@@ -242,3 +242,5 @@ export default function ExplorePage() {
         </AuthGuard>
     );
 }
+
+    
