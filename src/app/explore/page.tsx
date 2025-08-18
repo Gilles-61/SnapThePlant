@@ -50,7 +50,6 @@ export default function ExplorePage() {
     const [isResultOpen, setIsResultOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [imageUrls, setImageUrls] = useState<Record<number, string>>({});
-    const [isGeneratingImages, setIsGeneratingImages] = useState<Record<number, boolean>>({});
 
 
     useEffect(() => {
@@ -60,21 +59,14 @@ export default function ExplorePage() {
             setAllSpecies(speciesFromDb);
             setIsLoading(false);
 
-            const initialUrls: Record<number, string> = {};
-            // First, populate with any cached images
+            // Sequentially check cache and generate images if missing
             for (const species of speciesFromDb) {
                 const cachedUrl = await getCachedImage(species.id);
                 if (cachedUrl) {
-                    initialUrls[species.id] = cachedUrl;
-                }
-            }
-            setImageUrls(initialUrls);
-
-            // Then, generate missing images sequentially
-            for (const species of speciesFromDb) {
-                // Check if image is already cached or being generated
-                if (!initialUrls[species.id]) {
-                    setIsGeneratingImages(prev => ({ ...prev, [species.id]: true }));
+                    setImageUrls(prev => ({ ...prev, [species.id]: cachedUrl }));
+                } else {
+                    // It's not cached, so we need to generate it.
+                    // The UI will show a loader for this item.
                     try {
                         const result = await generateImage({ name: species.name, category: species.category });
                         const newUrl = result.imageDataUri;
@@ -84,8 +76,6 @@ export default function ExplorePage() {
                         console.error(`Failed to generate image for ${species.name}:`, error);
                         // Set a placeholder on failure so we don't retry constantly
                         setImageUrls(prev => ({ ...prev, [species.id]: 'https://placehold.co/600x400.png' }));
-                    } finally {
-                        setIsGeneratingImages(prev => ({ ...prev, [species.id]: false }));
                     }
                 }
             }
