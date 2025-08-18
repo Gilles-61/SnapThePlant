@@ -51,13 +51,9 @@ const generateImageFlow = ai.defineFlow(
       return { imageDataUri: media.url };
 
     } catch (error: any) {
-        console.error(`[Image Generation Error] Failed for species "${name}":`, error.message);
-        // Check if the error is a 500 internal server error
-        if (error.message && error.message.includes('500 Internal Server Error')) {
-            throw new Error(`The image generation service is temporarily unavailable. Please try again in a few moments.`);
-        }
-        // Throw a more generic error for other issues
-        throw new Error('An unexpected error occurred during image generation.');
+        console.error(`[Image Generation Error] Failed for species "${name}", falling back to placeholder. Error:`, error.message);
+        // Fallback to a placeholder image instead of throwing an error
+        return { imageDataUri: 'https://placehold.co/600x400.png' };
     }
   }
 );
