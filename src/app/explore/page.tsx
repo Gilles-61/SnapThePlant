@@ -14,11 +14,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AuthGuard } from '@/components/auth-guard';
 import { AlertTriangle, Camera, Droplets, Sun, Telescope, Trash2, Loader } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { SearchInput } from '@/components/search-input';
 import Link from 'next/link';
 import { getAllSpecies, deleteSpecies } from '@/lib/species-service';
 import { useToast } from '@/hooks/use-toast';
+import { getCachedImage, cacheImage } from '@/lib/image-cache-service';
+import { generateImage } from '@/ai/flows/generate-image-flow';
+import { Skeleton } from '@/components/ui/skeleton';
 
 
 const getAvailableFilters = (speciesList: Species[], category: Category) => {
@@ -47,17 +49,28 @@ export default function ExplorePage() {
     const [selectedSpecies, setSelectedSpecies] = useState<Species | null>(null);
     const [isResultOpen, setIsResultOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [imageUrls, setImageUrls] = useState<Record<number, string>>({});
+    const [isGeneratingImages, setIsGeneratingImages] = useState<Record<number, boolean>>({});
 
-    const fetchSpecies = useCallback(async () => {
+    const fetchSpeciesAndImages = useCallback(async () => {
         setIsLoading(true);
         const speciesFromDb = await getAllSpecies();
         setAllSpecies(speciesFromDb);
+
+        const urls: Record<number, string> = {};
+        for (const species of speciesFromDb) {
+            const cachedUrl = await getCachedImage(species.id);
+            if (cachedUrl) {
+                urls[species.id] = cachedUrl;
+            }
+        }
+        setImageUrls(urls);
         setIsLoading(false);
     }, []);
 
     useEffect(() => {
-        fetchSpecies();
-    }, [fetchSpecies]);
+        fetchSpeciesAndImages();
+    }, [fetchSpeciesAndImages]);
 
     const availableFilters = useMemo(() => {
         if (selectedCategory === 'all') return {};
@@ -87,6 +100,35 @@ export default function ExplorePage() {
         return data;
 
     }, [allSpecies, selectedCategory, activeFilters, searchQuery]);
+    
+    const handleGenerateImage = useCallback(async (species: Species) => {
+        if (isGeneratingImages[species.id] || imageUrls[species.id]) return;
+
+        setIsGeneratingImages(prev => ({ ...prev, [species.id]: true }));
+        try {
+            const result = await generateImage({ name: species.name, category: species.category });
+            const newUrl = result.imageDataUri;
+            await cacheImage(species.id, newUrl);
+            setImageUrls(prev => ({ ...prev, [species.id]: newUrl }));
+        } catch (error) {
+            console.error(`Failed to generate image for ${species.name}:`, error);
+            toast({
+                title: "Image Generation Failed",
+                description: `Could not create an image for ${species.name}.`,
+                variant: "destructive"
+            });
+        } finally {
+            setIsGeneratingImages(prev => ({ ...prev, [species.id]: false }));
+        }
+    }, [isGeneratingImages, imageUrls, toast]);
+
+    useEffect(() => {
+        filteredData.forEach(species => {
+            if (!imageUrls[species.id] && !isGeneratingImages[species.id]) {
+                handleGenerateImage(species);
+            }
+        });
+    }, [filteredData, imageUrls, isGeneratingImages, handleGenerateImage]);
 
     const handleCategoryChange = (categoryName: Category | 'all') => {
         setSelectedCategory(categoryName);
@@ -101,7 +143,8 @@ export default function ExplorePage() {
     };
 
     const handleSpeciesSelect = (species: Species) => {
-        setSelectedSpecies(species);
+        const speciesWithImage = { ...species, image: imageUrls[species.id] || species.image };
+        setSelectedSpecies(speciesWithImage);
         setIsResultOpen(true);
     };
 
@@ -118,10 +161,6 @@ export default function ExplorePage() {
         } else {
             toast({ title: "Error", description: "Failed to remove item. Please try again.", variant: 'destructive' });
         }
-    };
-
-    const generateAiImage = (hint: string) => {
-        return `https://placehold.co/600x400.png?text=${encodeURIComponent(hint)}`;
     };
 
     return (
@@ -189,8 +228,20 @@ export default function ExplorePage() {
 
                     <div className="flex-1 p-6">
                        {isLoading ? (
-                            <div className="flex items-center justify-center h-full">
-                                <Loader className="h-12 w-12 animate-spin" />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                {Array.from({ length: 8 }).map((_, i) => (
+                                    <Card key={i} className="overflow-hidden flex flex-col">
+                                        <Skeleton className="aspect-video w-full" />
+                                        <CardContent className="p-4 flex-1 flex flex-col">
+                                            <Skeleton className="h-5 w-3/4 mb-2" />
+                                            <Skeleton className="h-4 w-1/2" />
+                                            <Skeleton className="h-12 w-full mt-2" />
+                                        </CardContent>
+                                        <CardFooter className="p-2 pt-0">
+                                            <Skeleton className="h-10 w-full" />
+                                        </CardFooter>
+                                    </Card>
+                                ))}
                             </div>
                         ) : (
                             <ScrollArea className="h-full">
@@ -210,15 +261,20 @@ export default function ExplorePage() {
                                                 <span className="sr-only">Delete</span>
                                             </Button>
                                             <CardHeader className="p-0">
-                                                <div className="relative aspect-video">
-                                                    <Image 
-                                                        src={generateAiImage(species['data-ai-hint'] || species.name)}
-                                                        alt={species.name} 
-                                                        fill
-                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                        className="object-cover transition-transform group-hover:scale-105"
-                                                        data-ai-hint={species['data-ai-hint'] || 'plant'}
-                                                    />
+                                                <div className="relative aspect-video bg-muted">
+                                                    {imageUrls[species.id] ? (
+                                                        <Image 
+                                                            src={imageUrls[species.id]}
+                                                            alt={species.name} 
+                                                            fill
+                                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                            className="object-cover transition-transform group-hover:scale-105"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center">
+                                                            <Loader className="h-8 w-8 animate-spin text-muted-foreground" />
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </CardHeader>
                                             <CardContent className="p-4 flex-1 flex flex-col">
