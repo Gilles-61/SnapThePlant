@@ -13,7 +13,7 @@ import { IdentificationResult } from '@/components/identification-result';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AuthGuard } from '@/components/auth-guard';
-import { AlertTriangle, Camera, Droplets, Sun, Telescope, Trash2, Loader } from 'lucide-react';
+import { AlertTriangle, Camera, Droplets, Sun, Telescope, Trash2, Loader, Image as ImageIcon } from 'lucide-react';
 import { SearchInput } from '@/components/search-input';
 import Link from 'next/link';
 import { getAllSpecies, deleteSpecies } from '@/lib/species-service';
@@ -50,39 +50,54 @@ export default function ExplorePage() {
     const [isResultOpen, setIsResultOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [imageUrls, setImageUrls] = useState<Record<number, string>>({});
+    const [generatingImageId, setGeneratingImageId] = useState<number | null>(null);
 
 
     useEffect(() => {
-        const fetchSpeciesAndImages = async () => {
+        const fetchSpeciesAndCheckCache = async () => {
             setIsLoading(true);
             const speciesFromDb = await getAllSpecies();
             setAllSpecies(speciesFromDb);
-            setIsLoading(false);
-
-            // Sequentially check cache and generate images if missing
+            
+            // Just check the cache, don't generate images here
             for (const species of speciesFromDb) {
                 const cachedUrl = await getCachedImage(species.id);
                 if (cachedUrl) {
                     setImageUrls(prev => ({ ...prev, [species.id]: cachedUrl }));
-                } else {
-                    // It's not cached, so we need to generate it.
-                    // The UI will show a loader for this item.
-                    try {
-                        const result = await generateImage({ name: species.name, category: species.category });
-                        const newUrl = result.imageDataUri;
-                        await cacheImage(species.id, newUrl);
-                        setImageUrls(prev => ({ ...prev, [species.id]: newUrl }));
-                    } catch (error) {
-                        console.error(`Failed to generate image for ${species.name}:`, error);
-                        // Set a placeholder on failure so we don't retry constantly
-                        setImageUrls(prev => ({ ...prev, [species.id]: 'https://placehold.co/600x400.png' }));
-                    }
                 }
             }
+            setIsLoading(false);
         };
         
-        fetchSpeciesAndImages();
+        fetchSpeciesAndCheckCache();
     }, []);
+
+    const handleGenerateImage = async (species: Species) => {
+        setGeneratingImageId(species.id);
+        try {
+            const result = await generateImage({ name: species.name, category: species.category });
+            const newUrl = result.imageDataUri;
+            if (newUrl && !newUrl.includes('placehold.co')) {
+                await cacheImage(species.id, newUrl);
+                setImageUrls(prev => ({ ...prev, [species.id]: newUrl }));
+            } else {
+                 toast({
+                    title: "Image Generation Failed",
+                    description: "Could not generate a unique image. Please try again.",
+                    variant: "destructive"
+                });
+            }
+        } catch (error) {
+            console.error(`Failed to generate image for ${species.name}:`, error);
+            toast({
+                title: "Error",
+                description: "An error occurred while generating the image.",
+                variant: "destructive"
+            });
+        } finally {
+            setGeneratingImageId(null);
+        }
+    };
 
     const availableFilters = useMemo(() => {
         if (selectedCategory === 'all') return {};
@@ -256,7 +271,17 @@ export default function ExplorePage() {
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center">
-                                                            <Loader className="h-8 w-8 animate-spin text-muted-foreground" />
+                                                            {generatingImageId === species.id ? (
+                                                                <Loader className="h-8 w-8 animate-spin text-muted-foreground" />
+                                                            ) : (
+                                                                <Button 
+                                                                    variant="secondary"
+                                                                    onClick={() => handleGenerateImage(species)}
+                                                                >
+                                                                    <ImageIcon className="mr-2 h-4 w-4" />
+                                                                    Generate Image
+                                                                </Button>
+                                                            )}
                                                         </div>
                                                     )}
                                                 </div>
