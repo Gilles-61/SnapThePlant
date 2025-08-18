@@ -52,54 +52,47 @@ export default function ExplorePage() {
     const [imageUrls, setImageUrls] = useState<Record<number, string>>({});
     const [isGeneratingImages, setIsGeneratingImages] = useState<Record<number, boolean>>({});
 
-    const handleGenerateImage = useCallback(async (species: Species) => {
-        if (isGeneratingImages[species.id] || imageUrls[species.id]) return;
-
-        setIsGeneratingImages(prev => ({ ...prev, [species.id]: true }));
-        try {
-            const result = await generateImage({ name: species.name, category: species.category });
-            const newUrl = result.imageDataUri;
-            await cacheImage(species.id, newUrl);
-            setImageUrls(prev => ({ ...prev, [species.id]: newUrl }));
-        } catch (error) {
-            console.error(`Failed to generate image for ${species.name}:`, error);
-            toast({
-                title: "Image Generation Failed",
-                description: `Could not create an image for ${species.name}.`,
-                variant: "destructive"
-            });
-            // Set a placeholder on failure so we don't retry constantly
-            setImageUrls(prev => ({ ...prev, [species.id]: 'https://placehold.co/600x400.png' }));
-        } finally {
-            setIsGeneratingImages(prev => ({ ...prev, [species.id]: false }));
-        }
-    }, [isGeneratingImages, imageUrls, toast]);
-
 
     useEffect(() => {
         const fetchSpeciesAndImages = async () => {
             setIsLoading(true);
             const speciesFromDb = await getAllSpecies();
             setAllSpecies(speciesFromDb);
-            setIsLoading(false); // <--- FIX: Stop loading after getting data
+            setIsLoading(false);
 
-            const urls: Record<number, string> = {};
-            const generationPromises: Promise<void>[] = [];
-
+            const initialUrls: Record<number, string> = {};
+            // First, populate with any cached images
             for (const species of speciesFromDb) {
                 const cachedUrl = await getCachedImage(species.id);
                 if (cachedUrl) {
-                    urls[species.id] = cachedUrl;
-                } else {
-                    // Kick off generation but don't wait for it
-                    handleGenerateImage(species);
+                    initialUrls[species.id] = cachedUrl;
                 }
             }
-            setImageUrls(urls);
+            setImageUrls(initialUrls);
+
+            // Then, generate missing images sequentially
+            for (const species of speciesFromDb) {
+                // Check if image is already cached or being generated
+                if (!initialUrls[species.id]) {
+                    setIsGeneratingImages(prev => ({ ...prev, [species.id]: true }));
+                    try {
+                        const result = await generateImage({ name: species.name, category: species.category });
+                        const newUrl = result.imageDataUri;
+                        await cacheImage(species.id, newUrl);
+                        setImageUrls(prev => ({ ...prev, [species.id]: newUrl }));
+                    } catch (error) {
+                        console.error(`Failed to generate image for ${species.name}:`, error);
+                        // Set a placeholder on failure so we don't retry constantly
+                        setImageUrls(prev => ({ ...prev, [species.id]: 'https://placehold.co/600x400.png' }));
+                    } finally {
+                        setIsGeneratingImages(prev => ({ ...prev, [species.id]: false }));
+                    }
+                }
+            }
         };
         
         fetchSpeciesAndImages();
-    }, [handleGenerateImage]);
+    }, []);
 
     const availableFilters = useMemo(() => {
         if (selectedCategory === 'all') return {};
