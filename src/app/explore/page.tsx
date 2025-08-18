@@ -43,7 +43,7 @@ export default function ExplorePage() {
     const [selectedSpecies, setSelectedSpecies] = useState<Species | null>(null);
     const [isResultOpen, setIsResultOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [deletedItems, setDeletedItems] = useState<number[]>([]);
+    const [hiddenItems, setHiddenItems] = useState<number[]>([]);
 
     const availableFilters = useMemo(() => {
         if (selectedCategory === 'all') return {};
@@ -51,24 +51,29 @@ export default function ExplorePage() {
     }, [selectedCategory]);
 
     const filteredData = useMemo(() => {
-        return database.filter(species => {
-            if (deletedItems.includes(species.id)) {
-                return false;
+        let data = database;
+
+        if (selectedCategory !== 'all') {
+            data = data.filter(species => species.category === selectedCategory);
+        }
+
+        if (searchQuery) {
+            data = data.filter(species => 
+                species.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                species.scientificName.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
+
+        for (const key in activeFilters) {
+            if (activeFilters[key] && activeFilters[key] !== 'all') {
+                data = data.filter(species => species.attributes[key] === activeFilters[key]);
             }
-            if (selectedCategory !== 'all' && species.category !== selectedCategory) {
-                return false;
-            }
-            if (searchQuery && !species.name.toLowerCase().includes(searchQuery.toLowerCase()) && !species.scientificName.toLowerCase().includes(searchQuery.toLowerCase())) {
-                return false;
-            }
-            for (const key in activeFilters) {
-                if (activeFilters[key] && activeFilters[key] !== 'all' && species.attributes[key] !== activeFilters[key]) {
-                    return false;
-                }
-            }
-            return true;
-        });
-    }, [selectedCategory, activeFilters, searchQuery, deletedItems]);
+        }
+
+        // Filter out hidden items at the very end
+        return data.filter(species => !hiddenItems.includes(species.id));
+
+    }, [selectedCategory, activeFilters, searchQuery, hiddenItems]);
 
     const handleCategoryChange = (categoryName: Category | 'all') => {
         setSelectedCategory(categoryName);
@@ -92,8 +97,8 @@ export default function ExplorePage() {
         setTimeout(() => setSelectedSpecies(null), 300);
     };
     
-    const handleDeleteItem = useCallback((speciesId: number) => {
-        setDeletedItems(prev => [...prev, speciesId]);
+    const handleHideItem = useCallback((speciesId: number) => {
+        setHiddenItems(prev => [...prev, speciesId]);
         toast({
             title: "Item Hidden",
             description: "The item has been hidden from your view. Refresh the page to see it again.",
@@ -174,7 +179,7 @@ export default function ExplorePage() {
                                             className="absolute top-2 right-2 z-10 h-7 w-7 opacity-80 hover:opacity-100"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                handleDeleteItem(species.id);
+                                                handleHideItem(species.id);
                                             }}
                                         >
                                             <Trash2 className="h-4 w-4" />
