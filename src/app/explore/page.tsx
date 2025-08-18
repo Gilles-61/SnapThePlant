@@ -94,9 +94,10 @@ export default function ExplorePage() {
         setTimeout(() => setSelectedSpecies(null), 300);
     };
     
-    const handleRemoveItem = useCallback((speciesId: number) => {
-        setAllSpecies(currentSpecies => currentSpecies.filter(s => s.id !== speciesId));
-    }, []);
+    const handleRemoveItem = (speciesId: number) => {
+        const updatedSpecies = allSpecies.filter(s => s.id !== speciesId);
+        setAllSpecies(updatedSpecies);
+    };
 
     const generateAiImage = (hint: string) => {
         return `https://placehold.co/600x400.png?text=${encodeURIComponent(hint)}`;
