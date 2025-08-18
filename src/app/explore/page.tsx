@@ -171,7 +171,7 @@ export default function ExplorePage() {
                                         <Button
                                             variant="destructive"
                                             size="icon"
-                                            className="absolute top-2 right-2 z-10 h-7 w-7"
+                                            className="absolute top-2 right-2 z-10 h-7 w-7 opacity-80 hover:opacity-100"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleDeleteItem(species.id);
