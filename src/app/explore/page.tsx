@@ -17,7 +17,6 @@ import { AlertTriangle, Camera, Droplets, Sun, Telescope, Trash2 } from 'lucide-
 import { cn } from '@/lib/utils';
 import { SearchInput } from '@/components/search-input';
 import Link from 'next/link';
-import { useToast } from '@/hooks/use-toast';
 
 const getAvailableFilters = (category: Category) => {
     const speciesInCategory = database.filter(s => s.category === category);
@@ -37,7 +36,6 @@ const getAvailableFilters = (category: Category) => {
 
 export default function ExplorePage() {
     const { t } = useTranslation();
-    const { toast } = useToast();
     const [allSpecies, setAllSpecies] = useState<Species[]>(database);
     const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
     const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
