@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { SiteHeader } from '@/components/site-header';
 import { useTranslation } from '@/hooks/use-language';
 import { database, type Species } from '@/lib/mock-database';
@@ -92,13 +92,13 @@ export default function ExplorePage() {
         setTimeout(() => setSelectedSpecies(null), 300);
     };
     
-    const handleDeleteItem = (speciesId: number) => {
+    const handleDeleteItem = useCallback((speciesId: number) => {
         setDeletedItems(prev => [...prev, speciesId]);
         toast({
             title: "Item Hidden",
             description: "The item has been hidden from your view. Refresh the page to see it again.",
         });
-    };
+    }, [toast]);
 
     return (
         <AuthGuard requirePaid={true}>
@@ -237,3 +237,5 @@ export default function ExplorePage() {
         </AuthGuard>
     );
 }
+
+    
