@@ -94,7 +94,7 @@ export default function ExplorePage() {
         setTimeout(() => setSelectedSpecies(null), 300);
     };
     
-    const handleHideItem = useCallback((speciesId: number) => {
+    const handleRemoveItem = useCallback((speciesId: number) => {
         setAllSpecies(currentSpecies => currentSpecies.filter(s => s.id !== speciesId));
     }, []);
 
@@ -176,7 +176,7 @@ export default function ExplorePage() {
                                             className="absolute top-2 right-2 z-10 h-7 w-7"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                handleHideItem(species.id);
+                                                handleRemoveItem(species.id);
                                             }}
                                         >
                                             <Trash2 className="h-4 w-4" />
