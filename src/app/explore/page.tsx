@@ -48,15 +48,16 @@ export default function ExplorePage() {
     const [isResultOpen, setIsResultOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
-    useEffect(() => {
-        const fetchSpecies = async () => {
-            setIsLoading(true);
-            const speciesFromDb = await getAllSpecies();
-            setAllSpecies(speciesFromDb);
-            setIsLoading(false);
-        };
-        fetchSpecies();
+    const fetchSpecies = useCallback(async () => {
+        setIsLoading(true);
+        const speciesFromDb = await getAllSpecies();
+        setAllSpecies(speciesFromDb);
+        setIsLoading(false);
     }, []);
+
+    useEffect(() => {
+        fetchSpecies();
+    }, [fetchSpecies]);
 
     const availableFilters = useMemo(() => {
         if (selectedCategory === 'all') return {};
@@ -113,7 +114,7 @@ export default function ExplorePage() {
         const result = await deleteSpecies(speciesId);
         if (result.success) {
             setAllSpecies(prevSpecies => prevSpecies.filter(s => s.id !== speciesId));
-            toast({ title: "Success", description: "Item removed from the database." });
+            toast({ title: "Success", description: "Item permanently removed from the database." });
         } else {
             toast({ title: "Error", description: "Failed to remove item. Please try again.", variant: 'destructive' });
         }
