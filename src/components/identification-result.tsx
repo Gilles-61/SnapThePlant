@@ -15,7 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Textarea } from '@/components/ui/textarea';
-import { Droplets, Sun, Sprout, Package, Thermometer, Leaf, Check, X, ThumbsDown, ThumbsUp, Bookmark, AlertTriangle } from 'lucide-react';
+import { Droplets, Sun, Sprout, Package, Thermometer, Leaf, Check, X, ThumbsDown, ThumbsUp, Bookmark, AlertTriangle, BookOpen, Loader } from 'lucide-react';
 import type { Species, CareTip } from '@/lib/mock-database';
 import { useTranslation } from '@/hooks/use-language';
 import { Separator } from './ui/separator';
@@ -23,6 +23,8 @@ import { useCollection } from '@/hooks/use-collection';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from './ui/badge';
 import type { CollectionItem } from '@/hooks/use-collection';
+import { generateStory } from '@/ai/flows/generate-story-flow';
+import { Card, CardContent } from './ui/card';
 
 interface IdentificationResultProps {
   result: Species | null;
@@ -52,6 +54,8 @@ export function IdentificationResult({
 }: IdentificationResultProps) {
   const { t } = useTranslation();
   const [notes, setNotes] = useState('');
+  const [story, setStory] = useState<string | null>(null);
+  const [isGeneratingStory, setIsGeneratingStory] = useState(false);
   const { collection, addItem, removeItem } = useCollection();
   const { toast } = useToast();
 
@@ -79,8 +83,32 @@ export function IdentificationResult({
     }
   };
 
+  const handleGenerateStory = async () => {
+    if (!result) return;
+    setIsGeneratingStory(true);
+    setStory(null);
+    try {
+        const response = await generateStory({ name: result.name, category: result.category });
+        setStory(response.story);
+    } catch (error) {
+        console.error("Failed to generate story:", error);
+        toast({
+            title: "Story Time Failed",
+            description: "Could not generate a story at this time. Please try again later.",
+            variant: "destructive"
+        });
+    } finally {
+        setIsGeneratingStory(false);
+    }
+  }
+
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={(isOpen) => {
+        onOpenChange(isOpen);
+        if (!isOpen) {
+            setStory(null); // Reset story when sheet closes
+        }
+    }}>
       <SheetContent side="bottom" className="rounded-t-2xl max-h-[90vh] h-full flex flex-col bg-background/95 backdrop-blur-sm p-0">
         <SheetHeader className="text-left p-6 pb-2">
           <div className="flex justify-between items-start">
@@ -128,6 +156,30 @@ export function IdentificationResult({
                  <div>
                     <h3 className="text-xl font-semibold mb-2 font-headline">{t('result.keyInformation')}</h3>
                     <p className="text-muted-foreground">{result.keyInformation}</p>
+                </div>
+
+                <div>
+                    <Button onClick={handleGenerateStory} disabled={isGeneratingStory}>
+                        {isGeneratingStory ? (
+                            <>
+                                <Loader className="mr-2 h-4 w-4 animate-spin" />
+                                Writing...
+                            </>
+                        ) : (
+                             <>
+                                <BookOpen className="mr-2 h-4 w-4" />
+                                Tell Me a Story
+                            </>
+                        )}
+                    </Button>
+                    {story && (
+                        <Card className="mt-4">
+                            <CardContent className="p-4 space-y-2">
+                                <h4 className="font-bold text-lg">Story Time</h4>
+                                <p className="text-muted-foreground whitespace-pre-wrap">{story}</p>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
             </div>
             {/* Right Column */}
