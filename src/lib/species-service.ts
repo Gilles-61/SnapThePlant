@@ -9,7 +9,8 @@ const SPECIES_COLLECTION = 'species';
 
 /**
  * Seeds the Firestore database with initial data from the mock database.
- * This function checks if the collection is empty before seeding to prevent duplicates.
+ * This function should be called manually or under controlled conditions,
+ * not as part of the regular data fetching process.
  */
 export async function seedDatabase() {
   const speciesCollection = collection(db, SPECIES_COLLECTION);
@@ -19,7 +20,6 @@ export async function seedDatabase() {
     console.log('Species collection is empty. Seeding database...');
     const batch = writeBatch(db);
     mockDatabase.forEach((species) => {
-      // Use the numeric ID from the mock database as the document ID in Firestore
       const docRef = doc(db, SPECIES_COLLECTION, String(species.id));
       batch.set(docRef, species);
     });
@@ -34,33 +34,34 @@ export async function seedDatabase() {
 
 /**
  * Fetches all species from the Firestore database.
+ * It will attempt to seed the database ONLY if it's completely empty.
  * @returns A promise that resolves to an array of species.
  */
 export async function getAllSpecies(): Promise<Species[]> {
-  try {
-    // Ensure the database is seeded if it's empty
-    await seedDatabase();
-    
-    const speciesCollection = collection(db, SPECIES_COLLECTION);
-    const snapshot = await getDocs(speciesCollection);
-    const speciesList = snapshot.docs.map(doc => ({
-      ...doc.data(),
-      // Ensure the id from the document is correctly typed
-      id: parseInt(doc.id, 10), 
-    })) as Species[];
-    // Sort by ID to maintain a consistent order
-    return speciesList.sort((a, b) => a.id - b.id);
-  } catch (error) {
-    console.error("Error fetching species:", error);
-    // Fallback to mock database in case of Firestore error
-    return mockDatabase;
+  // Attempt to seed the database only if it's empty. This is a one-time operation.
+  await seedDatabase();
+  
+  const speciesCollection = collection(db, SPECIES_COLLECTION);
+  const snapshot = await getDocs(speciesCollection);
+  
+  if (snapshot.empty) {
+    console.warn("Firestore collection is empty and seeding may have failed.");
+    return [];
   }
+
+  const speciesList = snapshot.docs.map(doc => ({
+    ...doc.data(),
+    id: parseInt(doc.id, 10),
+  })) as Species[];
+  
+  // Sort by ID to maintain a consistent order
+  return speciesList.sort((a, b) => a.id - b.id);
 }
 
 /**
  * Deletes a species from the Firestore database.
  * @param speciesId The ID of the species to delete.
- * @returns A promise that resolves when the deletion is complete.
+ * @returns A promise that resolves to an object indicating success or failure.
  */
 export async function deleteSpecies(speciesId: number): Promise<{ success: boolean }> {
     try {
