@@ -59,7 +59,6 @@ export default function ExplorePage() {
             const speciesFromDb = await getAllSpecies();
             setAllSpecies(speciesFromDb);
             
-            // Just check the cache, don't generate images here
             for (const species of speciesFromDb) {
                 const cachedUrl = await getCachedImage(species.id);
                 if (cachedUrl) {
@@ -259,9 +258,10 @@ export default function ExplorePage() {
                                                 <Trash2 className="h-4 w-4" />
                                                 <span className="sr-only">Delete</span>
                                             </Button>
-                                            <CardHeader className="p-0">
-                                                <div className="relative aspect-video bg-muted">
-                                                    {imageUrls[species.id] ? (
+                                            
+                                            {imageUrls[species.id] && (
+                                                <CardHeader className="p-0">
+                                                    <div className="relative aspect-video bg-muted">
                                                         <Image 
                                                             src={imageUrls[species.id]}
                                                             alt={species.name} 
@@ -269,24 +269,31 @@ export default function ExplorePage() {
                                                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                             className="object-cover transition-transform group-hover:scale-105"
                                                         />
-                                                    ) : (
-                                                        <div className="w-full h-full flex items-center justify-center">
-                                                            {generatingImageId === species.id ? (
-                                                                <Loader className="h-8 w-8 animate-spin text-muted-foreground" />
-                                                            ) : (
+                                                    </div>
+                                                </CardHeader>
+                                            )}
+
+                                            <CardContent className="p-4 flex-1 flex flex-col">
+                                                {!imageUrls[species.id] && (
+                                                    <div className="flex-1 flex flex-col items-center justify-center text-center bg-muted/50 rounded-md p-4 mb-4">
+                                                        {generatingImageId === species.id ? (
+                                                            <Loader className="h-8 w-8 animate-spin text-muted-foreground" />
+                                                        ) : (
+                                                            <>
+                                                                <ImageIcon className="h-8 w-8 text-muted-foreground mb-2" />
                                                                 <Button 
                                                                     variant="secondary"
+                                                                    size="sm"
+                                                                    className="w-full"
                                                                     onClick={() => handleGenerateImage(species)}
                                                                 >
-                                                                    <ImageIcon className="mr-2 h-4 w-4" />
                                                                     Generate Image
                                                                 </Button>
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </CardHeader>
-                                            <CardContent className="p-4 flex-1 flex flex-col">
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                )}
+                                                
                                                 <div className="flex justify-between items-start gap-2">
                                                     <h3 className="font-bold text-lg">{species.name}</h3>
                                                     <div className="flex items-center gap-2 text-muted-foreground shrink-0">
