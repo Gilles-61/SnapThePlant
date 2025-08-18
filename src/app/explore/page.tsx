@@ -183,7 +183,7 @@ export default function ExplorePage() {
                                         <CardHeader className="p-0">
                                             <div className="relative aspect-video">
                                                 <Image 
-                                                    src={`https://placehold.co/600x400.png?text=${encodeURIComponent(species.name)}`} 
+                                                    src={species.image} 
                                                     alt={species.name} 
                                                     fill
                                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
