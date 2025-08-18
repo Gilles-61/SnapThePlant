@@ -1,10 +1,10 @@
 
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { SiteHeader } from '@/components/site-header';
 import { useTranslation } from '@/hooks/use-language';
-import { database, type Species } from '@/lib/mock-database';
+import { type Species } from '@/lib/mock-database';
 import { categories, type Category } from '@/lib/categories';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import Image from 'next/image';
@@ -13,13 +13,16 @@ import { IdentificationResult } from '@/components/identification-result';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AuthGuard } from '@/components/auth-guard';
-import { AlertTriangle, Camera, Droplets, Sun, Telescope, Trash2 } from 'lucide-react';
+import { AlertTriangle, Camera, Droplets, Sun, Telescope, Trash2, Loader } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SearchInput } from '@/components/search-input';
 import Link from 'next/link';
+import { getAllSpecies, deleteSpecies } from '@/lib/species-service';
+import { useToast } from '@/hooks/use-toast';
 
-const getAvailableFilters = (category: Category) => {
-    const speciesInCategory = database.filter(s => s.category === category);
+
+const getAvailableFilters = (speciesList: Species[], category: Category) => {
+    const speciesInCategory = speciesList.filter(s => s.category === category);
     if (speciesInCategory.length === 0) return {};
     
     const allKeys = speciesInCategory.flatMap(s => Object.keys(s.attributes));
@@ -36,17 +39,29 @@ const getAvailableFilters = (category: Category) => {
 
 export default function ExplorePage() {
     const { t } = useTranslation();
-    const [allSpecies, setAllSpecies] = useState<Species[]>(database);
+    const { toast } = useToast();
+    const [allSpecies, setAllSpecies] = useState<Species[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
     const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
     const [selectedSpecies, setSelectedSpecies] = useState<Species | null>(null);
     const [isResultOpen, setIsResultOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
+    useEffect(() => {
+        const fetchSpecies = async () => {
+            setIsLoading(true);
+            const speciesFromDb = await getAllSpecies();
+            setAllSpecies(speciesFromDb);
+            setIsLoading(false);
+        };
+        fetchSpecies();
+    }, []);
+
     const availableFilters = useMemo(() => {
         if (selectedCategory === 'all') return {};
-        return getAvailableFilters(selectedCategory);
-    }, [selectedCategory]);
+        return getAvailableFilters(allSpecies, selectedCategory);
+    }, [selectedCategory, allSpecies]);
 
     const filteredData = useMemo(() => {
         let data = allSpecies;
@@ -94,9 +109,14 @@ export default function ExplorePage() {
         setTimeout(() => setSelectedSpecies(null), 300);
     };
     
-    const handleRemoveItem = (speciesId: number) => {
-        const updatedSpecies = allSpecies.filter(s => s.id !== speciesId);
-        setAllSpecies(updatedSpecies);
+    const handleRemoveItem = async (speciesId: number) => {
+        const result = await deleteSpecies(speciesId);
+        if (result.success) {
+            setAllSpecies(prevSpecies => prevSpecies.filter(s => s.id !== speciesId));
+            toast({ title: "Success", description: "Item removed from the database." });
+        } else {
+            toast({ title: "Error", description: "Failed to remove item. Please try again.", variant: 'destructive' });
+        }
     };
 
     const generateAiImage = (hint: string) => {
@@ -167,62 +187,68 @@ export default function ExplorePage() {
                     </aside>
 
                     <div className="flex-1 p-6">
-                        <ScrollArea className="h-full">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {filteredData.map(species => (
-                                    <Card key={species.id} className="overflow-hidden flex flex-col group transition-shadow hover:shadow-lg relative">
-                                        <Button
-                                            variant="destructive"
-                                            size="icon"
-                                            className="absolute top-2 right-2 z-10 h-7 w-7"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleRemoveItem(species.id);
-                                            }}
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                            <span className="sr-only">Delete</span>
-                                        </Button>
-                                        <CardHeader className="p-0">
-                                            <div className="relative aspect-video">
-                                                <Image 
-                                                    src={generateAiImage(species['data-ai-hint'] || species.name)}
-                                                    alt={species.name} 
-                                                    fill
-                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                    className="object-cover transition-transform group-hover:scale-105"
-                                                    data-ai-hint={species['data-ai-hint'] || 'plant'}
-                                                />
-                                            </div>
-                                        </CardHeader>
-                                        <CardContent className="p-4 flex-1 flex flex-col">
-                                            <div className="flex justify-between items-start gap-2">
-                                                <h3 className="font-bold text-lg">{species.name}</h3>
-                                                <div className="flex items-center gap-2 text-muted-foreground shrink-0">
-                                                   {species.attributes.light_requirement === 'full sun' && <Sun className="h-4 w-4 text-amber-500" title="Full Sun" />}
-                                                    {species.attributes.light_requirement === 'partial shade' && <Sun className="h-4 w-4 text-gray-400" title="Partial Shade" />}
-                                                    {species.attributes.watering_frequency === 'high' && <Droplets className="h-4 w-4 text-blue-500" title="High Watering" />}
-                                                    {species.attributes.watering_frequency === 'low' && <Droplets className="h-4 w-4 text-gray-400" title="Low Watering" />}
-                                                    {species.isPoisonous && <AlertTriangle className="h-4 w-4 text-destructive" title="Poisonous/Toxic" />}
-                                                </div>
-                                            </div>
-                                            <p className="text-sm text-muted-foreground italic -mt-1">{species.scientificName}</p>
-
-                                            <p className="text-sm text-muted-foreground mt-2 line-clamp-3 flex-1">{species.keyInformation}</p>
-                                        </CardContent>
-                                        <CardFooter className="p-2 pt-0">
-                                            <Button className="w-full" variant="secondary" onClick={() => handleSpeciesSelect(species)}>View Details</Button>
-                                        </CardFooter>
-                                    </Card>
-                                ))}
+                       {isLoading ? (
+                            <div className="flex items-center justify-center h-full">
+                                <Loader className="h-12 w-12 animate-spin" />
                             </div>
-                            {filteredData.length === 0 && (
-                                <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-                                    <p className="text-lg font-semibold">No results found.</p>
-                                    <p>Try adjusting your search or filters.</p>
+                        ) : (
+                            <ScrollArea className="h-full">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                    {filteredData.map(species => (
+                                        <Card key={species.id} className="overflow-hidden flex flex-col group transition-shadow hover:shadow-lg relative">
+                                            <Button
+                                                variant="destructive"
+                                                size="icon"
+                                                className="absolute top-2 right-2 z-10 h-7 w-7"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleRemoveItem(species.id);
+                                                }}
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                                <span className="sr-only">Delete</span>
+                                            </Button>
+                                            <CardHeader className="p-0">
+                                                <div className="relative aspect-video">
+                                                    <Image 
+                                                        src={generateAiImage(species['data-ai-hint'] || species.name)}
+                                                        alt={species.name} 
+                                                        fill
+                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                        className="object-cover transition-transform group-hover:scale-105"
+                                                        data-ai-hint={species['data-ai-hint'] || 'plant'}
+                                                    />
+                                                </div>
+                                            </CardHeader>
+                                            <CardContent className="p-4 flex-1 flex flex-col">
+                                                <div className="flex justify-between items-start gap-2">
+                                                    <h3 className="font-bold text-lg">{species.name}</h3>
+                                                    <div className="flex items-center gap-2 text-muted-foreground shrink-0">
+                                                    {species.attributes.light_requirement === 'full sun' && <Sun className="h-4 w-4 text-amber-500" title="Full Sun" />}
+                                                        {species.attributes.light_requirement === 'partial shade' && <Sun className="h-4 w-4 text-gray-400" title="Partial Shade" />}
+                                                        {species.attributes.watering_frequency === 'high' && <Droplets className="h-4 w-4 text-blue-500" title="High Watering" />}
+                                                        {species.attributes.watering_frequency === 'low' && <Droplets className="h-4 w-4 text-gray-400" title="Low Watering" />}
+                                                        {species.isPoisonous && <AlertTriangle className="h-4 w-4 text-destructive" title="Poisonous/Toxic" />}
+                                                    </div>
+                                                </div>
+                                                <p className="text-sm text-muted-foreground italic -mt-1">{species.scientificName}</p>
+
+                                                <p className="text-sm text-muted-foreground mt-2 line-clamp-3 flex-1">{species.keyInformation}</p>
+                                            </CardContent>
+                                            <CardFooter className="p-2 pt-0">
+                                                <Button className="w-full" variant="secondary" onClick={() => handleSpeciesSelect(species)}>View Details</Button>
+                                            </CardFooter>
+                                        </Card>
+                                    ))}
                                 </div>
-                            )}
-                        </ScrollArea>
+                                {filteredData.length === 0 && (
+                                    <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+                                        <p className="text-lg font-semibold">No results found.</p>
+                                        <p>Try adjusting your search or filters.</p>
+                                    </div>
+                                )}
+                            </ScrollArea>
+                       )}
                     </div>
                 </main>
 
