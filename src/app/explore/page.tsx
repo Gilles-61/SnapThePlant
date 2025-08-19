@@ -80,7 +80,6 @@ export default function ExplorePage() {
             const newUrl = result.imageDataUri;
             if (newUrl && !newUrl.includes('placehold.co')) {
                 await cacheImage(species.id, newUrl);
-                // Correctly update the state to trigger a re-render
                 setImageUrls(prev => ({ ...prev, [species.id]: newUrl }));
             } else {
                  toast({
@@ -345,5 +344,3 @@ export default function ExplorePage() {
         </AuthGuard>
     );
 }
-
-    
