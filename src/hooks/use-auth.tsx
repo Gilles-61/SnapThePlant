@@ -102,9 +102,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         handleAuthSuccess(userCredential.user);
     } catch (error: any) {
         console.error("Error signing in: ", error);
+        let description = "Could not sign in. Please try again.";
+        if (error.code === 'auth/invalid-credential') {
+            description = "Invalid email or password. Please check your credentials and try again.";
+        } else if (error.message) {
+            description = error.message;
+        }
+        
         toast({
             title: "Sign-in Failed",
-            description: error.message || "Could not sign in. Please check your credentials.",
+            description: description,
             variant: "destructive",
         })
     }
