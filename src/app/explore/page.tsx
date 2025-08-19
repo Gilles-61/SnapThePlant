@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { IdentificationResult } from '@/components/identification-result';
 import { AuthGuard } from '@/components/auth-guard';
-import { Camera, Trash2, Loader } from 'lucide-react';
+import { Camera, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { useCollection, type CollectionItem } from '@/hooks/use-collection';
@@ -89,22 +89,24 @@ export default function ExplorePage() {
                                                     <span className="sr-only">Delete</span>
                                                 </Button>
                                                 
-                                                <CardHeader className="p-0 cursor-pointer" onClick={() => handleItemSelect(item)}>
-                                                    <div className="relative aspect-square bg-muted">
-                                                        <Image 
-                                                            src={item.savedImage}
-                                                            alt={item.name} 
-                                                            fill
-                                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                            className="object-cover transition-transform group-hover:scale-105"
-                                                        />
-                                                    </div>
-                                                </CardHeader>
+                                                <div className="cursor-pointer" onClick={() => handleItemSelect(item)}>
+                                                    <CardHeader className="p-0">
+                                                        <div className="relative aspect-square bg-muted">
+                                                            <Image 
+                                                                src={item.savedImage}
+                                                                alt={item.name} 
+                                                                fill
+                                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                                className="object-cover transition-transform group-hover:scale-105"
+                                                            />
+                                                        </div>
+                                                    </CardHeader>
 
-                                                <CardContent className="p-4 flex-1 flex flex-col cursor-pointer" onClick={() => handleItemSelect(item)}>
-                                                    <h3 className="font-bold text-lg">{item.name}</h3>
-                                                    <p className="text-sm text-muted-foreground italic -mt-1">{item.scientificName}</p>
-                                                </CardContent>
+                                                    <CardContent className="p-4 flex-1 flex flex-col">
+                                                        <h3 className="font-bold text-lg">{item.name}</h3>
+                                                        <p className="text-sm text-muted-foreground italic -mt-1">{item.scientificName}</p>
+                                                    </CardContent>
+                                                </div>
 
                                                 <CardFooter className="p-2 pt-0">
                                                     <Button className="w-full" variant="secondary" onClick={() => handleItemSelect(item)}>View Details</Button>
