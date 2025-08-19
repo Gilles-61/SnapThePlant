@@ -78,21 +78,15 @@ export default function ExplorePage() {
         try {
             const result = await generateImage({ name: species.name, category: species.category });
             const newUrl = result.imageDataUri;
-            if (newUrl && !newUrl.includes('placehold.co')) {
-                await cacheImage(species.id, newUrl);
-                setImageUrls(prev => ({ ...prev, [species.id]: newUrl }));
-            } else {
-                 toast({
-                    title: "Image Generation Failed",
-                    description: "Could not generate a unique image. Please try again.",
-                    variant: "destructive"
-                });
-            }
-        } catch (error) {
+            
+            await cacheImage(species.id, newUrl);
+            setImageUrls(prev => ({ ...prev, [species.id]: newUrl }));
+
+        } catch (error: any) {
             console.error(`Failed to generate image for ${species.name}:`, error);
             toast({
-                title: "Error",
-                description: "An error occurred while generating the image.",
+                title: "Image Generation Failed",
+                description: "Could not generate a unique image. Please try again.",
                 variant: "destructive"
             });
         } finally {

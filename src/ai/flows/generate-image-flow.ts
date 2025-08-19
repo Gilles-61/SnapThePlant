@@ -47,13 +47,18 @@ const generateImageFlow = ai.defineFlow(
       if (!media?.url) {
         throw new Error('Image generation failed to return a valid data URI.');
       }
+      
+      // The model might return a placeholder on failure, so we check for that.
+      if (media.url.includes('placehold.co')) {
+          throw new Error('The model returned a placeholder instead of a unique image.');
+      }
 
       return { imageDataUri: media.url };
 
     } catch (error: any) {
-        console.error(`[Image Generation Error] Failed for species "${name}", falling back to placeholder. Error:`, error.message);
-        // Fallback to a placeholder image instead of throwing an error
-        return { imageDataUri: 'https://placehold.co/600x400.png' };
+        console.error(`[Image Generation Error] Failed for species "${name}". Error:`, error.message);
+        // We throw the error so the frontend can handle it, e.g., by allowing the user to retry.
+        throw new Error(`Failed to generate an image for ${name}. Please try again.`);
     }
   }
 );
