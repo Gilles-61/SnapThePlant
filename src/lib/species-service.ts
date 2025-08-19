@@ -5,7 +5,7 @@ import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { Species } from '@/lib/mock-database';
 import { seedDatabase } from './seed';
-import { deleteCachedImage } from './image-cache-service';
+import { getCachedImage, deleteCachedImage } from './image-cache-service';
 
 
 const SPECIES_COLLECTION = 'species';
@@ -13,22 +13,22 @@ const SPECIES_COLLECTION = 'species';
 /**
  * Fetches all species from the Firestore database.
  * If the collection is empty, it will be seeded from the mock database.
+ * It also enriches the data with any cached images.
  * @returns A promise that resolves to an array of species.
  */
 export async function getAllSpecies(): Promise<Species[]> {
   try {
     const speciesCollection = collection(db, SPECIES_COLLECTION);
-    const snapshot = await getDocs(speciesCollection);
+    let snapshot = await getDocs(speciesCollection);
     
     if (snapshot.empty) {
       console.warn("Firestore collection is empty. Running the seeder.");
       await seedDatabase();
-      const newSnapshot = await getDocs(speciesCollection);
-       if (newSnapshot.empty) {
+      snapshot = await getDocs(speciesCollection);
+       if (snapshot.empty) {
         console.error("Seeding seems to have failed. Still no data.");
         return [];
       }
-      return newSnapshot.docs.map(doc => doc.data() as Species).sort((a, b) => a.id - b.id);
     }
 
     const speciesList = snapshot.docs.map(doc => ({
@@ -36,8 +36,19 @@ export async function getAllSpecies(): Promise<Species[]> {
       id: parseInt(doc.id, 10),
     })) as Species[];
     
+    // Enrich with cached images
+    const enrichedSpeciesList = await Promise.all(
+        speciesList.map(async (species) => {
+            const cachedUrl = await getCachedImage(species.id);
+            if (cachedUrl) {
+                return { ...species, image: cachedUrl };
+            }
+            return species;
+        })
+    );
+
     // Sort by ID to maintain a consistent order
-    return speciesList.sort((a, b) => a.id - b.id);
+    return enrichedSpeciesList.sort((a, b) => a.id - b.id);
   } catch (error) {
       console.error("Error fetching species from Firestore:", error);
       return [];

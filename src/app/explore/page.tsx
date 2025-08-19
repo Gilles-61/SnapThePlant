@@ -18,7 +18,7 @@ import { SearchInput } from '@/components/search-input';
 import Link from 'next/link';
 import { getAllSpecies, deleteSpecies } from '@/lib/species-service';
 import { useToast } from '@/hooks/use-toast';
-import { getCachedImage, cacheImage } from '@/lib/image-cache-service';
+import { cacheImage } from '@/lib/image-cache-service';
 import { generateImage } from '@/ai/flows/generate-image-flow';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -49,28 +49,18 @@ export default function ExplorePage() {
     const [selectedSpecies, setSelectedSpecies] = useState<Species | null>(null);
     const [isResultOpen, setIsResultOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [imageUrls, setImageUrls] = useState<Record<number, string>>({});
     const [generatingImageId, setGeneratingImageId] = useState<number | null>(null);
 
 
     useEffect(() => {
-        const fetchSpeciesAndCheckCache = async () => {
+        const fetchSpecies = async () => {
             setIsLoading(true);
             const speciesFromDb = await getAllSpecies();
             setAllSpecies(speciesFromDb);
-            
-            const initialImageUrls: Record<number, string> = {};
-            for (const species of speciesFromDb) {
-                const cachedUrl = await getCachedImage(species.id);
-                if (cachedUrl) {
-                    initialImageUrls[species.id] = cachedUrl;
-                }
-            }
-            setImageUrls(initialImageUrls);
             setIsLoading(false);
         };
         
-        fetchSpeciesAndCheckCache();
+        fetchSpecies();
     }, []);
 
     const handleGenerateImage = async (species: Species) => {
@@ -80,7 +70,13 @@ export default function ExplorePage() {
             const newUrl = result.imageDataUri;
             
             await cacheImage(species.id, newUrl);
-            setImageUrls(prev => ({ ...prev, [species.id]: newUrl }));
+            
+            // Update the state to reflect the new image URL immediately
+            setAllSpecies(prevSpecies => 
+                prevSpecies.map(s => 
+                    s.id === species.id ? { ...s, image: newUrl } : s
+                )
+            );
 
         } catch (error: any) {
             console.error(`Failed to generate image for ${species.name}:`, error);
@@ -137,8 +133,7 @@ export default function ExplorePage() {
     };
 
     const handleSpeciesSelect = (species: Species) => {
-        const speciesWithImage = { ...species, image: imageUrls[species.id] || species.image };
-        setSelectedSpecies(speciesWithImage);
+        setSelectedSpecies(species);
         setIsResultOpen(true);
     };
 
@@ -151,11 +146,6 @@ export default function ExplorePage() {
         const result = await deleteSpecies(speciesId);
         if (result.success) {
             setAllSpecies(prevSpecies => prevSpecies.filter(s => s.id !== speciesId));
-            setImageUrls(prev => {
-                const newUrls = { ...prev };
-                delete newUrls[speciesId];
-                return newUrls;
-            });
             toast({ title: "Success", description: "Item permanently removed from the database." });
         } else {
             toast({ title: "Error", description: "Failed to remove item. Please try again.", variant: 'destructive' });
@@ -260,11 +250,11 @@ export default function ExplorePage() {
                                                 <span className="sr-only">Delete</span>
                                             </Button>
                                             
-                                            {imageUrls[species.id] ? (
+                                            {species.image.startsWith('data:image') || species.image.startsWith('http') ? (
                                                 <CardHeader className="p-0">
                                                     <div className="relative aspect-video bg-muted">
                                                         <Image 
-                                                            src={imageUrls[species.id]}
+                                                            src={species.image}
                                                             alt={species.name} 
                                                             fill
                                                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
