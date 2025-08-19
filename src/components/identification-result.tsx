@@ -26,8 +26,11 @@ import type { CollectionItem } from '@/hooks/use-collection';
 import { generateStory } from '@/ai/flows/generate-story-flow';
 import { Card, CardContent } from './ui/card';
 
+// The component can accept a raw Species or a CollectionItem
+type ResultType = Species | CollectionItem;
+
 interface IdentificationResultProps {
-  result: Species | CollectionItem | null;
+  result: ResultType | null;
   capturedImage: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -36,6 +39,7 @@ interface IdentificationResultProps {
   onReject?: () => void;
   isSavedItem?: boolean;
 }
+
 
 const iconMap: Record<CareTip['title'], React.ElementType> = {
   Watering: Droplets,
@@ -79,7 +83,7 @@ export function IdentificationResult({
 
   const imageToDisplay = capturedImage || ('savedImage' in result && result.savedImage) || result.image;
   
-  const collectionItem: CollectionItem | undefined = collection?.find(item => item.id === result.id);
+  const collectionItem: CollectionItem | undefined = 'instanceId' in result ? collection?.find(item => item.instanceId === result.instanceId) : undefined;
   const isInCollection = !!collectionItem;
 
   const handleSaveToggle = () => {
@@ -92,14 +96,16 @@ export function IdentificationResult({
       removeItem(collectionItem);
       toast({ title: "Removed from collection" });
     } else {
-      addItem(result, imageToDisplay, notes);
+      // The result might be a raw Species, so cast it before passing
+      addItem(result as Species, imageToDisplay, notes);
       toast({ title: "Saved to collection" });
     }
   };
 
   const handleNotesSave = () => {
     if (isInCollection && collectionItem && imageToDisplay) {
-        addItem(result, imageToDisplay, notes); // addItem also updates existing items
+        // Here, we pass the existing collectionItem to ensure the instanceId is preserved
+        addItem(collectionItem, imageToDisplay, notes); // addItem also updates existing items
         toast({ title: "Notes Saved", description: "Your notes have been updated in your collection." });
     }
   };

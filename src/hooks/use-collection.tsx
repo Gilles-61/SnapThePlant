@@ -1,17 +1,23 @@
 
 "use client";
 
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import useSWR, { mutate } from 'swr';
 import type { Species } from '@/lib/mock-database';
 import { useAuth } from './use-auth';
 import { getDb, addItemToDb, removeItemFromDb, getAllItemsFromDb } from '@/lib/collection-db';
 
 // The collection item will now store the specific image URI and user notes
-export interface CollectionItem extends Species {
+export interface CollectionItem extends Omit<Species, 'id'> {
+    // A unique ID for the saved instance, generated on save.
+    // Can be a timestamp or a more robust unique identifier.
+    instanceId: number; 
+    // The original ID from the mock database, used for reference.
+    speciesId: number;
     savedImage: string;
     notes?: string;
 }
+
 
 const COLLECTION_KEY = 'snaptheplant_collection';
 
@@ -28,41 +34,57 @@ export function useCollection() {
     const { user } = useAuth();
     const userId = user?.uid ?? null;
 
-    const { data: collection, error } = useSWR<CollectionItem[]>(
+    const { data: collection, error, isLoading } = useSWR<CollectionItem[]>(
         userId ? `${COLLECTION_KEY}_${userId}` : null,
         () => collectionFetcher(userId),
         {
-            revalidateOnFocus: false,
+            revalidateOnFocus: false, // Prevents re-fetching on window focus
         }
     );
 
-    const addItem = useCallback(async (item: Species, imageDataUri: string, notes?: string) => {
+    const addItem = useCallback(async (item: Species | Omit<CollectionItem, 'instanceId'>, imageDataUri: string, notes?: string) => {
         if (!userId) return;
         
-        // Use a combination of original ID and image URI for a more unique key in the collection
-        // Note: IndexedDB primary key is still the `id` from the Species. 
-        // We are ensuring the object we save is unique based on what the user captured.
+        // Check if the item is already a collection item (e.g., during an update)
+        const isUpdate = 'instanceId' in item && typeof item.instanceId === 'number';
+
+        const speciesData: Omit<CollectionItem, 'instanceId' | 'savedImage' | 'notes'> = {
+            speciesId: 'speciesId' in item ? item.speciesId : item.id,
+            name: item.name,
+            scientificName: item.scientificName,
+            category: item.category,
+            keyInformation: item.keyInformation,
+            furtherReading: item.furtherReading,
+            image: item.image,
+            attributes: item.attributes,
+            careTips: item.careTips,
+            isPoisonous: item.isPoisonous,
+            toxicityWarning: item.toxicityWarning,
+            'data-ai-hint': item['data-ai-hint'],
+        };
+        
         const collectionItem: CollectionItem = {
-            ...item,
+            ...speciesData,
+            instanceId: isUpdate ? item.instanceId : Date.now(),
             savedImage: imageDataUri,
-            notes: notes || '',
+            notes: notes || ('notes' in item ? item.notes : '') || '',
         };
         
         const db = await getDb(userId);
         await addItemToDb(db, collectionItem);
         
-        // Optimistically update the local cache, then revalidate
+        // Use mutate to update the local cache without re-fetching from the server
         mutate(`${COLLECTION_KEY}_${userId}`, (currentData: CollectionItem[] = []) => {
-            // Avoid duplicates by checking if an item with the same ID and image already exists
-            const existingIndex = currentData.findIndex(ci => ci.id === collectionItem.id && ci.savedImage === collectionItem.savedImage);
+            const existingIndex = currentData.findIndex(ci => ci.instanceId === collectionItem.instanceId);
             if (existingIndex > -1) {
+                // Update existing item
                 const updatedData = [...currentData];
                 updatedData[existingIndex] = collectionItem;
                 return updatedData;
             }
+            // Add new item
             return [...currentData, collectionItem];
-        }, false);
-        mutate(`${COLLECTION_KEY}_${userId}`);
+        }, false); // `false` prevents revalidation, we trust our optimistic update
 
     }, [userId]);
 
@@ -70,19 +92,17 @@ export function useCollection() {
         if (!userId) return;
 
         const db = await getDb(userId);
-        // Use the species ID as the key for deletion
-        await removeItemFromDb(db, itemToRemove.id);
+        await removeItemFromDb(db, itemToRemove.instanceId);
 
-        // Optimistically update the local cache, then revalidate
+        // Optimistically update local cache
         mutate(`${COLLECTION_KEY}_${userId}`, (currentData: CollectionItem[] = []) => 
-            currentData.filter(item => item.id !== itemToRemove.id), false
+            currentData.filter(item => item.instanceId !== itemToRemove.instanceId), false
         );
-        mutate(`${COLLECTION_KEY}_${userId}`);
     }, [userId]);
     
     return {
         collection: collection,
-        isLoading: !error && !collection && !!userId,
+        isLoading: isLoading && !!userId,
         isError: error,
         addItem,
         removeItem,

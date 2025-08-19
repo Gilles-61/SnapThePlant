@@ -141,8 +141,8 @@ export function ProfilePageContent() {
                 <CardContent>
                     {collection && collection.length > 0 ? (
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                            {collection.map((item, index) => (
-                                <div key={`${item.id}-${index}`} className="relative group">
+                            {collection.map((item) => (
+                                <div key={item.instanceId} className="relative group">
                                     <Card className="overflow-hidden cursor-pointer" onClick={() => handleSpeciesSelect(item)}>
                                         <div className="relative aspect-square">
                                             <Image src={item.savedImage} alt={item.name} fill sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw" className="object-cover" />
@@ -173,15 +173,14 @@ export function ProfilePageContent() {
         </div>
     </main>
 
-    <IdentificationResult
+     <IdentificationResult
             open={isResultOpen}
             onOpenChange={(open) => {
                 if (!open) handleResultClose();
             }}
             result={selectedItem}
             capturedImage={selectedItem?.savedImage}
-            onConfirm={handleResultClose}
-            onReject={handleResultClose}
+            isSavedItem={true}
         />
     </div>
   );

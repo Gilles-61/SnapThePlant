@@ -74,8 +74,8 @@ export default function ExplorePage() {
                             <div>
                                 {collection && collection.length > 0 ? (
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                        {collection.map((item, index) => (
-                                            <Card key={`${item.id}-${index}`} className="overflow-hidden flex flex-col group transition-shadow hover:shadow-lg relative">
+                                        {collection.map((item) => (
+                                            <Card key={item.instanceId} className="overflow-hidden flex flex-col group transition-shadow hover:shadow-lg relative">
                                                 <Button
                                                     variant="destructive"
                                                     size="icon"
