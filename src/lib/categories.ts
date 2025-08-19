@@ -1,4 +1,4 @@
-import { Leaf, TreeDeciduous, Sprout, Bug } from 'lucide-react';
+import { Leaf, TreeDeciduous, Sprout, Bug, Bird } from 'lucide-react';
 import { CactusIcon } from '@/components/icons/cactus-icon';
 import { SucculentIcon } from '@/components/icons/succulent-icon';
 
@@ -9,6 +9,7 @@ export const categories = [
   { name: 'Insect', icon: Bug, hintKey: 'categories.insectHint', colorClass: 'category-tile-insect' },
   { name: 'Cactus', icon: CactusIcon, hintKey: 'categories.cactusHint', colorClass: 'category-tile-cactus' },
   { name: 'Succulent', icon: SucculentIcon, hintKey: 'categories.succulentHint', colorClass: 'category-tile-succulent' },
+  { name: 'Bird', icon: Bird, hintKey: 'categories.birdHint', colorClass: 'category-tile-bird' },
 ] as const;
 
 export type Category = typeof categories[number]['name'];

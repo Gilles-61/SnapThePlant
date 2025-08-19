@@ -40,7 +40,9 @@
         "cactus": "Cactus",
         "cactusHint": "Identificar un cactus",
         "succulent": "Suculenta",
-        "succulentHint": "Identificar una suculenta"
+        "succulentHint": "Identificar una suculenta",
+        "bird": "Pájaro",
+        "birdHint": "Identificar un pájaro"
     },
     "result": {
         "confidenceScore": "Puntuación de confianza",

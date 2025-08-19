@@ -40,7 +40,9 @@
         "cactus": "Kaktus",
         "cactusHint": "Einen Kaktus identifizieren",
         "succulent": "Sukkulente",
-        "succulentHint": "Eine Sukkulente identifizieren"
+        "succulentHint": "Eine Sukkulente identifizieren",
+        "bird": "Vogel",
+        "birdHint": "Einen Vogel identifizieren"
     },
     "result": {
         "confidenceScore": "Konfidenzwert",

@@ -115,3 +115,11 @@
 .category-tile-succulent:hover {
     background-color: #4DB6AC;
 }
+
+.category-tile-bird {
+    background-color: #64B5F6; /* Sky Blue */
+    color: white;
+}
+.category-tile-bird:hover {
+    background-color: #42A5F5;
+}
