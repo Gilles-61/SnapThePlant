@@ -69,7 +69,7 @@ export function IdentificationResult({
   const isInCollection = !!collectionItem;
 
   const handleSaveToggle = () => {
-    if (!capturedImage) {
+    if (!imageToDisplay) {
         toast({ title: "Cannot save an item without an image.", variant: "destructive"});
         return;
     }
@@ -78,7 +78,7 @@ export function IdentificationResult({
       removeItem(collectionItem);
       toast({ title: "Removed from collection" });
     } else {
-      addItem(result, capturedImage);
+      addItem(result, imageToDisplay);
       toast({ title: "Saved to collection" });
     }
   };

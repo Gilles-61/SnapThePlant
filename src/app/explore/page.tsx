@@ -336,7 +336,7 @@ export default function ExplorePage() {
                         if (!open) handleResultClose();
                     }}
                     result={selectedSpecies}
-                    capturedImage={null}
+                    capturedImage={selectedSpecies?.image}
                     onConfirm={handleResultClose}
                     onReject={handleResultClose}
                 />
