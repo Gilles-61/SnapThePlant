@@ -59,12 +59,14 @@ export default function ExplorePage() {
             const speciesFromDb = await getAllSpecies();
             setAllSpecies(speciesFromDb);
             
+            const initialImageUrls: Record<number, string> = {};
             for (const species of speciesFromDb) {
                 const cachedUrl = await getCachedImage(species.id);
                 if (cachedUrl) {
-                    setImageUrls(prev => ({ ...prev, [species.id]: cachedUrl }));
+                    initialImageUrls[species.id] = cachedUrl;
                 }
             }
+            setImageUrls(initialImageUrls);
             setIsLoading(false);
         };
         
@@ -78,6 +80,7 @@ export default function ExplorePage() {
             const newUrl = result.imageDataUri;
             if (newUrl && !newUrl.includes('placehold.co')) {
                 await cacheImage(species.id, newUrl);
+                // Correctly update the state to trigger a re-render
                 setImageUrls(prev => ({ ...prev, [species.id]: newUrl }));
             } else {
                  toast({
@@ -155,6 +158,11 @@ export default function ExplorePage() {
         const result = await deleteSpecies(speciesId);
         if (result.success) {
             setAllSpecies(prevSpecies => prevSpecies.filter(s => s.id !== speciesId));
+            setImageUrls(prev => {
+                const newUrls = { ...prev };
+                delete newUrls[speciesId];
+                return newUrls;
+            });
             toast({ title: "Success", description: "Item permanently removed from the database." });
         } else {
             toast({ title: "Error", description: "Failed to remove item. Please try again.", variant: 'destructive' });
@@ -259,7 +267,7 @@ export default function ExplorePage() {
                                                 <span className="sr-only">Delete</span>
                                             </Button>
                                             
-                                            {imageUrls[species.id] && (
+                                            {imageUrls[species.id] ? (
                                                 <CardHeader className="p-0">
                                                     <div className="relative aspect-video bg-muted">
                                                         <Image 
@@ -271,29 +279,27 @@ export default function ExplorePage() {
                                                         />
                                                     </div>
                                                 </CardHeader>
+                                            ) : (
+                                                <CardHeader className="p-0">
+                                                    <div className="relative aspect-video bg-muted flex items-center justify-center">
+                                                         {generatingImageId === species.id ? (
+                                                            <Loader className="h-8 w-8 animate-spin text-muted-foreground" />
+                                                        ) : (
+                                                            <Button 
+                                                                variant="secondary"
+                                                                size="sm"
+                                                                className="w-3/4"
+                                                                onClick={() => handleGenerateImage(species)}
+                                                            >
+                                                                <ImageIcon className="mr-2 h-4 w-4" />
+                                                                Generate Image
+                                                            </Button>
+                                                        )}
+                                                    </div>
+                                                </CardHeader>
                                             )}
 
                                             <CardContent className="p-4 flex-1 flex flex-col">
-                                                {!imageUrls[species.id] && (
-                                                    <div className="flex-1 flex flex-col items-center justify-center text-center bg-muted/50 rounded-md p-4 mb-4">
-                                                        {generatingImageId === species.id ? (
-                                                            <Loader className="h-8 w-8 animate-spin text-muted-foreground" />
-                                                        ) : (
-                                                            <>
-                                                                <ImageIcon className="h-8 w-8 text-muted-foreground mb-2" />
-                                                                <Button 
-                                                                    variant="secondary"
-                                                                    size="sm"
-                                                                    className="w-full"
-                                                                    onClick={() => handleGenerateImage(species)}
-                                                                >
-                                                                    Generate Image
-                                                                </Button>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                )}
-                                                
                                                 <div className="flex justify-between items-start gap-2">
                                                     <h3 className="font-bold text-lg">{species.name}</h3>
                                                     <div className="flex items-center gap-2 text-muted-foreground shrink-0">
@@ -339,3 +345,5 @@ export default function ExplorePage() {
         </AuthGuard>
     );
 }
+
+    
