@@ -250,7 +250,7 @@ export default function ExplorePage() {
                                                 <span className="sr-only">Delete</span>
                                             </Button>
                                             
-                                            {species.image.startsWith('data:image') || species.image.startsWith('http') ? (
+                                            {species.image.startsWith('data:image') ? (
                                                 <CardHeader className="p-0">
                                                     <div className="relative aspect-video bg-muted">
                                                         <Image 
