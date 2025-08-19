@@ -136,8 +136,7 @@ export default function ExplorePage() {
                     }}
                     result={selectedItem}
                     capturedImage={selectedItem?.savedImage}
-                    onConfirm={handleResultClose}
-                    onReject={handleResultClose}
+                    isSavedItem={true} // Mark that this is a saved item
                 />
             </div>
         </AuthGuard>

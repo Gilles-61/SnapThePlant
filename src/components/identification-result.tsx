@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import {
   Sheet,
@@ -15,7 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Textarea } from '@/components/ui/textarea';
-import { Droplets, Sun, Sprout, Package, Thermometer, Leaf, Check, X, ThumbsDown, ThumbsUp, Bookmark, AlertTriangle, BookOpen, Loader } from 'lucide-react';
+import { Droplets, Sun, Sprout, Package, Thermometer, Leaf, ThumbsDown, ThumbsUp, Bookmark, AlertTriangle, BookOpen, Loader, Save } from 'lucide-react';
 import type { Species, CareTip } from '@/lib/mock-database';
 import { useTranslation } from '@/hooks/use-language';
 import { Separator } from './ui/separator';
@@ -27,12 +27,14 @@ import { generateStory } from '@/ai/flows/generate-story-flow';
 import { Card, CardContent } from './ui/card';
 
 interface IdentificationResultProps {
-  result: Species | null;
+  result: Species | CollectionItem | null;
   capturedImage: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
-  onReject: () => void;
+  // Make these optional as they are for the feedback flow
+  onConfirm?: () => void;
+  onReject?: () => void;
+  isSavedItem?: boolean;
 }
 
 const iconMap: Record<CareTip['title'], React.ElementType> = {
@@ -51,6 +53,7 @@ export function IdentificationResult({
   onOpenChange,
   onConfirm,
   onReject,
+  isSavedItem = false,
 }: IdentificationResultProps) {
   const { t } = useTranslation();
   const [notes, setNotes] = useState('');
@@ -59,13 +62,24 @@ export function IdentificationResult({
   const { collection, addItem, removeItem } = useCollection();
   const { toast } = useToast();
 
+  useEffect(() => {
+    // When the result changes (i.e., a new item is opened),
+    // update the notes state from the item's data.
+    if (result && 'notes' in result) {
+      setNotes(result.notes || '');
+    } else {
+      setNotes('');
+    }
+    // Reset story when the sheet opens for a new item
+    setStory(null);
+  }, [result, open]);
+
+
   if (!result) return null;
 
-  const imageToDisplay = capturedImage || result.image;
-
-  const collectionItem: CollectionItem | undefined = collection?.find(item => 
-    item.id === result.id && item.savedImage === imageToDisplay
-  );
+  const imageToDisplay = capturedImage || ('savedImage' in result && result.savedImage) || result.image;
+  
+  const collectionItem: CollectionItem | undefined = collection?.find(item => item.id === result.id);
   const isInCollection = !!collectionItem;
 
   const handleSaveToggle = () => {
@@ -78,10 +92,26 @@ export function IdentificationResult({
       removeItem(collectionItem);
       toast({ title: "Removed from collection" });
     } else {
-      addItem(result, imageToDisplay);
+      addItem(result, imageToDisplay, notes);
       toast({ title: "Saved to collection" });
     }
   };
+
+  const handleNotesSave = () => {
+    if (isInCollection && collectionItem && imageToDisplay) {
+        addItem(result, imageToDisplay, notes); // addItem also updates existing items
+        toast({ title: "Notes Saved", description: "Your notes have been updated in your collection." });
+    }
+  };
+  
+  const handleSheetClose = () => {
+    onOpenChange(false);
+    // If it's a saved item, save the notes when the sheet is closed.
+    if (isSavedItem) {
+        handleNotesSave();
+    }
+  }
+
 
   const handleGenerateStory = async () => {
     if (!result) return;
@@ -103,12 +133,7 @@ export function IdentificationResult({
   }
 
   return (
-    <Sheet open={open} onOpenChange={(isOpen) => {
-        onOpenChange(isOpen);
-        if (!isOpen) {
-            setStory(null); // Reset story when sheet closes
-        }
-    }}>
+    <Sheet open={open} onOpenChange={handleSheetClose}>
       <SheetContent side="bottom" className="rounded-t-2xl max-h-[90vh] h-full flex flex-col bg-background/95 backdrop-blur-sm p-0">
         <SheetHeader className="text-left p-6 pb-2">
           <div className="flex justify-between items-start">
@@ -218,24 +243,40 @@ export function IdentificationResult({
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                     />
+                     {isSavedItem && (
+                        <Button onClick={handleNotesSave} className="mt-2">
+                            <Save className="mr-2 h-4 w-4" />
+                            {t('result.saveNotes')}
+                        </Button>
+                    )}
                 </div>
                 
                  <div className="mt-auto">
                     <Separator />
-                    <div className="pt-4 text-center">
-                        <p className="text-sm font-semibold text-muted-foreground mb-3">{t('result.feedbackPrompt')}</p>
-                        <div className="flex justify-center gap-4">
+                     <div className="pt-4 text-center">
+                        {isSavedItem ? (
                            <SheetClose asChild>
-                            <Button variant="outline" size="lg" onClick={onReject}>
-                                <ThumbsDown className="mr-2" /> {t('result.incorrect')}
+                            <Button size="lg" onClick={handleSheetClose} className="w-full sm:w-auto">
+                                {t('result.close')}
                             </Button>
                            </SheetClose>
-                           <SheetClose asChild>
-                            <Button size="lg" onClick={onConfirm}>
-                                <ThumbsUp className="mr-2" /> {t('result.correct')}
-                            </Button>
-                           </SheetClose>
-                        </div>
+                        ) : (
+                            <>
+                                <p className="text-sm font-semibold text-muted-foreground mb-3">{t('result.feedbackPrompt')}</p>
+                                <div className="flex justify-center gap-4">
+                                <SheetClose asChild>
+                                    <Button variant="outline" size="lg" onClick={onReject}>
+                                        <ThumbsDown className="mr-2" /> {t('result.incorrect')}
+                                    </Button>
+                                </SheetClose>
+                                <SheetClose asChild>
+                                    <Button size="lg" onClick={onConfirm}>
+                                        <ThumbsUp className="mr-2" /> {t('result.correct')}
+                                    </Button>
+                                </SheetClose>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
