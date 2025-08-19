@@ -55,7 +55,8 @@ export function useApiRateLimiter() {
 
         if (!rateLimitInfo) {
             // If state hasn't loaded yet, default to allowing the call.
-            return true;
+            // This is a safe default to prevent blocking users on first load.
+            return true; 
         }
         return rateLimitInfo.count < DAILY_LIMIT;
     }, [rateLimitInfo, subscriptionStatus]);

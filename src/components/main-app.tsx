@@ -27,7 +27,7 @@ import { useApiRateLimiter } from '@/hooks/use-api-rate-limiter';
 export function MainApp({ initialCategory }: { initialCategory?: Category }) {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const { canCallApi, recordApiCall } = useApiRateLimiter();
+  const { canCallApi, recordApiCall, currentCount, limit } = useApiRateLimiter();
   const cameraRef = useRef<CameraFeedHandle>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -110,7 +110,7 @@ export function MainApp({ initialCategory }: { initialCategory?: Category }) {
     if (!canCallApi()) {
       toast({
         title: "Daily Limit Reached",
-        description: "You have used all your free identifications for today. Please try again tomorrow.",
+        description: `You have used all ${limit} of your free identifications for today. Please upgrade or try again tomorrow.`,
         variant: "destructive",
       });
       return;
@@ -138,7 +138,7 @@ export function MainApp({ initialCategory }: { initialCategory?: Category }) {
     } finally {
         setIsLoading(false);
     }
-  }, [toast, handleReset, selectedCategory, canCallApi, recordApiCall, proceedWithAnalysis]);
+  }, [toast, handleReset, selectedCategory, canCallApi, recordApiCall, proceedWithAnalysis, limit]);
 
 
   const handleSearch = useCallback((query: string) => {
